@@ -1,0 +1,2243 @@
+-> 2026-11-18. Direct fact check of proposed Waldspurger/Nutanix Staff Engineer - Linux & Kernel interview answering framework.
+-> The Nutanix 31520 job page is real and active at verification time: https://careers.nutanix.com/en/jobs/31520/staff-engineer-linux-kernel/
+-> It calls for deep reasoning, low-level coding and debugging, research and numbers, original thinking, and KVM-based AHV performance, scale and reliability.
+-> It does not prescribe a four-stage interview answer format or confirm that Carl A. Waldspurger will conduct a particular interview.
+-> ❌ First unsupported assumption: the research habits of a named systems scientist establish the exact questions and grading method of an interview at a company.
+-> The inference fails because no documented interview rubric, transcript, or assignment of interviewers was provided.
+-> Restart: distinguish verified job skills, published design methodology, and recommended practice method.
+
+-> Waldspurger's OSDI 2002 ESX paper explicitly says it describes low-level mechanisms before high-level algorithms and policies.
+-> That bottom-up organization supports hardware/implementation-first reasoning when the hardware creates the failure, but not a universal requirement to start every explanation with x86 internals.
+-> A user-visible 5ms I/O stall can begin at guest I/O -> host submission -> device queue -> shared controller and only then require a hardware explanation.
+-> ❌ Inverting every explanation into a hardware-first taxonomy before the customer operation may hide the actual failed dependency.
+-> Restart at the real operation, trace the physical execution path until the constraint matters, then calculate what it forces.
+
+-> Credible documented expertise: Waldspurger states he led ESX CPU scheduling, memory management and NUMA scheduling; his 1997 profiling work addresses low-overhead instruction sampling; his 1994-95 papers cover proportional-share schedulers.
+-> Claim that he personally wrote every hypervisor MMU or "hypervisor MMUs from scratch" is broader than the records prove.
+-> His 2024 CXL/virtualized-memory paper is coauthored with Azure, Columbia, Intel and other researchers.
+-> Source: https://www.waldspurger.org/carl/
+-> Source: https://www.waldspurger.org/carl/research.html
+-> Source: https://waldspurger.org/carl/papers/esx-mem-osdi02.pdf
+-> Source: https://www.waldspurger.org/carl/papers/profileme-micro30.pdf
+-> Source: https://www.usenix.org/system/files/osdi24-zhong-yuhong.pdf
+
+-> The four-step suggestion is useful but should be treated as proposed discipline rather than historical fact.
+-> Step: identify a concrete customer operation and its result. Then identify the limiting physical resource and hardware execution path.
+-> Step: identify which actor can observe the needed fact, which one can act, and which one selects a target.
+-> Step: state exact failure invariant and alternatives; derive the tradeoff without assuming a policy always helps.
+-> Step: choose a measurement that discriminates competing explanations, then check whether the measurement itself changes results.
+
+-> Mechanism: KVM MMU notifications synchronize invalidation when the host changes backing so stale guest translations do not reach freed physical pages.
+-> Policy: memory-pressure/usage decisions determine which page to migrate or reclaim and when. A notifier is not an eviction policy.
+-> Mechanism: KVM dirty rings store and transport dirtiness records; hardware accessed/dirty bits or write protection can detect writes. A dirty ring is not independently another hardware detection method.
+-> In KVM dirty-ring mode, userspace can read the ring before hardware dirty buffers have been flushed; it must force the necessary synchronization before treating dirtiness as complete.
+-> Source: https://docs.kernel.org/virt/kvm/api.html
+-> Source: https://docs.kernel.org/mm/mmu_notifier.html
+-> Source: https://docs.kernel.org/virt/kvm/x86/mmu.html
+-> Mechanism and policy are not exclusive labels for entire subsystems. DAMON monitors accesses; DAMON-based operation schemes also act on the measurements according to user-selected policies.
+-> MGLRU maintains generations and contains reclamation and eviction choices; describing all MGLRU behavior as mere monitoring is false.
+-> Source: https://docs.kernel.org/mm/damon/index.html
+-> Source: https://docs.kernel.org/mm/damon/design.html
+-> Source: https://docs.kernel.org/admin-guide/mm/multigen_lru.html
+-> ❌ First wrong split: hardware operations = mechanism, named Linux features = policy. One subsystem may implement BOTH.
+-> Restart: for each source path ask who decides whether to act, which observation drives that decision, and which routine makes the action happen.
+
+-> KVM guests commonly execute as schedulable host threads while guest RAM is associated with a host QEMU process and backing provided by anonymous memory, shared files, hugetlbfs or guest_memfd, depending on configuration.
+-> A task_struct describes one host task; it is not itself "the memory backing" for every VM.
+-> Host Linux subsystems give KVM mature scheduling, memory reclaim and driver infrastructure, but introduce contention and policy visibility gaps.
+-> It is inaccurate to infer that a Linux-based hypervisor is always slower than a bare-metal hypervisor merely from software architecture; measure the same workload.
+-> ESX 2002 compares direct ESX control against a hosted VMware Workstation design in its own contemporary context; that paper does not benchmark modern KVM.
+-> Source: https://docs.kernel.org/virt/kvm/api.html
+-> Source: https://docs.kernel.org/virt/kvm/x86/mmu.html
+-> Source: https://www.qemu.org/docs/master/system/introduction.html
+-> Source: https://waldspurger.org/carl/papers/esx-mem-osdi02.pdf
+
+-> A four-level guest and four-level nested translation, 4KiB page tables and empty translation caches can require 4 x (4 + 1) + 4 = 24 paging-structure reads before the final data read.
+-> With 2MiB EPT mappings for every relevant translated page-table access, an illustrative count is 4 x (3 + 1) + 3 = 19, again excluding cached entries and final data.
+-> 24 - 19 = 5 fewer worst-case translation-structure accesses under the stated specific mapping assumptions; NO universal 5-read saving per real TLB miss follows.
+-> A hardware-side cost argument must specify page size, access pattern, translation caching, CPU generation, and observed miss count.
+-> EPT invalidations, IOTLB invalidations, cacheline contention and VM exits have different causes and are not interchangeable time units.
+-> ❌ First hardware-math error: treating a maximum traversal count as a measured latency on all real accesses.
+-> Restart: multiply observed event rate by measured incremental cost and compare with actual work saved.
+
+-> Host swap versus ballooning: the host may observe guest page use, but cannot automatically infer whether guest content is free, easily discardable or needed to complete a current operation.
+-> ESX ballooning requests the guest to select expendable pages, whereas forced host swapping lacks that guest-specific selection input.
+-> "Host swapping is blind to guest page heat" is too absolute; host aging can see access information, but not full guest semantics.
+-> KSM default run=0 in Linux does not prove that "most modern production hypervisors disable KSM." That deployment claim needs a real survey.
+-> KSM side channels have a published original demonstrated risk; an isolation policy must consider trust boundaries before cross-VM merging.
+-> Source: https://docs.kernel.org/admin-guide/mm/ksm.html
+-> Source: https://www.jstage.jst.go.jp/article/transfun/E96.A/1/E96.A_215/_article/-char/en
+-> Source: https://waldspurger.org/carl/papers/esx-mem-osdi02.pdf
+
+-> CXL/memory tiering: OSDI 2024 says software measurement by scanning page metadata, poisoning page entries or instruction sampling can have serious virtualized-host overhead or privacy limitations.
+-> The Memstrata system combines hardware-managed memory tiering and software-managed inter-VM allocation; its exact design is NOT "every frequently used page migrates by software".
+-> It reports no more than 5% degradation for more than 82% of its tested workloads under its Flat Memory Mode evaluation, and outlier slowdowns reduced from above 30% to below 6% in multi-VM evaluation.
+-> Those are prototype-workload outcomes, not guarantees for all Nutanix hardware.
+-> Source: https://www.usenix.org/system/files/osdi24-zhong-yuhong.pdf
+-> ❌ First wrong causal leap: a locally optimal page move guarantees improvement for another tenant sharing the same cache, bandwidth and tiers.
+-> Restart: measure the interference and the marginal gain of moving another region before issuing a move.
+
+-> Live migration: writing through protected EPT entries may cause VM exits, but actual dirty logging depends on mode, CPU capabilities and KVM version.
+-> Intel PML and KVM dirty rings do not represent a simple three-way hardware choice alongside page protection.
+-> Host software update by QEMU CPR can preserve shared RAM and state across QEMU replacement; cpr-reboot explicitly permits host kernel changes with supported persistent shared backing.
+-> QEMU CPR unconditionally stops VM execution before saving state. Therefore the bare word "hitless" cannot be inferred from a technique that pauses guests.
+-> A mere kexec call does not by itself guarantee that running KVM VM state, PCI device state, DMA, IOMMU mappings or service connections survive.
+-> VFIO migration is possible for compatible devices and versions, but QEMU docs state VFIO postcopy is unsupported.
+-> Source: https://www.qemu.org/docs/master/devel/migration/CPR.html
+-> Source: https://www.qemu.org/docs/master/devel/migration/vfio.html
+-> Source: https://docs.kernel.org/core-api/kho/index.html
+
+-> Hyperconverged CVM: Nutanix documents storage controller passthrough to the CVM, and the AHV classic QEMU/libiscsi and Frodo vhost-user-scsi routes.
+-> "CVM is pinned" in the initial claim requires identifying CPU affinity, DMA pin coverage, reserved memory, and active product version; they cannot be deduced from PCI passthrough alone.
+-> Source: https://www.nutanixbible.com/5b-book-of-ahv-how-it-works.html
+-> EEVDF/cgroup weights distribute eligible host CPU service, not guaranteed completed application transactions in guest VMs.
+-> A vhost-user path is configuration-dependent; using a vhost-user polling argument for the traditional QEMU path can describe code that never executes.
+
+-> Instrumentation cannot be assumed negligible just because it uses perf or eBPF; event frequency, handler complexity, buffer traffic and cache disruption matter.
+-> A historical kernel kprobes document measured 0.06 microseconds for an optimized x86-64 probe on a 2005-era Intel Xeon E5410.
+-> Under the STRICT hypothetical assumption that this per-hit cost remains 0.06 microseconds, 1,000,000 hits/sec x 0.06 microseconds/hit = 60,000 microseconds/sec = 60 milliseconds/sec = 6% of one CPU core.
+-> The sample is historically measured, but 1,000,000 hits/sec in a particular workload and reuse on any modern CPU are not asserted observations.
+-> That simple multiplication illustrates why per-event cost without event frequency has little predictive value.
+-> Source: https://docs.kernel.org/trace/kprobes.html
+-> Original 1997 low-overhead profiling work: https://www.waldspurger.org/carl/papers/dcpi-acm-tocs-nov97.pdf
+-> A production probe must compare equivalent conditions with probe ON and OFF, record event rate and missed events, and quantify p99/p999 rather than only total sample CPU.
+-> An aggressive '5% free RAM' threshold is not inherently irrational. Static thresholds can preserve safety properties; adaptive controllers also require stability and switching-cost analysis.
+-> ❌ First unjustified prediction: adding feedback control necessarily beats every static policy.
+-> Restart: state what changes over time, prove the static value fails on observed workloads, and measure adaptive-policy oscillation and overhead.
+
+-> Prepared answer constraints: no claim about a specific interviewer, kernel function or hardware cost without source or experiment; no pretending the prototype is the production AHV.
+-> The useful four-stage pattern is CUSTOMER OPERATION -> HARDWARE LIMIT -> MECHANISM AND POLICY -> BEFORE/AFTER MEASUREMENT, with each link justified by the observed failure.
+-> Interview follow-ups about malicious tenants, isolation and p999 are worthwhile practice, but no source shows the interviewer always asks a specific "What breaks if..." question.
+-> The Tuesday interview date is not verified by the supplied sources, and relative weekday should not be asserted as a concrete scheduled appointment.
+
+-> The complete preceding cumulative source corpus is preserved verbatim from the next line, including the twenty question audits, 2002/2024 research, original 1988–2025 bibliography, MIT course archives, LKML correspondence, numeric scheduling experiments and C reproduction. Later corrections in the newest text supersede contradictory predictions in historical saved reports.
+-> Historical source preservation does NOT represent confirmation of every old sentence in the older corpus.
+-> The above URLs are primary evidence references, not proof of an executed production workload or interviewer intent.
+-> ------------------------------------------------------------
+
+2026-11-18 PRIMARY-SOURCE REVIEW OF TWENTY STAFF KVM DESIGN QUESTIONS
+The claims are design prompts, not known literal Carl Waldspurger interview questions. His 2024-2025 Nutanix-assigned patents corroborate work on virtualization memory reclaim, live migration, and VM I/O, but do not disclose interview questions. The Nutanix role itself focuses on KVM, performance, reliability and making hypervisor upgrades faster.
+
+01. Reclaim 32 GB on a host with 20 VMs and CVM.
+32 GB is an action target, not proof of available discardable capacity.
+32 GB reclaimable needed >= 32 GB requested. If 20 GB can be reclaimed safely, 32 - 20 = 12 GB remains.
+Do not assume all CVM pages are pinned because CVM uses VFIO. Determine exact DMA-mapped/pinned bytes. Prefer guest cooperation where possible; quantify guest stalls, disk I/O, swap, zero-page reclamation, guest page cache losses, and storage service headroom. No absolute no-stall promise follows.
+Source: https://docs.kernel.org/driver-api/vfio.html
+Source: https://docs.kernel.org/core-api/pin_user_pages.html
+
+02. KSM.
+Linux KSM has run=0 by default, and requires eligible mappings. "Most production hypervisors disable KSM" is not proven by the default setting. Enable only when repeatable identical memory savings, acceptable scan cost, copy-on-write burden, tenant trust and isolation are shown. The kernel warns that ksm_rmap_items/ksm_merging_pages > 64 for a 64-bit system may make the net KSM profit zero or negative.
+Source: https://docs.kernel.org/admin-guide/mm/ksm.html
+
+03. EPT page walks.
+Assumptions: 4-level guest paging, 4-level EPT, 4KB guest mappings, no paging-structure caching. Worst-case translation references (excluding final data access): 4*(4+1)+4=24. If all relevant EPT translations terminate in 2MB EPT entries, 4*(3+1)+3=19. Actual costs vary with caching and EPT guest-physical page sizes. 2MB/4KB=512, but splitting a host THP does NOT unconditionally prove split of a given KVM EPT huge mapping.
+Source: https://www.intel.com/content/dam/www/public/us/en/documents/research/2010-vol14-iss-3-intel-technology-journal.pdf page 94 of article
+
+04. mmu_notifier.
+Correct invariant: a page must not be reused while a stale KVM translation can still reach it. Host memory-management invalidations notify KVM; KVM invalidates relevant mappings and synchronizes translations before freeing/reusing old backing. Exact callbacks/locking depend on Linux revision; do not invent a universal function stack.
+Source: https://docs.kernel.org/mm/mmu_notifier.html
+Source: https://docs.kernel.org/virt/kvm/locking.html
+
+05. Idle memory tax.
+"8 GB touched per second" measures access volume, not distinct touched working set. VM B "has not touched 60 GB" does not prove those bytes are free, nor is it permission to reclaim them without possible stalls. 64+64=128 GB provisioned. If 60 GB truly discardable, 128-60=68 GB residual; if dirty indispensable data, actual reclamation is different. Waldspurger's 2002 policy levies an idle-memory tax with working-set sampling rather than blindly trusting provisioned size.
+Source: https://www.waldspurger.org/carl/papers/esx-mem-osdi02.pdf
+
+06. Hot/cold CXL placement.
+Correct problem, but "PEBS works as cheap guest hotness" is not a given. OSDI 2024 Memstrata explicitly points out PEBS virtualization compatibility limitations; it uses hardware tiering plus a software cross-VM policy. DAMON clearing accessed bits can trigger expensive TLB shootdowns. Hugepage preservation versus fine-grained placement is an actual measured tradeoff, not a theorem.
+Source: https://www.usenix.org/system/files/osdi24-zhong-yuhong.pdf
+
+07. Promotion thrashing.
+100-64=36 GB does not fit into local 64 GB. Repeated swaps are possible, not inevitable. Stable set of 64 GB would avoid movement if the valuable pages remain stable. Show displaced-page reuse, bandwidth and useful work saved before asserting thrashing.
+Source: https://www.usenix.org/system/files/osdi24-zhong-yuhong.pdf
+
+08. Online MRC.
+MRC is an estimated relationship between resource allocation and misses. Under 1% overhead is a target requiring a measurement plan, not a guaranteed property. The 2024 paper reports max 4% of one core and less than 1% of one core per VM for its studied setup; it did not guarantee less than 1% of every guest's throughput.
+Source: https://www.usenix.org/system/files/osdi24-zhong-yuhong.pdf
+
+09. CXL bandwidth contention.
+180-250 ns is a platform hypothetical, not established universal idle latency. Link saturation creates queues; bound both service rate and arrival bursts. Measure p50, p99, p999, bandwidth demand, fault and migration rates. Choose a policy based on marginal benefit, not idle read latency alone.
+Source: https://www.usenix.org/system/files/osdi24-zhong-yuhong.pdf
+
+10. Migration dirty pages.
+Write protection and hardware PML find writes; KVM dirty ring transports dirty guest page numbers to QEMU. They are not three interchangeable detector implementations. Hardware logging may still be buffered before userspace reads the ring. For a true exact flow, record the specific kernel version and KVM capabilities.
+Source: https://docs.kernel.org/virt/kvm/api.html
+Source: https://lkml.rescloud.iu.edu/2412.2/06394.html
+
+11. Convergence.
+Precopy cannot converge under a stable dirtying rate greater than sustainable effective transfer rate, after accounting for compression. Example hypothetical: 12GB/s newly dirtied, 10GB/s effective link => at least 2GB/s growth in still-needed bytes. Multifd parallelizes transfer but does not change a fixed link capacity by itself. Compression only helps when data compresses enough after CPU costs. Auto-converge slows guest writes; postcopy runs at destination before all bytes arrive and introduces destination faults and source/destination failure exposure.
+Source: https://www.qemu.org/docs/master/devel/migration/postcopy.html
+Source: https://www.qemu.org/docs/master/devel/migration/dirty-limit.html
+
+12. VFIO.
+"Standard VFIO breaks all live migration" is obsolete as an absolute. QEMU supports live migration of eligible VFIO devices with vendor/device-specific state-save transitions, plus DMA dirtiness accounting. IOMMU tracking alone does not preserve internal device state. QEMU's current VFIO docs state that postcopy migration is not supported for VFIO devices; dirty tracking without IOMMU hardware support has a costly mark-all-dirty fallback.
+Source: https://www.qemu.org/docs/master/devel/migration/vfio.html
+Source: https://docs.kernel.org/userspace-api/iommufd.html
+
+13. Host upgrade with running guests.
+Ordinary kexec alone does not preserve a running QEMU/KVM device and all PCI/IOMMU state. Linux now documents Kexec HandOver (KHO) and Live Update Orchestrator (LUO), with file/device preservation and orchestrated subsystem callbacks. Do not present complete no-drop VM service continuity as already guaranteed on every AHV configuration: version, PCI preservation, KVM state and validation matter. The answer must account for state held by old kernel, host userspace, DMA, IOMMU, interrupts and devices.
+Source: https://docs.kernel.org/core-api/kho/index.html
+Source: https://docs.kernel.org/core-api/liveupdate.html
+Source: https://docs.kernel.org/next/PCI/liveupdate.html
+
+14. CPU-share versus guest lock-holder.
+Linux cpu.weight proportionally distributes CPU service among active children; that is NOT useful guest application progress. For active competing weights 200:100, share 2/3 vs 1/3 of the applicable CPU service capacity, not guaranteed 2x operations/s. Guest lock-holder preemption can waste service in a spinning sibling. PLE, guest paravirtual hints, host scheduling and isolation are mitigation opportunities, not guaranteed direct transfer to exact lock owner.
+Source: https://docs.kernel.org/admin-guide/cgroup-v2.html
+
+15. CVM latency.
+Dedicated CPU cores reduce certain scheduling conflicts but share last-level cache, memory controllers, sockets, device queues and interrupts. It is valid to ask what causes p999 spikes; do not claim all resources interfere in any specific setup without evidence. Check remote-NUMA load, LLC misses, device queue stalls and softirq/IRQ placement.
+Source: https://www.nutanixbible.com/5b-book-of-ahv-how-it-works.html
+
+16. vNUMA drift.
+Guest-visible NUMA topology can become less faithful to physical backing after host movement or migration. This may reduce locality without violating guest memory correctness. Challenge exact guest policy and host movement, then measure local-vs-remote access and actual application latency; pinning or NUMA-balanced remapping has costs.
+Source: https://docs.kernel.org/admin-guide/mm/multigen_lru.html
+
+17. Nutanix AHV storage.
+Do not force one unconditional path. Nutanix documents classic: guest SCSI -> virtio-scsi -> QEMU main loop -> libiscsi -> CVM Stargate. It also documents Frodo: guest SCSI -> virtio-scsi -> Frodo vhost-user-scsi -> customized libiscsi -> network -> CVM Stargate. Frodo was described as default for VMs started after AOS 5.5.X. The question assumes Frodo and must state version/configuration. Poll versus interrupt choice requires actual queue latency, cycles per I/O and CPU utilization.
+Source: https://www.nutanixbible.com/5b-book-of-ahv-how-it-works.html
+
+18. Profiler overhead.
+An observed 8% throughput regression is a customer claim, not yet a causal attribution. Compare identical workloads with profiler off/on using random order and repeated samples; inspect event rate, time in the profiler, LLC/TLB side effects, and distribution of rare 5ms stalls. "Under 1%" is a target, not proof.
+Source: https://docs.kernel.org/trace/index.html
+
+19. SMT core scheduling.
+Kernel core scheduling uses trust-group cookies. "Only same-VM siblings may co-run" is one possible grouping policy, not default. The kernel documents MDS/L1TF gaps during kernel contexts and brief untrusted simultaneous windows; core scheduling is not a complete security guarantee. Any throughput cost depends on occupancy and scheduling constraints, not one fixed percentage.
+Source: https://docs.kernel.org/admin-guide/hw-vuln/core-scheduling.html
+Source: https://docs.kernel.org/admin-guide/hw-vuln/l1tf.html
+
+20. Mechanism versus policy.
+A request to name personally modified kernel source has no externally checkable one-size-fits-all answer. A credible candidate must show an actual change, reason, original failure, invariant, source diff, observed before-and-after and reasons to keep the existing boundary. Do not invent upstream design mistakes, citations or user's past actions.
+
+STRONGEST INTERVIEW-RELEVANCE ORIGINAL EVIDENCE
+2024 patent application "Efficient VM live migration", co-inventor Carl Waldspurger, Nutanix original assignee (pending application; not an issued patent as of retrieved status):
+https://patents.google.com/patent/US20240241742A1/en
+2024 issued patent 12,147,844, "VM memory reclamation by buffering hypervisor-swapped pages", Carl Alan Waldspurger co-inventor, Nutanix assignee:
+https://patents.justia.com/patent/12147844
+2025 issued patent 12,259,982, "Systems and methods for transparently detecting unencrypted virtual machine I/O", Carl Alan Waldspurger co-inventor, Nutanix assignee:
+https://patents.justia.com/patent/12259982
+Nutanix role emphasizes x86-KVM, AHV and ways to avoid reboot or speed VM migration:
+https://careers.nutanix.com/en/jobs/30320/staff-engineer-linux-kernel-developer/
+None establishes the individual as a scheduled interviewer for the user's specific interview.
+
+CLAIM-TO-TEST BOUNDARY
+No production AHV measurements, hardware PMU traces or a real VFIO migration were performed in this review. Source-backed facts and mathematical deductions are distinguished from hypothetical numbers and unmeasured hypotheses. This review is a fact check, not twenty experimentally proven implementation results.
+
+ALL PRIOR WORK RETAINED IN FULL BELOW
+The following text is the immediately previous complete cumulative GitHub artifact. It embeds the entire preceding 600-decision C reproduction, 101-record snapshot trail, five-VM memory report, old bibliography, university PDF sources, mailing lists and debugger evidence, unchanged.
+
+-> 2002-12 OSDI paper: Carl A. Waldspurger, Memory Resource Management in VMware ESX Server.
+-> A real system administrator starts five Windows VMs at once.
+-> The published experiment uses two 256 MB VMs and three 320 MB VMs.
+-> 256 + 256 + 320 + 320 + 320 = 1472 MB.
+-> 1472 + 160 MB documented overhead = 1632 MB.
+-> Only 1 GB was made available for the VMs; 1632 MB exceeds 1024 MB by 608 MB when 1 GB is interpreted as 1024 MB.
+-> Different meanings of GB/MB or additional host use affect the percent-overcommit statement; do not falsely equate 608/1024 = 59.375% with the paper's phrase "more than 60%" without establishing the measurement denominator.
+-> In the published run, all five VMs boot concurrently and Windows zeroes its guest-physical page contents.
+-> The Windows balloon driver is not running until late in boot.
+-> ❌ First unsupported expectation: the preferred guest-guided resource reclaim path must be available as soon as a VM boots.
+-> The host cannot ask an inactive guest driver to select pages at that moment.
+-> Historical ESX responds by host-side disk paging and detecting identical zero pages.
+-> Paper reports 325 MB of zero pages reclaimed by sharing and only 35 MB of nonzero data written to disk during the early boot episode.
+-> 325 / 35 = 9.2857142857.
+-> 325 MB and 35 MB are two reported event quantities, not a ledger that must algebraically sum to the initial 608 MB overcommit.
+-> ❌ Faulty mental step: 608 - 325 - 35 = 248 MB unaccounted ⇒ memory-management bug.
+-> 608 MB is a configured-versus-available gap; 325 MB and 35 MB are mechanisms observed over time. Their event accounting is not documented as three parts of one synchronized snapshot.
+-> When the guest drivers finally start, ballooning can request guest-selected reclaim.
+-> As applications begin work, sharing declines; the published run reports approximately 200 MB continuing sharing savings.
+-> An idle guest can retain memory even when another guest wants it.
+-> Paper's default idle-memory tax = 75%; 1 / (1 - 0.75) = 4 as its mathematical idle-page cost factor.
+-> ❌ First faulty assumption: nominal shares alone distinguish actively needed memory from idle memory.
+-> Shares determine an entitlement, while a separate activity estimate determines which allocations are currently active.
+-> The published sampler checks 100 randomly chosen pages each 30-second period and estimates activity from pages touched.
+-> ❌ Wrong inference: 100 sampled pages imply 100% precise knowledge about all guest pages.
+-> Samples estimate a fraction. The paper maintains fast and slow averages and uses their maximum.
+-> The 2002 paper documents four thresholds, in order: 6% → 4% → 2% → 1% of system memory.
+-> The four thresholds choose no reclaim, primarily guest-guided reclaim, forced host paging, and additional blocking of over-target guests at the lowest threshold.
+-> No precise machine-memory denominator for all thresholds is provided by the five-VM paragraph alone. Applying 6% of the 1GB workload allowance as a claimed observed threshold would be a category error.
+-> Source: https://www.usenix.org/legacy/publications/library/proceedings/osdi02/tech/waldspurger/waldspurger_html/node20.html
+-> Source: https://www.usenix.org/legacy/publications/library/proceedings/osdi02/tech/waldspurger/waldspurger_html/node6.html
+-> Source: https://www.usenix.org/legacy/publications/library/proceedings/osdi02/tech/waldspurger/waldspurger_html/node14.html
+-> Source: https://www.usenix.org/legacy/publications/library/proceedings/osdi02/tech/waldspurger/waldspurger_html/node15.html
+-> 
+-> 1995 CPU → 100/200 = 0.5, but short-window grant error repeats +50 → 0 → +50.
+-> 2002 ESX → 1632 configured versus approximately 1024 available, and driver startup forces a nonpreferred early reclaim route.
+-> 2008 KSM → independent origins do not prove unequal bytes.
+-> 2009 KSM → one page classification does not prove later writes cannot reuse a shared page.
+-> 2010 balloon → rejection after a changed host target is not proof that choosing a new page will succeed.
+-> The unifying faulty abstraction: a locally true observation about a fraction, origin, page classification, driver state or rejected page is treated as an unconditional global guarantee.
+-> The correct reasoning starts at the real event that changes the information available to each decision maker.
+-> Original sources and real executable 600-step C evidence are preserved in full below. No native KVM guest run or ESX installation was performed here. No private psychology of the researchers was inferred.
+-> If a future experiment runs actual KVM guests, record exact kernel version, source, build command, guest operation, checked output and debugger proof as an additional cumulative section, never as a retrofit to 1995–2010 historical claims.
+-> 
+-> The entire previous four-file accumulation follows verbatim including all 101 full numeric group snapshots, all 600 sequence values, 2008/2009/2010 mailing-list links, original 1988–2025 bibliography, university PDF references, complete C program, earlier LLDB capture and all caveats.
+
+-> 2010-05-18 → VMware Linux balloon driver → original diff in drivers/misc/vmware_balloon.c.
+-> A real user runs a VM; the host wants some capacity returned.
+-> A guest-side driver requests a page, then asks the host to accept it.
+-> During the request, the host changes the capacity target; the host stops needing the offered pages.
+-> The host therefore refuses some requests. The old driver treated refusals as reason to collect those pages and retry.
+-> ❌ First failure-causing assumption: a rejection is a defect of one offered page, so another new page can be tried until success.
+-> Under a changed global target, selecting different individual pages does NOT require the host to accept any.
+-> The old loop can continue and grow its rejected-page list without an upper bound.
+-> The published repair stores a count and stops a given attempt when the number reaches 16.
+-> Original signed patch, Dmitry Torokhov: https://lkml.indiana.edu/hypermail/linux/kernel/1005.3/01548.html
+-> The original diff adds VMW_BALLOON_MAX_REFUSED = 16 and increments n_refused_pages before testing >= 16.
+-> 0 → reject → 1 → reject → 2 → reject → 3 → ... → reject → 15 → reject → 16 → -EIO.
+-> Exact candidate rejection count 16; not a measurement of accepted pages and not 16 actual page identifiers.
+-> 16 - 15 = 1 final refusal before the fail path.
+-> Before the repair: every refusal adds an element and restarts; the target might remain unsuitable throughout.
+-> After the repair: a single inflation cycle stops after accumulating 16 refusals in the documented path.
+-> The release routine resets the stored refused count to 0 after freeing the refused pages.
+-> ❌ Invalid inference: stop after 16 refusals ⇒ 16 successful allocations.
+-> 16 refusals and 0 accepted allocations are compatible with the exact published problem.
+-> ❌ Invalid inference: an error return means the entire guest fails permanently.
+-> The patch documents a bounded retry and return; it does not prove a later successful retry, VM failure or host outage.
+-> No PFNs or page contents were supplied in the historical patch text for the refused pages. Real identifiers cannot be reconstructed from a count.
+-> The developer's actual private thought is unknown. The failed assumption is reconstructed from the prior code path and documented failure report.
+-> The patch is by Dmitry Torokhov, not Carl Waldspurger. The 2002 paper provides the earlier resource-management motivation.
+-> No historic driver binary or Linux 2.6.35 kernel executed in the available environment. The original signed patch is the evidence for the driver behavior.
+-> Prior complete 2008/2009 KSM chain, all 101 numeric records, runnable 600-grant proof, earlier full sources, debugger evidence and original university bibliography follow verbatim.
+
+-> A real person starts two separate KVM guests from different disk images.
+-> 2008-11-11: Avi Kivity explains that the kernel never saw any common origin for those pages.
+-> Equal underlying bytes can appear in independent guests even when the guest image files are different.
+-> ❌ Faulty starting assumption: different origins guarantee different bytes.
+-> Different origins tell the kernel nothing sufficient about the equality of bytes.
+-> A reader's shared physical copy must not allow one writer to silently change another reader's bytes.
+-> The 2009 KSM proposal scans independent content, compares it, and installs a protected shared copy when a merge is valid.
+-> When a guest writes, the old copy must remain valid for the other guest.
+-> 2009-04-04: Izik Eidus records the Chris Wright objection: !PageAnon alone was treated as evidence of a KSM-shared page.
+-> ❌ First faulty decision in that revision: an origin classification was used as proof that the page could not be reused by a writable shared mapping.
+-> do_wp_page() with VM_SHARED may reuse rather than privately copy.
+-> A writable shared path breaks the original inference about the protected KSM representation.
+-> The author records an added dirty-bit condition as a mitigation in the historical v2 patch.
+-> Do not claim a present-day KSM security issue without new Linux source and an executed current-kernel reproduction.
+-> Original 2008 correspondence: https://lkml.iu.edu/0811.1/01177.html
+-> Original 2009 revision and author explanation: https://lkml.iu.edu/hypermail/linux/kernel/0904.0/02062.html
+-> Original 2009 revision describes a CERN request with about 2 to 2.5 GB per simulation and about 700 MB identical among separate simulations.
+-> 700 / 2000 × 100 = 35%.
+-> 700 / 2500 × 100 = 28%.
+-> Between 28% and 35% of each stated process size was described as identical data. Percentage is arithmetic from quoted sizes, not a measured KSM saving.
+-> 2000 − 700 = 1300; 2500 − 700 = 1800.
+-> 700 + 1300 = 2000.
+-> 700 + 1800 = 2500.
+-> ❌ Faulty leap: 700 MB identical content guarantees 700 MB of memory saved in a specific host run.
+-> The number of processes, alignment of actual bytes, KSM eligibility, other consumers, and overhead all affect realized savings. None was directly measured here.
+-> No actual 700 MB page-image bytes are present in the public mailing-list quote. Inventing any byte values would not be a factual diagram.
+-> 2008 author: Avi Kivity. 2009 author: Izik Eidus. Reported reviewer: Chris Wright. Carl Waldspurger was not the author of those Linux patches.
+-> The time order is preserved: unequal origins → discover equal bytes → plan read sharing → review write behavior → invalidate unchecked classification → add condition.
+-> A user request for lower VM memory use arrives here only after independent VMs contain redundant data. The 2008 patch wasn't a routine part of every guest start by itself.
+-> All 101-program numeric records, executable 600-decision C source, old thesis PDFs, university courses, earlier mailing-list records and prior debugger evidence follow verbatim.
+
+-> 100 + (100 × 1) = 200.
+-> 100 × 100 / 200 = 50; 100 − 50 = +50.
+-> 100 × 100 / (100 + 1) = 99.0099009901, when counting ONLY the large program and one small program.
+-> 100 − 99.0099009901 = 0.9900990099. The pair looks close while the entire set is +50.
+-> 100 × 1 − 0 × 100 = 100; 100 / 101 = 0.9900990099.
+-> 100 × 200 − 100 × 100 = 10000; 10000 / 200 = 50.
+-> ❌ First faulty step: changing the denominator from 101 to 200 while keeping the pairwise conclusion.
+-> One comparison 0 versus 1 is not all 101 competing programs.
+-> A correct number from a two-person comparison does not license a 101-person conclusion.
+-> Waldspurger intentionally described the short-interval limitation; the archive does NOT prove the original researcher overlooked it.
+
+-> Each group has exactly 4 actual integers: 100,1,101,100 and 1,100,100,0 represent the values held by original C fields for two programs after 100 grants.
+-> The first group at each checkpoint is program 0, the next 100 groups are programs 1 through 100, in exact numeric order.
+-> Inside each group, the actual four values occur in source order: tickets, stride, next-turn value, grants.
+-> Nothing below is filled with invented identifiers or missing data; all 101 groups are generated by the same lowest-value selection rule and verified by the local 600-decision reproduction.
+
+-> 100
+-> (100,1,101,100) (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0)
+-> (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0)
+-> (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0)
+-> (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0)
+-> (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0)
+-> (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0)
+-> (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0)
+-> (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0)
+-> (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0)
+-> (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0)
+-> (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0)
+-> (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0)
+-> (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0)
+-> (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0) (1,100,100,0)
+-> (1,100,100,0) (1,100,100,0) (1,100,100,0) 
+
+-> 200
+-> (100,1,101,100) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1)
+-> (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1)
+-> (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1)
+-> (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1)
+-> (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1)
+-> (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1)
+-> (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1)
+-> (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1)
+-> (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1)
+-> (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1)
+-> (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1)
+-> (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1)
+-> (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1)
+-> (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1)
+-> (1,100,200,1) (1,100,200,1) (1,100,200,1) 
+
+-> 300
+-> (100,1,201,200) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1)
+-> (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1)
+-> (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1)
+-> (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1)
+-> (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1)
+-> (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1)
+-> (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1)
+-> (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1)
+-> (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1)
+-> (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1)
+-> (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1)
+-> (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1)
+-> (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1)
+-> (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1) (1,100,200,1)
+-> (1,100,200,1) (1,100,200,1) (1,100,200,1) 
+
+-> 400
+-> (100,1,201,200) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2)
+-> (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2)
+-> (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2)
+-> (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2)
+-> (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2)
+-> (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2)
+-> (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2)
+-> (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2)
+-> (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2)
+-> (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2)
+-> (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2)
+-> (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2)
+-> (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2)
+-> (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2)
+-> (1,100,300,2) (1,100,300,2) (1,100,300,2) 
+
+-> 500
+-> (100,1,301,300) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2)
+-> (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2)
+-> (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2)
+-> (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2)
+-> (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2)
+-> (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2)
+-> (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2)
+-> (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2)
+-> (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2)
+-> (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2)
+-> (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2)
+-> (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2)
+-> (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2)
+-> (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2) (1,100,300,2)
+-> (1,100,300,2) (1,100,300,2) (1,100,300,2) 
+
+-> 600
+-> (100,1,301,300) (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3)
+-> (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3)
+-> (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3)
+-> (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3)
+-> (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3)
+-> (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3)
+-> (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3)
+-> (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3)
+-> (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3)
+-> (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3)
+-> (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3)
+-> (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3)
+-> (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3)
+-> (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3) (1,100,400,3)
+-> (1,100,400,3) (1,100,400,3) (1,100,400,3) 
+
+-> 1, 2, 3 → 100, 200, 300 / 200 = 0.5, 1, 1.5 excess.
+-> First excess above 1 occurs at 3. Exactly 1 at 2 does NOT satisfy "greater than 1".
+-> 201, 202, 203 → 0.5, 1, 1.5 excess again.
+-> 401, 402, 403 → 0.5, 1, 1.5 excess again.
+-> ❌ First faulty step: seeing a zero difference at 200 and assuming the next 100 decisions must remain fair.
+-> Draw a continuous history. Never replace a historical sequence with its final total.
+-> All previous research, source code, original bibliography, university-course PDFs, patch links and captured historical trace follow verbatim.
+
+-> 100 + 100 × 1 = 200
+-> 100/200 × 100 = 50; measured 100; 100 - 50 = 50.
+-> 100/200 × 200 = 100; measured 100; 100 - 100 = 0.
+-> 100/200 × 300 = 150; measured 200; 200 - 150 = 50.
+-> 100/200 × 400 = 200; measured 200; 200 - 200 = 0.
+-> 100/200 × 500 = 250; measured 300; 300 - 250 = 50.
+-> 100/200 × 600 = 300; measured 300; 300 - 300 = 0.
+-> 100 → +50 → 200 → 0 → 300 → +50 → 400 → 0 → 500 → +50 → 600 → 0.
+-> ❌ First unsupported inference: a correct 200-grant result prevents the error returning.
+-> The same 100 consecutive winner-zero decisions recur in grants 201–300 and 401–500.
+-> First absolute share error above 1 grant = 3, 203, 403.
+-> No historical Linux binary or VMware ESX binary executed. The C model followed the published selection rule.
+
+-> Actual 600 winner identifiers, in exact order; every number below is observed by the deterministic local 600-step C assertion and independently generated with the same rule:
+->   0   0   0   0   0   0   0   0   0   0
+->   0   0   0   0   0   0   0   0   0   0
+->   0   0   0   0   0   0   0   0   0   0
+->   0   0   0   0   0   0   0   0   0   0
+->   0   0   0   0   0   0   0   0   0   0
+->   0   0   0   0   0   0   0   0   0   0
+->   0   0   0   0   0   0   0   0   0   0
+->   0   0   0   0   0   0   0   0   0   0
+->   0   0   0   0   0   0   0   0   0   0
+->   0   0   0   0   0   0   0   0   0   0
+->   1   2   3   4   5   6   7   8   9  10
+->  11  12  13  14  15  16  17  18  19  20
+->  21  22  23  24  25  26  27  28  29  30
+->  31  32  33  34  35  36  37  38  39  40
+->  41  42  43  44  45  46  47  48  49  50
+->  51  52  53  54  55  56  57  58  59  60
+->  61  62  63  64  65  66  67  68  69  70
+->  71  72  73  74  75  76  77  78  79  80
+->  81  82  83  84  85  86  87  88  89  90
+->  91  92  93  94  95  96  97  98  99 100
+->   0   0   0   0   0   0   0   0   0   0
+->   0   0   0   0   0   0   0   0   0   0
+->   0   0   0   0   0   0   0   0   0   0
+->   0   0   0   0   0   0   0   0   0   0
+->   0   0   0   0   0   0   0   0   0   0
+->   0   0   0   0   0   0   0   0   0   0
+->   0   0   0   0   0   0   0   0   0   0
+->   0   0   0   0   0   0   0   0   0   0
+->   0   0   0   0   0   0   0   0   0   0
+->   0   0   0   0   0   0   0   0   0   0
+->   1   2   3   4   5   6   7   8   9  10
+->  11  12  13  14  15  16  17  18  19  20
+->  21  22  23  24  25  26  27  28  29  30
+->  31  32  33  34  35  36  37  38  39  40
+->  41  42  43  44  45  46  47  48  49  50
+->  51  52  53  54  55  56  57  58  59  60
+->  61  62  63  64  65  66  67  68  69  70
+->  71  72  73  74  75  76  77  78  79  80
+->  81  82  83  84  85  86  87  88  89  90
+->  91  92  93  94  95  96  97  98  99 100
+->   0   0   0   0   0   0   0   0   0   0
+->   0   0   0   0   0   0   0   0   0   0
+->   0   0   0   0   0   0   0   0   0   0
+->   0   0   0   0   0   0   0   0   0   0
+->   0   0   0   0   0   0   0   0   0   0
+->   0   0   0   0   0   0   0   0   0   0
+->   0   0   0   0   0   0   0   0   0   0
+->   0   0   0   0   0   0   0   0   0   0
+->   0   0   0   0   0   0   0   0   0   0
+->   0   0   0   0   0   0   0   0   0   0
+->   1   2   3   4   5   6   7   8   9  10
+->  11  12  13  14  15  16  17  18  19  20
+->  21  22  23  24  25  26  27  28  29  30
+->  31  32  33  34  35  36  37  38  39  40
+->  41  42  43  44  45  46  47  48  49  50
+->  51  52  53  54  55  56  57  58  59  60
+->  61  62  63  64  65  66  67  68  69  70
+->  71  72  73  74  75  76  77  78  79  80
+->  81  82  83  84  85  86  87  88  89  90
+->  91  92  93  94  95  96  97  98  99 100
+
+-> 100 grants: 100, 0, 0, ... 100 total zeroes among the 100 smaller clients.
+-> 200 grants: 100, 1, 1, ... 100 small clients receive one each.
+-> 300 grants: 200, 1, 1, ... 100 small clients receive one each.
+-> 400 grants: 200, 2, 2, ... 100 small clients receive two each.
+-> 500 grants: 300, 2, 2, ... 100 small clients receive two each.
+-> 600 grants: 300, 3, 3, ... 100 small clients receive three each.
+-> Fully enumerated per-client snapshots and historical kernel discussions appear in following cumulative files.
+
+-> Local artifact /mnt/data/waldspurger_cumulative_local/reproduce_600.c: GCC -std=c11 -O0 -g3 -Wall -Wextra -Wpedantic -Wshadow -Wconversion -Werror -fno-omit-frame-pointer -fno-inline produced 0 diagnostics and execution exit 0.
+-> -O1 -g3 -Wall -Wextra -Wpedantic -Wshadow -Wconversion -Werror -fno-omit-frame-pointer -fsanitize=address,undefined produced 0 diagnostics and execution exit 0.
+-> New local source SHA-256 61ffd10e6a411fd4e8f5aaede41f6aa894b884b1aa6d85e09e8b19577cfa2387.
+-> LLDB in the CURRENT sandbox cannot start: missing libpython3.11.so.1.0. The earlier 14-frame trace remains in the embedded prior report; it is NOT a new 600-grant debugger run.
+-> Full independent runnable 600-step C source follows. No prints, no output-based assertions.
+
+BEGIN_C_SOURCE_600
+#include <stddef.h>
+#include <stdint.h>
+
+enum { MAX_CLIENTS = 101, MAX_TICKS = 600 };
+
+typedef struct {
+    uint32_t tickets;
+    uint32_t stride;
+    uint32_t pass;
+    uint32_t grants;
+} Client;
+
+typedef struct {
+    Client clients[MAX_CLIENTS];
+    uint32_t history[MAX_TICKS];
+    uint32_t count;
+    uint32_t tick_index;
+    uint32_t stride_unit;
+} Scheduler;
+
+typedef struct {
+    uint32_t paper_sequence[6];
+    uint32_t after_100[MAX_CLIENTS];
+    uint32_t after_200[MAX_CLIENTS];
+    uint32_t baseline_ok;
+    uint32_t stress_ok;
+} Evidence;
+
+static Scheduler g_scheduler;
+static Evidence g_evidence;
+static uint32_t g_active_case;
+
+/* USER_SOURCE_ERRORS: none provided; no user source was edited. */
+/* HISTORICAL_LIMIT: basic stride cannot bound global short-window error by 1. */
+
+__attribute__((noinline)) static uint32_t compare_pass(uint32_t left, uint32_t right)
+{
+    uint32_t left_pass = g_scheduler.clients[left].pass;
+    uint32_t right_pass = g_scheduler.clients[right].pass;
+    if (left_pass < right_pass) {
+        return left;
+    }
+    if (right_pass < left_pass) {
+        return right;
+    }
+    return left < right ? left : right;
+}
+
+__attribute__((noinline)) static uint32_t select_better(uint32_t best, uint32_t challenger)
+{
+    return compare_pass(best, challenger);
+}
+
+__attribute__((noinline)) static uint32_t scan_ready(void)
+{
+    uint32_t best = 0;
+    for (uint32_t i = 1; i < g_scheduler.count; ++i) {
+        best = select_better(best, i);
+    }
+    return best;
+}
+
+__attribute__((noinline)) static uint32_t queue_remove_min(void)
+{
+    /* Scan substitutes for the original paper's abstract priority queue. */
+    return scan_ready();
+}
+
+__attribute__((noinline)) static void allocate_quantum(void)
+{
+    uint32_t winner = queue_remove_min();
+    g_scheduler.history[g_scheduler.tick_index] = winner;
+    ++g_scheduler.clients[winner].grants;
+    g_scheduler.clients[winner].pass += g_scheduler.clients[winner].stride;
+}
+
+__attribute__((noinline)) static void tick_once(uint32_t index)
+{
+    g_scheduler.tick_index = index;
+    allocate_quantum();
+}
+
+__attribute__((noinline)) static void drive_burst(uint32_t first, uint32_t last)
+{
+    for (uint32_t i = first; i < last; ++i) {
+        tick_once(i);
+    }
+}
+
+__attribute__((noinline)) static void run_phase(uint32_t first, uint32_t last)
+{
+    drive_burst(first, last);
+}
+
+static void initialise(uint32_t count, uint32_t stride_unit)
+{
+    g_scheduler.count = count;
+    g_scheduler.stride_unit = stride_unit;
+    g_scheduler.tick_index = 0;
+    for (uint32_t i = 0; i < count; ++i) {
+        g_scheduler.clients[i].tickets = 1;
+        g_scheduler.clients[i].stride = stride_unit;
+        g_scheduler.clients[i].pass = stride_unit;
+        g_scheduler.clients[i].grants = 0;
+    }
+}
+
+
+/* Original grant counts are preserved; compare real prefixes to exact shares. */
+__attribute__((noinline)) static int64_t signed_gap(uint32_t slots, uint32_t client)
+{
+    uint64_t total = 0, received = 0;
+    for (uint32_t i = 0; i < g_scheduler.count; ++i) total += g_scheduler.clients[i].tickets;
+    for (uint32_t i = 0; i < slots; ++i) received += g_scheduler.history[i] == client;
+    return (int64_t)(received * total) - (int64_t)((uint64_t)slots * g_scheduler.clients[client].tickets);
+}
+
+/* The first completed slot whose global share error exceeds one grant. */
+__attribute__((noinline)) static uint32_t first_global_violation(uint32_t slots, uint32_t client)
+{
+    int64_t total = 0;
+    for (uint32_t i = 0; i < g_scheduler.count; ++i) total += g_scheduler.clients[i].tickets;
+    for (uint32_t n = 1; n <= slots; ++n) {
+        int64_t gap = signed_gap(n, client);
+        if (gap > total || gap < -total) return n;
+    }
+    return 0;
+}
+
+/* Actual pairwise difference, measured over completed grants. */
+__attribute__((noinline)) static int64_t pair_gap(uint32_t slots, uint32_t left, uint32_t right)
+{
+    int64_t left_grants = 0, right_grants = 0;
+    for (uint32_t k = 0; k < slots; ++k) {
+        left_grants += (int64_t)(g_scheduler.history[k] == left);
+        right_grants += (int64_t)(g_scheduler.history[k] == right);
+    }
+    return left_grants * (int64_t)g_scheduler.clients[right].tickets -
+           right_grants * (int64_t)g_scheduler.clients[left].tickets;
+}
+
+/* Find the first excessive cumulative difference after an earlier checkpoint. */
+__attribute__((noinline)) static uint32_t first_violation_in(uint32_t first, uint32_t last, uint32_t client)
+{
+    int64_t tickets = 0;
+    for (uint32_t i = 0; i < g_scheduler.count; ++i) {
+        tickets += (int64_t)g_scheduler.clients[i].tickets;
+    }
+    for (uint32_t n = first; n <= last; ++n) {
+        const int64_t gap = signed_gap(n, client);
+        if (gap > tickets || gap < -tickets) return n;
+    }
+    return 0;
+}
+
+/* Compare every one of the 600 historical decisions against the derived cycle. */
+__attribute__((noinline)) static int verify_full_cycle_600(void)
+{
+    for (uint32_t n = 0; n < 600; ++n) {
+        const uint32_t pos = n % 200;
+        const uint32_t expected = pos < 100 ? 0 : pos - 99;
+        if (g_scheduler.history[n] != expected) return 0;
+    }
+    return 1;
+}
+
+static int run_baseline(void)
+{
+    initialise(3, 6);
+    g_active_case = 3;
+    g_scheduler.clients[0].tickets = 3;
+    g_scheduler.clients[1].tickets = 2;
+    g_scheduler.clients[2].tickets = 1;
+    for (uint32_t i = 0; i < 3; ++i) {
+        g_scheduler.clients[i].stride = g_scheduler.stride_unit / g_scheduler.clients[i].tickets;
+        g_scheduler.clients[i].pass = g_scheduler.clients[i].stride;
+    }
+    run_phase(0, 6);
+    static const uint32_t expected[6] = {0, 1, 0, 0, 1, 2};
+    for (uint32_t i = 0; i < 6; ++i) {
+        g_evidence.paper_sequence[i] = g_scheduler.history[i];
+        if (g_scheduler.history[i] != expected[i]) {
+            return 1;
+        }
+    }
+    g_evidence.baseline_ok = 1;
+    return 0;
+}
+
+__attribute__((noinline)) static int run_stress(void)
+{
+    initialise(101, 100);
+    g_active_case = 101;
+    g_scheduler.clients[0].tickets = 100;
+    g_scheduler.clients[0].stride = g_scheduler.stride_unit / 100;
+    g_scheduler.clients[0].pass = g_scheduler.clients[0].stride;
+    run_phase(0, 100);
+    for (uint32_t i = 0; i < MAX_CLIENTS; ++i) {
+        g_evidence.after_100[i] = g_scheduler.clients[i].grants;
+    }
+    if (g_evidence.after_100[0] != 100) {
+        return 2;
+    }
+    for (uint32_t i = 1; i < MAX_CLIENTS; ++i) {
+        if (g_evidence.after_100[i] != 0) {
+            return 3;
+        }
+    }
+    run_phase(100, 200);
+    for (uint32_t i = 0; i < MAX_CLIENTS; ++i) {
+        g_evidence.after_200[i] = g_scheduler.clients[i].grants;
+    }
+    if (g_evidence.after_200[0] != 100) {
+        return 4;
+    }
+    for (uint32_t i = 1; i < MAX_CLIENTS; ++i) {
+        if (g_evidence.after_200[i] != 1) {
+            return 5;
+        }
+    }
+    if (signed_gap(100, 0) != 10000 || signed_gap(100, 1) != -100 ||
+        signed_gap(200, 0) != 0 || first_global_violation(100, 0) != 3) {
+        return 6;
+    }
+    run_phase(200, 600);
+    if (signed_gap(300, 0) != 10000 || signed_gap(400, 0) != 0 ||
+        signed_gap(500, 0) != 10000 || signed_gap(600, 0) != 0 ||
+        signed_gap(300, 1) != -100 || signed_gap(400, 1) != 0 ||
+        signed_gap(500, 1) != -100 || signed_gap(600, 1) != 0 ||
+        first_violation_in(201, 300, 0) != 203 ||
+        first_violation_in(401, 500, 0) != 403 ||
+        pair_gap(100, 0, 1) != 100 || pair_gap(300, 0, 1) != 100 ||
+        pair_gap(600, 0, 1) != 0 || verify_full_cycle_600() != 1) {
+        return 7;
+    }
+    for (uint32_t i = 1; i < MAX_CLIENTS; ++i) {
+        if (g_scheduler.clients[i].grants != 3) {
+            return 8;
+        }
+    }
+    if (g_scheduler.clients[0].grants != 300) {
+        return 9;
+    }
+    g_evidence.stress_ok = 1;
+    return 0;
+}
+
+__attribute__((noinline)) static int run_all(void)
+{
+    if (run_baseline() != 0) {
+        return 10;
+    }
+    return run_stress();
+}
+
+int main(void)
+{
+    return run_all();
+}
+END_C_SOURCE_600
+
+-> Reconstruct with awk '/^BEGIN_C_SOURCE_600$/{p=1;next}/^END_C_SOURCE_600$/{p=0}p' WALDSPURGER_01_CUMULATIVE_600_GRANTS.txt > reproduce_600.c
+-> Everything after the next boundary preserves the previous COMPLETE 82,183-character research file verbatim, including all original theses, university archives, bibliography, original mailing lists, old C code, debug proof, and root-bug predictions.
+
+-> ===========================================================================
+-> 101 runnable programs = 1 program holding 100 tickets + 100 programs holding 1 ticket each.
+-> 100 + (100 × 1) = 200 tickets.
+-> 100 × 100 / 200 = 50 expected grants to program 0 in the first 100 grants.
+-> 100 × 1 / 200 = 0.5 expected grant per small program during the first 100 grants.
+-> Observed original C reproduction: program 0 = 100; programs 1 through 100 = 0.
+-> 100 - 50 = +50; 0 - 0.5 = -0.5; +50 + (100 × -0.5) = 0.
+-> ❌ Predicted first incorrect assumption: 100 tickets guarantees 100 of the next 100 grants.
+-> Tickets only determine a fraction of the TOTAL tickets; 100/200 = 1/2, not 100/100 = 1.
+-> Therefore every claim about the first 100 grants built on that denominator is contaminated.
+-> A memorized correct fact, "program 0 gets 100 of the first 100 grants", is not proof of fairness; the code's selection rule happens to produce that outcome.
+-> Restart: first compute 200 total tickets, then expected 50, then compare with measured 100.
+
+-> 0 has 100 tickets; 1 has 1; the other 99 small programs also have 1.
+-> 100/(100 + 1) × 100 = 99.00990099 applies ONLY to the pair {0,1}.
+-> ❌ Predicted first incorrect assumption: the pair's 99.01 target also describes all 101 runnable programs.
+-> 100/(100 + 100) × 100 = 50 when 100 other competitors are runnable.
+-> A correct pairwise error calculation can coexist with a 50-grant global error.
+-> Therefore "each pair is close" does not prove "every prefix is close to total shares."
+-> Restart: count every runnable competitor before deriving the expected number.
+
+-> main -> run_all -> run_baseline -> initialise(3,6) -> run_phase(0,6) -> grants [3,2,1].
+-> [3,2,1] tickets ÷ 6 total × 6 grants = [3,2,1] expected; observed [3,2,1].
+-> ❌ Predicted first incorrect assumption: one passing 3-program case proves the 101-program property.
+-> The next real path is main -> run_all -> run_stress -> initialise(101,100) -> run_phase(0,100).
+-> Before any grant: program 0 [100,1,1,0]; program 1 [1,100,100,0]; program 100 [1,100,100,0].
+-> Each four-number group means tickets, increment after winning, next-turn value, grants; these are the C program's actual initial values.
+-> In each grant, choose the LOWEST next-turn value; then increase only the winner's value.
+-> Grant 1: 1 < 100 -> program 0; 1 + 1 = 2.
+-> Grant 99 completed: program 0 next-turn value = 100; each small program = 100.
+-> Grant 100: equal values -> lowest numeric identifier 0 -> program 0; 100 + 1 = 101.
+-> After grant 100: program 0 [100,1,101,100]; every small program [1,100,100,0].
+-> Then program 1 through program 100 each receives one grant, because 100 < 101.
+-> After grant 200: program 0 [100,1,101,100]; every small program [1,100,200,1].
+-> ❌ Predicted first incorrect assumption: a successful final distribution proves all earlier distributions.
+-> At grant 200, actual = expected [100,1,1,...,1]; at grant 100, actual 100 ≠ expected 50.
+-> Restart: preserve the complete history and evaluate each completed prefix separately.
+
+-> 1 completed grant: 1×200 - 1×100 = 100; 100/200 = +0.5 excess.
+-> 2 completed grants: 2×200 - 2×100 = 200; 200/200 = +1 excess.
+-> 3 completed grants: 3×200 - 3×100 = 300; 300/200 = +1.5 excess.
+-> "More than one" is false at 1, false at 2, true at 3.
+-> First excessive prefix = 3; first 100-grant excess = 50; 200-grant excess = 0.
+-> ❌ Predicted first incorrect assumption: a fractional fair share of 0.5 means a program must receive half of one indivisible grant.
+-> 0.5 is a mathematical target used to measure accumulated difference, not an actual partial grant.
+-> Restart: count observed complete grants, then subtract the exact fractional expectation.
+
+-> 1995 scheduler claim -> local C rule -> compile succeeds -> the 101-program output follows the local rule.
+-> ❌ Predicted first incorrect assumption: a reproduced scheduling rule proves the 1995 modified Linux kernel or 2002 VMware ESX executed.
+-> Local run executes C simulator only; /dev/kvm is absent in the current environment.
+-> The historic paper supplies the theoretical claim; the local C result supplies an independent model observation.
+-> Therefore operating-system-specific conclusions require a separate real executable path and evidence.
+-> A correct claim about Waldspurger's Linux 1.1.50 work, recited after a false "we ran it" premise, remains factually correct but has broken provenance.
+-> Restart: distinguish paper assertion, derived arithmetic, locally observed result and unexecuted system.
+
+-> November 2008 KSM debate -> pages can have matching bytes without a shared origin.
+-> ❌ Predicted first incorrect assumption: once two byte sequences match, every later write must remain shared.
+-> Equality at one instant does not imply equality after one owner changes a value.
+-> One writer must not silently change the other owner's value.
+-> Restart: equality can justify a read-only shared representation only if later writes preserve independence.
+-> Source trail preserved below: November 2008 LKML, April 2009 correction, current limitations.
+
+-> 2002 VMware ESX -> host determines total available physical capacity; guest chooses which of its own pages can be discarded.
+-> ❌ Predicted first incorrect assumption: controlling total available capacity grants knowledge of each guest's best discard decision.
+-> The two actors hold different information; a host-side target cannot replace the guest's own reclamation decision.
+-> Restart: decide who owns capacity and who knows which data can be released, then follow the balloon request.
+-> 2010 Linux balloon fix -> rejected-page count capped at 16 in the cited change.
+-> ❌ Predicted first incorrect assumption: 16 rejected pages means a guarantee of 16 accepted pages.
+-> 16 bounds one refused-page data structure; no accepted-page count follows from 16 alone.
+-> Restart: distinguish a safety bound from a promise of successful resource transfer.
+
+-> 2002 ESX estimate -> 100 sampled pages each 30 seconds in the original paper.
+-> ❌ Predicted first incorrect assumption: 100 measured pages equals exact knowledge of every guest page.
+-> A 100-page sample supports an estimate, not an exhaustive count.
+-> Restart: preserve the estimator's uncertainty when reasoning about the 75% idle-memory tax and 6%,4%,2%,1% historical thresholds.
+
+-> No actual user reasoning transcript has been supplied for these particular proposed mistaken inferences.
+-> Each ❌ statement above predicts a plausible first error; none diagnoses intelligence, ADHD, or a personal trait.
+-> An interviewer could doubt downstream conclusions after a wrong premise even where an isolated remembered fact is correct.
+-> The next two functions expose the FIRST numeric failure without printing, modifying the scheduling rule or hiding the earlier error.
+-> main -> run_all -> run_stress -> run_phase(0,100) -> run_phase(100,200) -> signed_gap -> first_global_violation.
+-> signed_gap(100,0) = 10000; 10000/200 = 50; signed_gap(100,1) = -100; -100/200 = -0.5.
+-> signed_gap(200,0) = 0; first_global_violation(100,0) = 3.
+-> A nonzero exit from main is a failed numerical invariant, not proof of a historical kernel defect.
+-> GCC strict debug build: exit 0, no diagnostics; GCC address/undefined sanitizer build: exit 0, no diagnostics; program exit 0 in both runs.
+-> Verified against /mnt/data/waldspurger_cumulative_local/reproduce_brain.c on 2026-11-18.
+-> New source SHA-256 ea54110785ba0af2aa1991ed362f582e195375455175e001371b76d048e60b54.
+-> The complete standalone updated source is enclosed in BEGIN_C_SOURCE_2 / END_C_SOURCE_2 below.
+-> Reconstruct with awk '/^BEGIN_C_SOURCE_2$/{p=1;next}/^END_C_SOURCE_2$/{p=0}p' WALDSPURGER_CUMULATIVE_REASONING_FAILURES.txt > reproduce_brain.c
+-> Build with gcc -std=c11 -O0 -g3 -Wall -Wextra -Wpedantic -Wshadow -Wconversion -Werror -fno-omit-frame-pointer -fno-inline reproduce_brain.c -o brain_debug
+-> Build with gcc -std=c11 -O1 -g3 -Wall -Wextra -Wpedantic -Wshadow -Wconversion -Werror -fno-omit-frame-pointer -fsanitize=address,undefined reproduce_brain.c -o brain_san
+-> Each added function has real arithmetic and a reason: exact scaled difference; first prefix exceeding one complete grant.
+-> No user source was supplied; no invented user spelling, syntax or logic errors were changed.
+
+BEGIN_C_SOURCE_2
+#include <stddef.h>
+#include <stdint.h>
+
+enum { MAX_CLIENTS = 101, MAX_TICKS = 200 };
+
+typedef struct {
+    uint32_t tickets;
+    uint32_t stride;
+    uint32_t pass;
+    uint32_t grants;
+} Client;
+
+typedef struct {
+    Client clients[MAX_CLIENTS];
+    uint32_t history[MAX_TICKS];
+    uint32_t count;
+    uint32_t tick_index;
+    uint32_t stride_unit;
+} Scheduler;
+
+typedef struct {
+    uint32_t paper_sequence[6];
+    uint32_t after_100[MAX_CLIENTS];
+    uint32_t after_200[MAX_CLIENTS];
+    uint32_t baseline_ok;
+    uint32_t stress_ok;
+} Evidence;
+
+static Scheduler g_scheduler;
+static Evidence g_evidence;
+static uint32_t g_active_case;
+
+/* USER_SOURCE_ERRORS: none provided; no user source was edited. */
+/* HISTORICAL_LIMIT: basic stride cannot bound global short-window error by 1. */
+
+__attribute__((noinline)) static uint32_t compare_pass(uint32_t left, uint32_t right)
+{
+    uint32_t left_pass = g_scheduler.clients[left].pass;
+    uint32_t right_pass = g_scheduler.clients[right].pass;
+    if (left_pass < right_pass) {
+        return left;
+    }
+    if (right_pass < left_pass) {
+        return right;
+    }
+    return left < right ? left : right;
+}
+
+__attribute__((noinline)) static uint32_t select_better(uint32_t best, uint32_t challenger)
+{
+    return compare_pass(best, challenger);
+}
+
+__attribute__((noinline)) static uint32_t scan_ready(void)
+{
+    uint32_t best = 0;
+    for (uint32_t i = 1; i < g_scheduler.count; ++i) {
+        best = select_better(best, i);
+    }
+    return best;
+}
+
+__attribute__((noinline)) static uint32_t queue_remove_min(void)
+{
+    /* Scan substitutes for the original paper's abstract priority queue. */
+    return scan_ready();
+}
+
+__attribute__((noinline)) static void allocate_quantum(void)
+{
+    uint32_t winner = queue_remove_min();
+    g_scheduler.history[g_scheduler.tick_index] = winner;
+    ++g_scheduler.clients[winner].grants;
+    g_scheduler.clients[winner].pass += g_scheduler.clients[winner].stride;
+}
+
+__attribute__((noinline)) static void tick_once(uint32_t index)
+{
+    g_scheduler.tick_index = index;
+    allocate_quantum();
+}
+
+__attribute__((noinline)) static void drive_burst(uint32_t first, uint32_t last)
+{
+    for (uint32_t i = first; i < last; ++i) {
+        tick_once(i);
+    }
+}
+
+__attribute__((noinline)) static void run_phase(uint32_t first, uint32_t last)
+{
+    drive_burst(first, last);
+}
+
+static void initialise(uint32_t count, uint32_t stride_unit)
+{
+    g_scheduler.count = count;
+    g_scheduler.stride_unit = stride_unit;
+    g_scheduler.tick_index = 0;
+    for (uint32_t i = 0; i < count; ++i) {
+        g_scheduler.clients[i].tickets = 1;
+        g_scheduler.clients[i].stride = stride_unit;
+        g_scheduler.clients[i].pass = stride_unit;
+        g_scheduler.clients[i].grants = 0;
+    }
+}
+
+
+/* Original grant counts are preserved; compare real prefixes to exact shares. */
+__attribute__((noinline)) static int64_t signed_gap(uint32_t slots, uint32_t client)
+{
+    uint64_t total = 0, received = 0;
+    for (uint32_t i = 0; i < g_scheduler.count; ++i) total += g_scheduler.clients[i].tickets;
+    for (uint32_t i = 0; i < slots; ++i) received += g_scheduler.history[i] == client;
+    return (int64_t)(received * total) - (int64_t)((uint64_t)slots * g_scheduler.clients[client].tickets);
+}
+
+/* The first completed slot whose global share error exceeds one grant. */
+__attribute__((noinline)) static uint32_t first_global_violation(uint32_t slots, uint32_t client)
+{
+    int64_t total = 0;
+    for (uint32_t i = 0; i < g_scheduler.count; ++i) total += g_scheduler.clients[i].tickets;
+    for (uint32_t n = 1; n <= slots; ++n) {
+        int64_t gap = signed_gap(n, client);
+        if (gap > total || gap < -total) return n;
+    }
+    return 0;
+}
+
+static int run_baseline(void)
+{
+    initialise(3, 6);
+    g_active_case = 3;
+    g_scheduler.clients[0].tickets = 3;
+    g_scheduler.clients[1].tickets = 2;
+    g_scheduler.clients[2].tickets = 1;
+    for (uint32_t i = 0; i < 3; ++i) {
+        g_scheduler.clients[i].stride = g_scheduler.stride_unit / g_scheduler.clients[i].tickets;
+        g_scheduler.clients[i].pass = g_scheduler.clients[i].stride;
+    }
+    run_phase(0, 6);
+    static const uint32_t expected[6] = {0, 1, 0, 0, 1, 2};
+    for (uint32_t i = 0; i < 6; ++i) {
+        g_evidence.paper_sequence[i] = g_scheduler.history[i];
+        if (g_scheduler.history[i] != expected[i]) {
+            return 1;
+        }
+    }
+    g_evidence.baseline_ok = 1;
+    return 0;
+}
+
+__attribute__((noinline)) static int run_stress(void)
+{
+    initialise(101, 100);
+    g_active_case = 101;
+    g_scheduler.clients[0].tickets = 100;
+    g_scheduler.clients[0].stride = g_scheduler.stride_unit / 100;
+    g_scheduler.clients[0].pass = g_scheduler.clients[0].stride;
+    run_phase(0, 100);
+    for (uint32_t i = 0; i < MAX_CLIENTS; ++i) {
+        g_evidence.after_100[i] = g_scheduler.clients[i].grants;
+    }
+    if (g_evidence.after_100[0] != 100) {
+        return 2;
+    }
+    for (uint32_t i = 1; i < MAX_CLIENTS; ++i) {
+        if (g_evidence.after_100[i] != 0) {
+            return 3;
+        }
+    }
+    run_phase(100, 200);
+    for (uint32_t i = 0; i < MAX_CLIENTS; ++i) {
+        g_evidence.after_200[i] = g_scheduler.clients[i].grants;
+    }
+    if (g_evidence.after_200[0] != 100) {
+        return 4;
+    }
+    for (uint32_t i = 1; i < MAX_CLIENTS; ++i) {
+        if (g_evidence.after_200[i] != 1) {
+            return 5;
+        }
+    }
+    if (signed_gap(100, 0) != 10000 || signed_gap(100, 1) != -100 ||
+        signed_gap(200, 0) != 0 || first_global_violation(100, 0) != 3) {
+        return 6;
+    }
+    g_evidence.stress_ok = 1;
+    return 0;
+}
+
+__attribute__((noinline)) static int run_all(void)
+{
+    if (run_baseline() != 0) {
+        return 10;
+    }
+    return run_stress();
+}
+
+int main(void)
+{
+    return run_all();
+}
+END_C_SOURCE_2
+
+-> Everything below preserves the COMPLETE previous cumulative research artifact, bibliography, dated university archives, mailing-list evidence, earlier source code, prior debugger capture and limitations.
+-> Historical lines are preserved for audit; the new arrow chains ABOVE are the primary reasoning exercise.
+
+CARL A. WALDSPURGER — CUMULATIVE RESEARCH, REPRODUCTION, AND DEBUGGER EVIDENCE
+Repository: https://github.com/learnrahulrai-ui/kvm
+Snapshot date: 18 November 2026
+Artifact version: 1 — single self-contained text file
+
+PURPOSE AND NO-DUMMY-FILE RULE
+
+The entire available prior research corpus is embedded verbatim below: historical university course archive research, publication and patent bibliography, and the source-level scheduling experiment with a captured 14-frame LLDB trace. Reading this ONE file supplies the facts, original hyperlinks, exact C program, command lines, results, reasoning errors, limitations, and repeat instructions. No placeholder directory, empty README, or fragment-only file is introduced.
+
+CUMULATIVE WORK = UNIVERSITY EVIDENCE + PUBLICATION EVIDENCE + DEBUGGER EVIDENCE + CROSS-LAYER CONSEQUENCES.
+A future file should embed the earlier verified corpus and incorporate a NEW, independently checked result, not merely refer readers to older files. Preserve evidence date and distinguish proposed experiments from executed ones.
+
+WHY THE TOPICS ARE CONNECTED
+
+For CPU time, the allocator sees tickets, stride and pass values. In the documented 101-client case, the next-recipient rule can give program 0 all 100 early grants. The long-run share is correct, but short-window global error is 50. The distinction is the competition set and time interval, not a missing arithmetic operation.
+
+For virtualized memory, an ESX host controls machine pages, while a guest OS has information about its own replacement choices. Ballooning requests a guest-controlled reclaim decision; forced host paging cannot use exactly the same guest information. Transparent page sharing takes the opposite information problem: separate guest processes can contain identical page bytes without having a known shared page-cache origin, so discovering byte equality is an additional mechanism.
+
+For Linux KSM, equality is not enough for safety. The November 2008 discussion and April 2009 review involve page-table replacement, COW behavior, and shared writable mappings. Study the original patch assumptions before changing present-day mm/ code.
+
+For a balloon driver, an otherwise valid request can become incorrect when the host target changes during the request. A 2010 Linux driver patch bounded a refused-page list. A bound controls memory use; it does not prove the host will eventually accept an allocation.
+
+These are related resource-control design constraints, not proof of one common original implementation. Work by later Linux maintainers is not attributed to Waldspurger without a primary authorship record.
+
+WHAT WAS EXECUTED
+
+A single ANSI C stride-scheduler reproduction embedded in section C was extracted again on 18 November 2026. GCC strict debug compilation: exit 0, 0 diagnostic bytes. Debug execution: exit 0. GCC address/undefined-behavior sanitizer compilation: exit 0, 0 diagnostic bytes. Sanitized execution: exit 0. Source SHA-256: e92d1288b2b0c9fcdc21769c2654b3b2029afed67b2d76bf4f40a196fed5c1f6. The LLDB trace embedded in section C is a captured earlier local run, not a new trace captured for the GitHub upload.
+
+The test makes no system calls to KVM. The upload environment lacks /dev/kvm. Neither historical Linux 1.1.50 nor VMware ESX was executed. Do not treat a simulator's exit status as a VM or guest-kernel validation.
+
+EXACT REPRODUCTION FROM THIS ONE FILE
+
+1. Download the text file into a local directory.
+2. Extract C code lying strictly between BEGIN_C_SOURCE and END_C_SOURCE in section C:
+   awk '/^BEGIN_C_SOURCE$/{n=1;next}/^END_C_SOURCE$/{n=0}n' WALDSPURGER_CUMULATIVE_RESEARCH_AND_PROOF.txt > reproduce.c
+3. Compile with the precise GCC commands embedded in section C.
+4. Run the debug and sanitizer builds. Exit status 0 asserts the paper's stated example and 100/200-slot case.
+5. Under LLDB, set a conditional breakpoint in compare_pass at tick_index 99 for the 101-client case. Inspect both pass values, grant counts, and thread backtrace -c 14. Compare against recorded evidence.
+6. If testing real KVM behavior, use a separate physical host with /dev/kvm and document the host kernel, /dev/kvm privileges, device setup, guest code, kernel path, full stack, raw result, and any experiment that did not run. None of those real KVM steps is claimed complete here.
+
+CHECKS FOR A FUTURE CUMULATIVE ARTIFACT
+
+Require the full current bibliography, archived courses and original URLs, mailing-list links with authors, compiler commands and source, a raw debugger trace, numeric input/output, known failures and untested claims. Require any new technical claim to cite a source or a concrete run and to identify its verification boundary. No fabricated syntax errors, bug fixes, timing numbers, guest traces, or kernel commits.
+
+--------------------------------------------------------------------------------
+SECTION A: UNIVERSITY COURSE, ORIGINAL PAPER, MAILING-LIST RESEARCH
+SOURCE: Carl_Waldspurger_Primary_Source_University_Archive_Research.txt
+--------------------------------------------------------------------------------
+
+Carl Waldspurger: original research, university course archives, assignments, and mailing-list evidence
+Research file dated 18 November 2026
+
+Research scope
+
+The subject is resource allocation in operating systems: lottery scheduling, stride scheduling, virtualization, virtual-machine memory allocation, page sharing, memory ballooning, and later memory-tier management. The emphasis is original university materials, old course archives, dissertations, PDFs, and dated developer correspondence. Reddit, Medium, SEO summaries, and commercial tutorial sites were excluded.
+
+What was checked
+
+Original MIT department archives from 2001 through 2011 and published MIT OpenCourseWare archives; seven representative MIT historical exam PDFs from 2002, 2003, 2005, 2007, 2009, 2010, and 2011; university-hosted reading lists and assignments; original papers and thesis records; old LKML and Google Groups discussions. PDF examination means the PDF was opened and its initial page was inspected; this does not mean all pages of every PDF in every course year were read. A separate subagent was not available in this session. This file documents traceable source links instead of pretending that all PDFs or universities were exhausted.
+
+How to interpret course dates
+
+A course held in 2002 and subsequently mirrored by a 2012 MIT OCW page is still a 2002 course or examination, not a complete 2002 OCW course release. MIT course web pages in pdos.csail.mit.edu are original departmental course archives. Pages in ocw.mit.edu are actual MIT OpenCourseWare publications. The distinction matters for this search.
+
+The oldest MIT records verified in this search
+
+Fall 2000: MIT 6.894, an antecedent of 6.824, is identified on professor Frans Kaashoek's course-history archive. The Fall 2000 course files themselves were not reliably accessible in this search. This is an archival course-history record, not a verified surviving full PDF course.
+https://pdos.csail.mit.edu/archive/kaashoek/
+
+Fall 2001: MIT 6.824, Distributed Computer Systems Engineering. Original department lecture archive. The course includes virtual-memory implementation on 27 September, scheduling on 4 October, and page replacement on 11 October. It also includes lab instructions and handouts. This is the earliest directly accessible MIT operating-systems-relevant course archive verified here, but is not an OCW-branded archive.
+https://pdos.csail.mit.edu/archive/6.824-2001/
+https://pdos.csail.mit.edu/archive/6.824-2001/lecnotes/index.html
+https://pdos.csail.mit.edu/archive/6.824-2001/labs/index.html
+
+Spring 2002: MIT OCW 6.826, Principles of Computer Systems. This is an early verified MIT OpenCourseWare systems course with downloadable lecture PDFs and assignments. It focuses on system specification, concurrency, fault tolerance, and distributed-system design; it is not a direct replacement for a kernel-scheduling laboratory.
+https://ocw.mit.edu/courses/6-826-principles-of-computer-systems-spring-2002/
+https://ocw.mit.edu/courses/6-826-principles-of-computer-systems-spring-2002/download/
+Representative lecture PDF:
+https://ocw.mit.edu/courses/6-826-principles-of-computer-systems-spring-2002/fae63b71c70146f8496d7f946255723a_16.pdf
+
+Fall 2002: MIT 6.097, first original offering of Operating System Engineering, later known as 6.828. The original departmental site is the more accurate primary source for the course year. A 2002 examination survives as a PDF within MIT OCW's later 2012 collection. Its cover explicitly says 6.097, Fall 2002. Do not classify this as an independently published complete 2002 6.828 OCW edition.
+https://pdos.csail.mit.edu/archive/6.097/
+2002 examination and solutions PDF:
+https://ocw.mit.edu/courses/6-828-operating-system-engineering-fall-2012/917eee1b2f770217ea7e9a13541ffb6c_MIT6_828F12_q02_1_sol.pdf
+
+MIT course investigation by teaching year
+
+2003: MIT 6.828, Fall 2003. An original schedule and self-contained teaching labs survive. Relevant path: x86 boot process to page management, interrupt handling, creating user environments, preemptive scheduling, and a virtual-machines lecture. Lab 3 implements preemptive multitasking. A representative 2003 quiz-solutions PDF was opened and its first page inspected.
+https://pdos.csail.mit.edu/6.828/2003/schedule.html
+https://pdos.csail.mit.edu/6.828/2003/labs/lab3.html
+The 2003 lab provides an especially useful actual code path. i386_init initializes physical-page metadata, IDT, PIC, and timer; env_create loads a user image; sched_yield selects a runnable environment; env_run restores its page directory and saved register state; the hardware timer IRQ 0 reaches IDT entry 32 and returns control to trap handling. The lab names env_tf, env_pgdir, env_cr3, trap.c, locore.S, and sched.c. It asks students to implement timer preemption rather than only simulate scheduling policy.
+https://ocw.mit.edu/courses/6-828-operating-system-engineering-fall-2012/ecf6bfac948d7186d354d80c29c8a64e_MIT6_828F12_q03_1_sol.pdf
+
+2005: MIT 6.828, Fall 2005. Original full course entry and linked labs survive. A representative 2005 quiz-solutions PDF was opened and its first page inspected. The first page includes concrete kernel-stack questions and disk-buffer synchronization problems. These test OS resource ownership rather than Waldspurger's ticket or stride policy directly.
+https://pdos.csail.mit.edu/6.828/2005/
+https://ocw.mit.edu/courses/6-828-operating-system-engineering-fall-2012/307f0ae0b4cc51d5db9b3eca7c83e878_MIT6_828F12_q05_1_sol.pdf
+
+2006: MIT 6.828, Fall 2006. Original lectures and laboratories. MIT's xv6 kernel became an important vehicle for reading the concrete scheduling and page-management code in later course offerings. Also inspect MIT OCW 6.824 Spring 2006 for historical systems lecture PDFs, but it is a distributed-systems course rather than an OS kernel implementation course.
+https://pdos.csail.mit.edu/6.828/2006/schedule.html
+https://ocw.mit.edu/courses/6-824-distributed-computer-systems-engineering-spring-2006/
+
+2007: MIT 6.828, Fall 2007. Original lectures cover segmentation and page-table address spaces, multiprocessor locks, context switching, and process coordination. Lab 4 is preemptive multitasking. An archived 2007 quiz PDF was opened and its first page inspected.
+https://pdos.csail.mit.edu/6.828/2007/schedule.html
+https://ocw.mit.edu/courses/6-828-operating-system-engineering-fall-2012/9576e2777d88ca06297967f6d2f7e7c5_MIT6_828F12_q07_1_sol.pdf
+
+2008: MIT 6.828, Fall 2008. Original schedule survives and includes virtual machines as a topic after kernel implementation. Inspect the link to the contemporary virtualization research paper on the lecture day rather than substituting a modern tutorial.
+https://pdos.csail.mit.edu/6.828/2008/schedule.html
+
+2009: MIT 6.828, Fall 2009. Lecture 8 covers processes and scheduling with proc.c and setjmp.S. Lab 4 is preemptive multitasking. Lecture 14 revisits scheduling through receive-livelock research. Lecture 20 covers virtual machines and the reading Software vs Hardware Virtualization. These are different layers: choosing a process, protecting kernel execution under interrupts, avoiding interrupt overload, and virtualizing the whole guest OS. A 2009 examination-solutions PDF was opened and its first page inspected.
+https://pdos.csail.mit.edu/6.828/2009/schedule.html
+https://ocw.mit.edu/courses/6-828-operating-system-engineering-fall-2012/a2e93d91869de761b027d7ed231eb6aa_MIT6_828F12_q09_1_sol.pdf
+
+2010: MIT 6.828, Fall 2010. Lecture 4 addresses process page tables. Lecture 8 is process scheduling with proc.c, setjmp.S, and sys_fork. Lab 4 requires preemptive multitasking. Lecture 14 studies scheduling and receive livelock. Lecture 21 addresses virtual machines. Lecture 22 studies virtual-machine execution replay. These specific locations were checked against the original schedule. A 2010 quiz PDF was opened and its first page inspected.
+https://pdos.csail.mit.edu/6.828/2010/schedule.html
+https://ocw.mit.edu/courses/6-828-operating-system-engineering-fall-2012/cebc01eb54412d0ebf2dd3402e17f4c1_MIT6_828F12_q10_1_sol.pdf
+
+2011: MIT 6.828, Fall 2011. Original departmental course with lecture videos, xv6, JOS kernel labs, virtual-memory lab instructions, and QEMU/GDB debugging. The course announcement for 12 October explicitly says Lab 4 changed the virtual-memory layout and QEMU debugging targets. A 2011 historical examination PDF was opened and its first page inspected.
+https://pdos.csail.mit.edu/6.828/2011/
+https://pdos.csail.mit.edu/6.828/2011/schedule.html
+https://ocw.mit.edu/courses/6-828-operating-system-engineering-fall-2012/a73f539442c608df92c820682fc6bbf0_MIT6_828F12_q11_1_sol.pdf
+
+2012: MIT OCW 6.828, Fall 2012. This is the strongest centralized OCW source for historical operating-system exams from 2002 through 2012 and downloadable labs/lecture material. Its exam archive links to the actual PDFs for their historical years. A complete 2012 edition is not evidence that a complete 2003 OCW edition was released as such.
+https://ocw.mit.edu/courses/6-828-operating-system-engineering-fall-2012/
+https://ocw.mit.edu/courses/6-828-operating-system-engineering-fall-2012/pages/exams/
+https://ocw.mit.edu/courses/6-828-operating-system-engineering-fall-2012/download/
+
+2009 separate MIT OCW resource: RES.6-004 Principles of Computer System Design: An Introduction. It is useful for systems reasoning and design, not a substitute for the 6.828 Linux/JOS kernel exercises.
+https://ocw.mit.edu/courses/res-6-004-principles-of-computer-system-design-an-introduction-spring-2009/
+
+2023: MIT OCW 6.1810, Operating System Engineering. Modern published sequel. Use only after historical mechanisms are understood; it cannot establish what a 2003 course taught.
+https://ocw.mit.edu/courses/6-1810-operating-system-engineering-fall-2023/
+
+Original research and dissertations
+
+1989: Carl Waldspurger, A Distributed Computational Economy for Utilizing Idle Resources, master's thesis, MIT. Earlier work on using economic allocation to distribute spare computing capacity. Locate through Waldspurger's original research index.
+https://www.waldspurger.org/carl/research.html
+
+1994: Carl Waldspurger and William Weihl, Lottery Scheduling: Flexible Proportional-Share Resource Management, OSDI. Tickets express relative claims on processor service. Independent random choices create statistical fairness over time but short-term variance.
+https://waldspurger.org/carl/papers/lottery-osdi94.pdf
+
+1995: Carl Waldspurger, Lottery and Stride Scheduling: Flexible Proportional-Share Resource Management, MIT PhD thesis, MIT-LCS-TR-667. Stride scheduling replaces the randomized draw with deterministic service accounting. The dissertation studies applications to processing, memory, locks, and bandwidth. The historical Linux 1.1.50 experiment and its context are in the dissertation; do not assume its measurements apply to today's Linux scheduler.
+https://www.waldspurger.org/carl/papers/phd-mit-tr667.pdf
+https://dspace.mit.edu/entities/publication/3105629e-350a-46b1-9009-e0ad3dfcce6a
+
+2002: Carl Waldspurger, Memory Resource Management in VMware ESX Server, OSDI. A guest OS understands which of its pages are useful, while a hypervisor controls actual host memory. The balloon driver makes the guest choose pages to surrender. Transparent page sharing permits identical data from separate guest VMs to share backing pages under appropriate protection. Randomly sampling guest pages helps the hypervisor estimate demand. Read this before Linux balloon and KSM patch threads.
+https://www.usenix.org/legacy/publications/library/proceedings/osdi02/tech/waldspurger/waldspurger_html/index.html
+University-hosted PDF:
+https://www.cs.utexas.edu/~dahlin/Classes/GradOS/papers/waldspurger02osdi.pdf
+
+2012: David Zepp, California Polytechnic State University, master's thesis implementing lottery scheduling in a Linux kernel, with performance comparisons. It is an independent implementation study, not Waldspurger's original thesis.
+https://digitalcommons.calpoly.edu/theses/772/
+
+2024: OSDI research on CXL-based memory tiering in virtual machines, Memstrata. The relevant resource-allocation question becomes how to distribute fast and slow memory among VMs subject to interference. This is later related research, not the same implementation as VMware ESX in 2002.
+https://www.usenix.org/conference/osdi24/presentation/zhong-yuhong
+
+University archives outside MIT
+
+University of Washington, 1996. An unusually early original CS162 assignment-solution page discusses scheduling policies including lottery scheduling with tickets adjusted inversely to execution. This is directly relevant to Waldspurger's contemporaneous scheduling ideas. It compares expected response times and fairness rather than proving that ticket lottery is always fastest.
+https://homes.cs.washington.edu/~tom/cs162sp96/hw4-soln.html
+
+Princeton University, Fall 2004. COS318, Operating Systems: original lecture and programming-lab archive. Suitable contemporary material for scheduler and memory implementation.
+https://www.cs.princeton.edu/courses/archive/fall04/cos318/
+
+Princeton University, Fall 2005. COS318 precepts and problem material.
+https://www.cs.princeton.edu/courses/archive/fall05/cos318/precepts/index.html
+
+UC Berkeley, CS162, Spring 2005. Original lecture index covers CPU scheduling, round robin, multilevel feedback and related policies. The course schedule advertises HW1 CPU scheduling simulation. The original scheduling page was indexed; one fetch of the schedule later timed out, so individual assignment content must be checked separately before claiming implementation details.
+https://www-inst.eecs.berkeley.edu/~cs162/sp05/lectures.shtml
+https://www-inst.eecs.berkeley.edu/~cs162/sp05/schedule.shtml
+
+UC Berkeley, CS262B, Spring 2006. Eric Brewer and Timothy Roscoe included Disco on 14 March and Waldspurger's 2002 VMware ESX paper on 16 March. The original course assigned written criticisms and required an implementation-and-evaluation research project. This is a direct primary educational connection to Waldspurger's work.
+https://people.eecs.berkeley.edu/~brewer/cs262b/
+
+UC Berkeley, CS162 historical course directory maintained by John Kubiatowicz. Follow yearly links for Fall 2005 through 2010; existence of this course index does not prove that every old PDF still resolves.
+https://people.eecs.berkeley.edu/~kubitron/courses/index.html
+
+UT Austin, CS380L Advanced Operating Systems, Fall 2005. On 12 September the syllabus assigns Disco; on 14 September it assigns Waldspurger's 2002 memory paper. This shows how contemporary graduate classes paired whole-system virtualization with the memory-allocation problem. Lecture notes and original paper links appear next to the date.
+https://www.cs.utexas.edu/~witchel/F05-380L/schedule.html
+
+UT Austin, CS380L, Fall 2006. Original advanced operating-systems archive. Verify each individual item through the syllabus.
+https://www.cs.utexas.edu/~witchel/F06-380L/
+
+Stanford University, CS140, Fall 2008. Original Pintos programming project archive. Threads assignment due 9 October, multiprogramming due 28 October, virtual memory due 11 November, and file systems due 4 December 2008. It contains task specifications, FAQs, and design templates. These are especially useful for linking concurrency and scheduling to the correct handling of resident pages and swaps.
+https://web.stanford.edu/class/cs140/projects/
+
+Stanford University, CS140, Autumn 2007. Original course notes index.
+https://www.scs.stanford.edu/07au-cs140/notes/
+
+Stanford University, CS140, 2014. Advanced Scheduling lecture PDF explains Waldspurger's lottery scheduling and deterministic stride scheduling, with ticket shares, per-process stride and pass values. This is a directly relevant later pedagogical PDF, but not a contemporary 1995 document.
+https://www.scs.stanford.edu/14wi-cs140/notes/advanced_scheduling.pdf
+
+California Institute of Technology, 2007 to 2008. The original Caltech course catalog is evidence for course offerings, not proof that historical lecture PDFs remain accessible. Avoid attributing a later lecture PDF to 2007.
+https://catalog.caltech.edu/archive/2007-08/department/CS/
+
+California Institute of Technology, CS124, Winter 2017. Archived operating-systems lecture index found in search. Individual PDF availability varies; the lecture-index page failed one live fetch. A later CS124 process-scheduling PDF is indexed under the current lecture directory, but was not fully inspected here.
+https://courses.cms.caltech.edu/cs124/lectures-wi2017/
+https://courses.cms.caltech.edu/cs124/lectures/
+https://courses.cms.caltech.edu/cs124/lectures/CS124Lec11.pdf
+
+Carnegie Mellon University, 15-410. The original old-exams archive has midterm PDFs for every year 2003 through 2011 and many later years. The 2006 course's project archive supplies practical kernel programming. Its historic exam index is an excellent source for original resource-ownership and synchronization questions.
+https://www.cs.cmu.edu/~410/old-exams.html
+https://www.cs.cmu.edu/~410-s06/p1/proj1.html
+
+Cornell University, CS4410, Fall 2008 and Spring 2009. Archived course lecture pages include scheduling, virtual memory, and virtualization. Read the old lecture links rather than modern re-tellings.
+https://www.cs.cornell.edu/courses/cs4410/2008fa/lectures.html
+https://www.cs.cornell.edu/courses/cs4410/2009sp/lectures.html
+
+UCLA, CS111, Spring 2009 and Spring 2010. The original syllabi connect scheduling lectures and kernel exercises to the OS implementation path. In 2010, April lectures include scheduling algorithms and signal/thread topics.
+https://web.cs.ucla.edu/classes/spring09/cs111/syllabus.html
+https://web.cs.ucla.edu/classes/spring10/cs111/syllabus.html
+
+University of Wisconsin-Madison, CS537, Spring 2007. The original syllabus covers process scheduling, synchronization, virtual-memory replacement, and five Java projects. An earlier overgeneralization that this term offered a separate CPU scheduling implementation should be avoided: the verified actual project list is shell, synchronization, performance, and file system. Distinguish course lectures from project deliverables.
+https://pages.cs.wisc.edu/~solomon/cs537/html/
+
+University of Wisconsin-Madison, CS537, Fall 2009 and Fall 2011. Archived schedules and lecture-PDF directory survive; verify individual slides and projects before inferring what was implemented.
+https://pages.cs.wisc.edu/~swift/classes/cs537-fa09/schedule.html
+https://pages.cs.wisc.edu/~swift/classes/cs537-fa11/lectures/07-scheduling.pdf
+
+Historical developer correspondence and Google Groups, earliest first
+
+1994, comp.os.research Google Groups archive: original public abstract for Lottery Scheduling and the OSDI work. It is historical announcement evidence, not a personally written exchange by Waldspurger.
+https://groups.google.com/g/comp.os.research/c/a6iw27vse2k
+
+1994, comp.parallel Google Groups archive: historical OSDI program with the scheduling research.
+https://groups.google.com/g/comp.parallel/c/Tbtmxr75BUg
+
+1996, comp.os.research Google Groups: conference-program archive with early reference to the work; treat as bibliographic evidence rather than a technical patch discussion.
+https://groups.google.com/g/comp.os.research/c/1VbIxwLKSq8
+
+2003, Linux kernel mailing list: early discussion referencing the ballooning idea in the context of virtual machines and Xen. This is an old Linux-community trail into the ESX memory-management ideas.
+https://lkml.iu.edu/0310.0/0550.html
+
+November 2008, Linux KSM proposal and review. Different guest processes can hold identical memory without a common page-cache identity. Copy-on-write only helps when a relationship is already known; the kernel needs a safe way to discover and merge previously independent pages. Review the original discussion and replace_page patch proposal rather than only a current KSM manual.
+https://lkml.iu.edu/0811.1/subject.html
+https://lkml.iu.edu/0811.2/00318.html
+https://lkml.iu.edu/0811.1/01172.html
+https://lkml.iu.edu/0811.1/01177.html
+
+April 2009, KSM technical correction. A developer identified that a shared mapping and dirty-state interactions defeated an initial assumption about recognizing KSM pages. Inspect the original code diff and reply chain before attempting to carry the same assumption into a present-day kernel.
+https://lkml.iu.edu/hypermail/linux/kernel/0904.0/02062.html
+
+July 2009, KSM patch discussion and merge history.
+https://lkml.iu.edu/0907.2/00654.html
+
+18 May 2010, VMware balloon driver bug, Dmitry Torokhov. During inflation, the host can change the target and refuse guest pages. The driver originally kept collecting refused pages and could fail to finish the cycle. The patch limits the transient refused-page list to 16 and aborts this attempt, preventing unbounded looping. Check the original diff around VMW_BALLOON_MAX_REFUSED and vmballoon_reserve_page. A modern reproduction needs careful validation of current code and a disposable VM; the 2010 patch is a historical bug, not proof of an unfixed 2026 bug.
+https://lkml.indiana.edu/hypermail/linux/kernel/1005.3/01548.html
+
+2011, KSM mailing-list follow-up: demonstrates subsequent revision to the merging mechanism.
+https://lkml.iu.edu/1104.0/00177.html
+
+2015, VMware balloon performance: newer event/notification and large-page designs reduced polling and excessive small-page operations. Historical kernel discussions and patch proposals, not a blanket statement about today's ESX or KVM behavior.
+https://lkml.indiana.edu/hypermail/linux/kernel/1506.1/04250.html
+https://lkml.iu.edu/hypermail/linux/kernel/1504.1/04644.html
+
+2018, VMware balloon large page splitting and memory-interaction correspondence.
+https://lkml.indiana.edu/hypermail/linux/kernel/1809.3/03964.html
+
+2024, user-controlled KSM RFC discussion, showing that decisions about merging pages remain active.
+https://lkml.iu.edu/hypermail/linux/kernel/2403.3/11950.html
+
+The core causal chain and the study questions supported by these sources
+
+CPU time allocation: A process claims a fraction of processing capacity. Lottery scheduling allocates service probabilistically according to tickets. Stride scheduling accounts for each service event using a deterministic pass value, which reduces allocation variance. The design question is how a policy stays fair when tasks sleep, awaken, join, depart, or change weight.
+
+Virtual-machine memory allocation: The host owns physical machine frames, but the guest chooses which guest pages are least useful. A host-only page eviction decision can harm the guest because the hypervisor lacks complete knowledge of its replacement policy. Ballooning transfers the reclamation decision to the guest by causing it to free its own pages. The design question is what happens if the host changes its request during balloon inflation, and what state the driver must bound or reset.
+
+Transparent page sharing: Two VMs can independently hold identical contents. Their different origins mean ordinary shared-file assumptions may not discover that duplication. Deduplication compares page contents and safely replaces mappings with a shared read-only backing page, with copying required upon writes. The design question is how to update all mappings and reference counts while preserving permissions and handling concurrent writes, migration, and invalidation.
+
+Memory resource controls: An allocation policy must balance actual pressure, idle memory, memory access measurement, and guest isolation. If the hypervisor reclaims too early, paging overhead rises. If it waits too long, another VM cannot obtain needed frames. Waldspurger's ESX paper should be used to derive the policy, not to copy its historical numeric thresholds as modern kernel defaults.
+
+Chronological reading sequence for direct source verification
+
+Read the 1994 lottery paper, then the 1995 MIT PhD thesis. Work through the 1996 UW scheduling problem to test the scheduler's goal against different workloads. Read the 2001 MIT scheduling and page-replacement notes. Implement the 2002 to 2003 MIT OS exercises for page tables and preemption. Read the 2002 VMware ESX original paper and the 2005 UT Austin and 2006 Berkeley graduate-class assignments of that paper. Compare the 2008 Stanford virtual-memory project with the November 2008 KSM design thread. Inspect the April 2009 KSM correction and May 2010 balloon driver patch. Use the 2009 to 2011 MIT 6.828 labs to see page tables, scheduling, and VMs in the same codebase. Reserve later CXL work for modern resource-allocation tradeoffs.
+
+Research limitations
+
+This is a verified, selective university primary-source archive, not proof that every university in the world was searched. I verified original course year labels, schedules, linked programming assignments, dissertation records, and original developer discussions. Several historical URLs timed out or returned errors. Some PDF covers were inspected without a page-by-page audit of their full contents. The Fall 2000 MIT 6.894 course is a course-history entry, whereas Fall 2001 MIT 6.824 has accessible original lecture notes. The title and content of a course do not establish that it taught Waldspurger's work unless the source actually links that work. Waldspurger did not personally write all of the later Linux balloon and KSM patches discussed here.
+
+
+--------------------------------------------------------------------------------
+SECTION B: COMPLETE KNOWN PUBLICATION, TALK, AND PATENT BIBLIOGRAPHY
+SOURCE: Carl_Waldspurger_Complete_Work_Bibliography.txt
+--------------------------------------------------------------------------------
+
+CARL A. WALDSPURGER: VERIFIED PUBLICATIONS AND DOCUMENTED WORK
+Research date: 18 November 2026
+Source priority: author’s publication archive; original PDFs; conference organizers and dblp for additions.
+Scope: 41 main items listed on the author’s site, plus independently documented papers, versions, editorials, talks, and links to patent indexes.
+This is not an assertion that all inventions or confidential corporate work have been discovered.
+
+AUTHOR PUBLICATION INDEX
+https://www.waldspurger.org/carl/research.html
+
+41 AUTHOR-LISTED RESEARCH PUBLICATIONS AND PRESENTATIONS, CHRONOLOGICAL
+
+01. 1988  CaminoReal: An Interactive Mathematical Notebook
+    Form: CONFERENCE.  Venue: EP 1988.
+    Original: https://www.waldspurger.org/carl/papers/caminoreal-ep88.pdf
+
+02. 1989  A Distributed Computational Economy for Utilizing Idle Resources
+    Form: MASTER THESIS.  Venue: MIT, May 1989.
+    Original: https://www.waldspurger.org/carl/papers/mit-sm-thesis.pdf
+
+03. 1990  Experience with Acore: Implementing GHC with Actors
+    Form: TECHNICAL MEMO.  Venue: MIT AI Laboratory Memo 1106.
+    Original: https://www.waldspurger.org/carl/papers/ghc-mit-aim1106.pdf
+
+04. 1992  Spawn: A Distributed Computational Economy
+    Form: JOURNAL.  Venue: IEEE Transactions on Software Engineering 18(2).
+    Original: https://www.waldspurger.org/carl/papers/spawn-ieee-tse-feb92.pdf
+
+05. 1992  Preventing Recursion Deadlock in Concurrent Object-Oriented Systems
+    Form: CONFERENCE.  Venue: IPPS 1992.
+    Original: https://www.waldspurger.org/carl/papers/rec-deadlock-ipps92.pdf
+
+06. 1992  Prelude: A System for Portable Parallel Software
+    Form: CONFERENCE.  Venue: PARLE 1992 extended abstract.
+    Original: https://www.waldspurger.org/carl/papers/prelude-parle92.pdf
+
+07. 1992  Portable Software for Multiprocessor Systems
+    Form: JOURNAL.  Venue: Computing and Control Engineering Journal.
+    Original: https://www.waldspurger.org/carl/papers/portable-mp-compctl-nov92.pdf
+
+08. 1993  Register Relocation: Flexible Contexts for Multithreading
+    Form: CONFERENCE.  Venue: ISCA 1993.
+    Original: https://www.waldspurger.org/carl/papers/register-isca93.pdf
+
+09. 1994  Lottery Scheduling: Flexible Proportional-Share Resource Management
+    Form: CONFERENCE.  Venue: OSDI 1994.
+    Original: https://www.waldspurger.org/carl/papers/lottery-osdi94.pdf
+
+10. 1995  Stride Scheduling: Deterministic Proportional-Share Resource Management
+    Form: TECHNICAL MEMO.  Venue: MIT/LCS/TM-528.
+    Original: https://www.waldspurger.org/carl/papers/stride-mit-tm528.pdf
+
+11. 1995  Lottery and Stride Scheduling: Flexible Proportional-Share Resource Management
+    Form: PHD THESIS.  Venue: MIT/LCS/TR-667.
+    Original: https://www.waldspurger.org/carl/papers/phd-mit-tr667.pdf
+
+12. 1996  An Object-Oriented Framework for Modular Resource Management
+    Form: CONFERENCE.  Venue: IWOOOS 1996.
+    Original: https://www.waldspurger.org/carl/papers/framework-iwooos96.pdf
+
+13. 1997  Continuous Profiling: Where Have All the Cycles Gone?
+    Form: CONFERENCE.  Venue: SOSP 1997.
+    Original: https://www.waldspurger.org/carl/papers/dcpi-sosp97.pdf
+
+14. 1997  ProfileMe: Hardware Support for Instruction-Level Profiling on Out-of-Order Processors
+    Form: CONFERENCE.  Venue: MICRO 30.
+    Original: https://www.waldspurger.org/carl/papers/profileme-micro30.pdf
+
+15. 1997  Continuous Profiling (It’s 10:43; Do You Know Where Your Cycles Are?)
+    Form: PRESENTATION.  Venue: Hot Chips 1997.
+    Original: https://www.waldspurger.org/carl/papers/dcpi-hotchips97-slides.pdf
+
+16. 1998  Transparent, Low-Overhead Profiling on Modern Processors
+    Form: WORKSHOP.  Venue: Profile and Feedback-Directed Compilation Workshop.
+    Original: https://www.waldspurger.org/carl/papers/profiling-pfdc98.pdf
+
+17. 1999  Hardware Support for Out-of-Order Instruction Profiling on Alpha 21264a
+    Form: PRESENTATION.  Venue: Hot Chips 1999.
+    Original: https://www.waldspurger.org/carl/papers/dcpi-hotchips99-slides.pdf
+
+18. 2000  Efficient and Flexible Value Sampling
+    Form: CONFERENCE.  Venue: ASPLOS 2000.
+    Original: https://www.waldspurger.org/carl/papers/valsample-asplos00.pdf
+
+19. 2001  Itsy: Stretching the Bounds of Mobile Computing
+    Form: JOURNAL.  Venue: IEEE Computer 34(4).
+    Original: https://www.waldspurger.org/carl/papers/itsy-ieee-apr01.pdf
+
+20. 2002  Memory Resource Management in VMware ESX Server
+    Form: CONFERENCE.  Venue: OSDI 2002.
+    Original: https://www.waldspurger.org/carl/papers/esx-mem-osdi02.pdf
+
+21. 2008  Overshadow: A Virtualization-Based Approach to Retrofitting Protection in Commodity Operating Systems
+    Form: CONFERENCE.  Venue: ASPLOS 2008.
+    Original: https://www.waldspurger.org/carl/papers/overshadow-asplos08.pdf
+
+22. 2008  Prototyping a Hybrid Main Memory Using a Virtual Machine Monitor
+    Form: CONFERENCE.  Venue: ICCD 2008.
+    Original: https://www.waldspurger.org/carl/papers/hybridmem-vmm-iccd08.pdf
+
+23. 2009  PARDA: Proportional Allocation of Resources for Distributed Storage Access
+    Form: CONFERENCE.  Venue: FAST 2009.
+    Original: https://www.waldspurger.org/carl/papers/parda-fast09.pdf
+
+24. 2010  Online Cache Modeling for Commodity Multicore Processors
+    Form: EXTENDED ABSTRACT.  Venue: PACT 2010.
+    Original: https://www.waldspurger.org/carl/papers/cache-model-pact10p.pdf
+
+25. 2010  A VM “Engine” That Makes A Difference: Technical Perspective
+    Form: COMMENTARY.  Venue: Communications of the ACM.
+    Original: https://www.waldspurger.org/carl/papers/vmetp-cacm-oct10.pdf
+
+26. 2011  Pesto: Online Storage Performance Management in Virtualized Datacenters
+    Form: CONFERENCE.  Venue: ACM SOCC 2011.
+    Original: https://www.waldspurger.org/carl/papers/pesto-socc11.pdf
+
+27. 2012  I/O Virtualization
+    Form: ARTICLE.  Venue: Communications of the ACM.
+    Original: https://www.waldspurger.org/carl/papers/iovirt-cacm-mar12.pdf
+
+28. 2012  VMware Distributed Resource Management: Design, Implementation, and Lessons Learned
+    Form: JOURNAL.  Venue: VMware Technical Journal.
+    Original: https://www.waldspurger.org/carl/papers/drs-vmtj-mar12.pdf
+
+29. 2013  CAFE: Cache-Aware Fair and Efficient Scheduling for CMPs
+    Form: BOOK CHAPTER.  Venue: Multicore Technology: Architecture, Reconfiguration and Modeling, chapter 8.
+    Original: https://www.waldspurger.org/carl/papers/cafe-multicore-book-2013.pdf
+
+30. 2015  Efficient MRC Construction with SHARDS
+    Form: CONFERENCE.  Venue: FAST 2015.
+    Original: https://www.waldspurger.org/carl/papers/shards-fast15.pdf
+
+31. 2015  Beyond Working Sets: Online MRC Construction with SHARDS
+    Form: ARTICLE.  Venue: USENIX ;login.
+    Original: https://www.waldspurger.org/carl/papers/shards-login-jun15.pdf
+
+32. 2017  PABST: Proportionally Allocated Bandwidth at the Source and Target
+    Form: CONFERENCE.  Venue: HPCA 2017.
+    Original: https://www.waldspurger.org/carl/papers/pabst-hpca17.pdf
+
+33. 2017  Cache Modeling and Optimization using Miniature Simulations
+    Form: CONFERENCE.  Venue: USENIX ATC 2017.
+    Original: https://www.waldspurger.org/carl/papers/cache-mini-sim-atc17.pdf
+
+34. 2018  Miniature Cache Simulations for Modeling and Optimization
+    Form: ARTICLE.  Venue: USENIX ;login.
+    Original: https://www.waldspurger.org/carl/papers/minisim-login-spring18.pdf
+
+35. 2018  Speculative Buffer Overflows: Attacks and Defenses
+    Form: PREPRINT.  Venue: arXiv 1807.03757.
+    Original: https://www.waldspurger.org/carl/papers/spectre11-arxiv-1807-03757.pdf
+
+36. 2023  Memtrade: Marketplace for Disaggregated Memory Clouds
+    Form: CONFERENCE.  Venue: SIGMETRICS 2023.
+    Original: https://www.waldspurger.org/carl/papers/memtrade-sigmetrics23.pdf
+
+37. 2023  Guiding Simulations of Multi-Tier Storage Caches Using Knee Detection
+    Form: CONFERENCE.  Venue: MASCOTS 2023.
+    Original: https://www.waldspurger.org/carl/papers/mtc-knee-mascots23.pdf
+
+38. 2023  Persistent Memory Research in the Post-Optane Era
+    Form: WORKSHOP.  Venue: DIMES 2023.
+    Original: https://www.waldspurger.org/carl/papers/pmem-research-dimes23.pdf
+
+39. 2024  Accelerating Multi-Tier Storage Cache Simulations Using Knee Detection
+    Form: JOURNAL.  Venue: Performance Evaluation 164.
+    Original: https://www.waldspurger.org/carl/papers/mtc-knee-peva24.pdf
+
+40. 2024  Managing Memory Tiers with CXL in Virtualized Environments
+    Form: CONFERENCE.  Venue: OSDI 2024.
+    Original: https://www.waldspurger.org/carl/papers/memstrata-osdi24.pdf
+
+41. 2025  Kneeliverse: A Universal Knee-detection Library for Performance Curves
+    Form: JOURNAL.  Venue: SoftwareX.
+    Original: https://www.waldspurger.org/carl/papers/kneeliverse-softwarex-2025.pdf
+
+ADDITIONAL FULL REPORTS, ALTERNATE VERSIONS AND BIBLIOGRAPHIC ITEMS
+A technical report and its conference paper can cover the same research and are not independent discoveries.
+
+1991  Prelude: A System for Portable Parallel Software (full report)
+https://www.waldspurger.org/carl/papers/prelude-mit-tr519.pdf
+
+1992  Preventing Recursion Deadlock in Concurrent Object-Oriented Systems (full report)
+https://www.waldspurger.org/carl/papers/deadlock-mit-tr526.pdf
+
+1997  Continuous Profiling: Where Have All the Cycles Gone? (journal version)
+https://www.waldspurger.org/carl/papers/dcpi-acm-tocs-nov97.pdf
+
+1997  Continuous Profiling: Where Have All the Cycles Gone? (DEC SRC technical note)
+https://www.waldspurger.org/carl/papers/dcpi-src-97016a.pdf
+
+2000  Efficient and Flexible Value Sampling (Compaq SRC report 166)
+https://www.waldspurger.org/carl/papers/valsample-src-166.pdf
+
+2000  The Itsy Pocket Computer (Compaq WRL report)
+https://www.waldspurger.org/carl/papers/itsy-wrl-20006.pdf
+
+2010  Online Cache Modeling for Commodity Multicore Processors (full technical report)
+https://www.waldspurger.org/carl/papers/cache-model-vmw-tr-2010-002.pdf
+
+2021  Memtrade: A Disaggregated-Memory Marketplace for Public Clouds (preprint)
+https://arxiv.org/abs/2108.06893
+
+2016  Sweet Spots and Limits for Virtualization (VEE panel; not a full research paper)
+https://conf.researchr.org/track/vee-2016/Program
+
+2017  Introduction to the Special Issue on USENIX FAST 2017 (journal editorial)
+https://dblp.org/db/journals/tos/tos13.html
+
+SELECTED INVITED TALKS AND COURSES
+
+1998  The Itsy Pocket Computer
+ISWC 1998
+https://www.waldspurger.org/carl/research.html
+
+2005  Managing Datacenter Resources Using the VirtualCenter Distributed Resource Scheduler (DRS)
+VMworld 2005
+https://www.waldspurger.org/carl/papers/drs-vmworld05-slides.pdf
+
+2010  Introduction to Virtual Machines
+MIT IAP The Science Behind Virtualization
+https://www.waldspurger.org/carl/papers/mit-iap-2010-intro.pdf
+
+2010  Resource Management for Virtualized Systems
+MIT IAP The Science Behind Virtualization
+https://www.waldspurger.org/carl/papers/mit-iap-2010-rm.pdf
+
+2013  Perspectives on Virtualized Resource Management
+ICAC 2013
+https://www.waldspurger.org/carl/papers/icac13-carl-keynote.pdf
+
+PATENTS AND INVENTIONS
+The author’s public archive reports more than 140 issued US patents and more than 100 pending patent applications. These are claims on the archive, not a current re-count of patent status.
+Issued US patents: https://patents.google.com/?country=US&dups=language&inventor=Carl+Waldspurger&num=100&sort=new&status=GRANT
+Applications: https://patents.google.com/?country=US&dups=language&inventor=Carl+Waldspurger&num=100&sort=new&status=APPLICATION
+Justia inventor index: https://patents.justia.com/inventor/carl-a-waldspurger
+Alternate name index: https://patents.justia.com/inventor/carl-alan-waldspurger
+
+VERIFIED PATENT EXAMPLES, NOT THE COMPLETE PATENT REGISTER
+
+US7412492B1  Proportional share resource allocation with reduction of unproductive resource consumption
+https://patents.google.com/patent/US7412492B1/en
+
+US7433951B1  System and method for controlling resource revocation in a multi-guest computer system
+https://patents.google.com/patent/US7433951B1/en
+
+Patent family  Transparent sharing of memory pages using content comparison
+https://research.com/u/carl-waldspurger
+
+US7529897B1  Generating and using checkpoints in a virtual computer system
+https://patents.google.com/patent/US7529897
+
+US7260820B1  Undefeatable transformation for virtual machine I/O operations
+https://patents.google.com/patent/US7260820B1/en
+
+US7984304B1  Dynamic verification of validity of executable code
+https://patents.google.com/patent/US7984304B1/en
+
+US8166253B2  Memory management system in a computer system with shared memory mappings
+https://patents.google.com/patent/US8166253B2/en
+
+US20170206167A1  System and method for partitioning of memory units into non-conflicting sets
+https://patents.google.com/patent/US20170206167A1/en
+
+US6961930B1  Efficient, transparent and flexible latency sampling
+https://patents.google.com/patent/US6961930B1/en
+
+VERIFICATION NOTES
+The author publication page is a curated list, not an assertion of every possible bibliography record.
+Two entries additionally found in conference and journal indexes: VEE 2016 panel and 2017 FAST special-issue editorial.
+Some entries have preprint, report, conference, and journal versions and must not be counted as separate research projects.
+The patent search indexes include patent-family duplicates and name-variant issues; inventor identity and active patent status must be verified before aggregating a patent count.
+No Reddit, Medium, or personal commentary blogs were used.
+
+Other authoritative cross-checks:
+VEE 2016 organizers: https://conf.researchr.org/track/vee-2016/Program
+ACM Transactions on Storage issue: https://dblp.org/db/journals/tos/tos13.html
+USENIX OSDI 2002: https://www.usenix.org/conference/osdi-02/memory-resource-management-vmware-esx-server
+USENIX FAST 2015: https://www.usenix.org/conference/fast15/technical-sessions/presentation/waldspurger
+USENIX OSDI 2024: https://www.usenix.org/conference/osdi24/presentation/zhong-yuhong
+
+
+--------------------------------------------------------------------------------
+SECTION C: STRIDE SCHEDULING NUMERICAL PROOF, SOURCE, AND DEBUGGER EVIDENCE
+SOURCE: Carl_Waldspurger_Mind_Debug_Research.txt
+--------------------------------------------------------------------------------
+
+CARL A. WALDSPURGER
+Primary-source causal reconstruction and local debugger evidence
+18 November 2026
+
+The governing issue is not whether a resource is divided in a ratio.
+The issue is what the ratio guarantees, over which group, in which interval,
+and which component knows enough to make the next allocation.
+
+A short-window failure appears in Waldspurger and Weihl's June 1995 MIT
+memo, and in Waldspurger's September 1995 doctoral thesis.
+
+100 slots are offered to 101 always-runnable programs.
+Program 0 holds 100 tickets. Programs 1 through 100 hold 1 ticket each.
+Total tickets = 100 + 100 * 1 = 200.
+Program 0 is entitled to 100 * 100 / 200 = 50 of the first 100 slots.
+Basic stride scheduling can give program 0 all 100 slots initially.
+Observed count in the local reproduction = 100.
+Absolute short-window error = 100 - 50 = 50 slots.
+
+A pairwise calculation uses a different denominator.
+Compare program 0 with program 1, excluding the other 99 programs.
+The pair received 100 slots; program 0's share inside the pair is 100/101.
+Pairwise ideal for program 0 = 100 * 100 / 101 = 99.00990099.
+Pairwise error = 100 - 99.00990099 = 0.99009901 slot.
+The pairwise error is below 1 although the global error is 50.
+No contradiction: the pairwise and global guarantees measure different sets.
+
+Waldspurger's original algorithm stores one ticket count, stride and pass
+value per program. A larger ticket count gives a smaller stride.
+The next recipient has the smallest pass value.
+After a grant, pass increases by the recipient's stride.
+Ties are broken by a fixed order. The original paper permits this.
+
+The code below tests the original paper's 3:2:1 example, then its 101-client
+pathological case. Client 0 wins deterministic ties.
+
+3 : 2 : 1
+6 / 3 = 2; 6 / 2 = 3; 6 / 1 = 6
+0 1 0 0 1 2
+
+100   1    1    1    ...   1
+  1 100  100  100    ... 100
+  ↓   ↓    ↓    ↓          ↓
+ 99   0    0    0    ...   0
+100 100  100  100    ... 100
+  ↓   ↓    ↓    ↓          ↓
+100   0    0    0    ...   0
+101 100  100  100    ... 100
+
+The rows depict the starting tickets and pass values, followed by the
+values before and after the hundredth allocation. The 99 is the prior
+number of grants to client 0. The final 101 is its updated pass.
+The numerical diagram is illustrative of the first and hundredth steps;
+it does not display all intermediate states.
+
+Run status and scope
+
+The process under test is an independent C reproduction of the algorithm.
+It is not the original 1995 Linux 1.1.50 scheduler patch.
+It does not boot a guest, modify the local Linux scheduler, or run VMware ESX.
+The code reproduces the figure 1 selection rule with a linear scan instead
+of a priority queue; both return the same minimum-pass winner.
+The code verifies the 3:2:1 sequence, 100 first-phase grants, and 200-slot
+long-run distribution. It has no printf, puts, fprintf, or cout calls.
+
+No user code was supplied. User compiler, typo, spelling, and bracket
+errors are therefore unknown; none were invented or silently corrected.
+Both newly written C builds compiled on the first attempt.
+GCC diagnostics in both build logs: empty.
+GCC debug compile exit: 0.
+GCC address + undefined-behavior sanitizer compile exit: 0.
+Normal program exit: 0.
+Sanitized program exit: 0.
+AddressSanitizer reports: none.
+UndefinedBehaviorSanitizer reports: none.
+Persistent old reproduction processes before run: none found.
+
+The local environment has GCC and LLDB, but not GDB, CDB or WinDbg.
+The package repository was unreachable. A separate local LLDB runtime
+compatibility path was needed for its Python shared library in this sandbox.
+No GDB session is claimed. The LLDB session is an actual debugger run.
+
+Compiler flags used for the debug build:
+
+gcc -std=c17 -O0 -g3 -fno-inline -fno-omit-frame-pointer \
+-fstack-protector-strong -fstack-clash-protection -D_FORTIFY_SOURCE=3 \
+-fPIE -pie -Wall -Wextra -Werror -Wpedantic -Wconversion -Wshadow \
+-Wformat=2 -Wstrict-prototypes -Wmissing-prototypes -Wundef \
+-Wpointer-arith -Wwrite-strings -Wvla -o repro_debug reproduce.c
+
+Compiler flags used for the sanitizer build:
+
+gcc -std=c17 -O1 -g3 -fno-omit-frame-pointer -fstack-protector-strong \
+-D_FORTIFY_SOURCE=3 -fPIE -pie -Wall -Wextra -Werror -Wpedantic \
+-Wconversion -Wshadow -Wformat=2 -Wstrict-prototypes \
+-Wmissing-prototypes -Wundef -Wpointer-arith -Wwrite-strings -Wvla \
+-fsanitize=address,undefined -fno-sanitize-recover=all \
+-o repro_sanitized reproduce.c
+
+The baseline debugger observation produced the following six client IDs:
+(uint32_t) $0 = 0
+(uint32_t) $1 = 1
+(uint32_t) $2 = 0
+(uint32_t) $3 = 0
+(uint32_t) $4 = 1
+(uint32_t) $5 = 2
+
+The stress breakpoint occurs on the hundredth quantum, before the
+scheduler chooses its winner. The exact condition was:
+g_active_case == 101 && g_scheduler.tick_index == 99
+&& left == 0 && right == 1
+
+The stack shows where the decision came from. The compared pass values
+are both 100. Client 0 has already received 99 grants. A fixed tie-break
+selects client 0. At the next breakpoint, grant[0] is 100 and grant[1]
+is 0. The completed run verifies each of the remaining 100 clients
+receives one grant in slots 101 through 200.
+
+Original debugger transcript (14 frames, unmodified numeric observations)
+
+(lldb) thread backtrace -c 14
+* thread #1, name = 'repro_debug', stop reason = breakpoint 1.1
+  * frame #0: 0x0000555555555161 repro_debug`compare_pass(left=0, right=1) at reproduce.c:40:8
+    frame #1: 0x00005555555551a5 repro_debug`select_better(best=0, challenger=1) at reproduce.c:51:12
+    frame #2: 0x00005555555551ce repro_debug`scan_ready at reproduce.c:58:16
+    frame #3: 0x00005555555551ee repro_debug`queue_remove_min at reproduce.c:66:12
+    frame #4: 0x00005555555551fd repro_debug`allocate_quantum at reproduce.c:71:23
+    frame #5: 0x00005555555552a9 repro_debug`tick_once(index=99) at reproduce.c:80:5
+    frame #6: 0x00005555555552cc repro_debug`drive_burst(first=0, last=100) at reproduce.c:86:9
+    frame #7: 0x00005555555552f9 repro_debug`run_phase(first=0, last=100) at reproduce.c:92:5
+    frame #8: 0x000055555555554a repro_debug`run_stress at reproduce.c:138:5
+    frame #9: 0x000055555555569c repro_debug`run_all at reproduce.c:171:12
+    frame #10: 0x00005555555556a7 repro_debug`main at reproduce.c:176:12
+    frame #11: 0x00007ffff7de1ca8 libc.so.6`___lldb_unnamed_symbol3282 + 120
+    frame #12: 0x00007ffff7de1d65 libc.so.6`__libc_start_main + 133
+    frame #13: 0x0000555555555061 repro_debug`_start + 33
+(lldb) frame variable left right left_pass right_pass
+(uint32_t) left = 0
+(uint32_t) right = 1
+(uint32_t) left_pass = 100
+(uint32_t) right_pass = 100
+(lldb) expression -- g_scheduler.clients[0].grants
+(uint32_t) $0 = 99
+(lldb) expression -- g_scheduler.clients[0].pass
+(uint32_t) $1 = 100
+(lldb) expression -- g_scheduler.clients[1].pass
+(uint32_t) $2 = 100
+(lldb) continue
+Process 1194 resuming
+Process 1194 stopped
+* thread #1, name = 'repro_debug', stop reason = breakpoint 2.1
+    frame #0: 0x000055555555554a repro_debug`run_stress at reproduce.c:139:19
+   136 	    g_scheduler.clients[0].stride = g_scheduler.stride_unit / 100;
+   137 	    g_scheduler.clients[0].pass = g_scheduler.clients[0].stride;
+   138 	    run_phase(0, 100);
+-> 139 	    for (uint32_t i = 0; i < MAX_CLIENTS; ++i) {
+    	                  ^
+   140 	        g_evidence.after_100[i] = g_scheduler.clients[i].grants;
+   141 	    }
+   142 	    if (g_evidence.after_100[0] != 100) {
+Target 0: (repro_debug) stopped.
+(lldb) expression -- g_scheduler.clients[0].grants
+(uint32_t) $3 = 100
+(lldb) expression -- g_scheduler.clients[1].grants
+(uint32_t) $4 = 0
+(lldb) expression -- g_scheduler.history[99]
+(uint32_t) $5 = 0
+(lldb) continue
+Process 1194 resuming
+Process 1194 exited with status = 0 (0x00000000)
+
+
+How the next result follows from the entry point
+
+main -> run_all -> run_stress -> run_phase -> drive_burst -> tick_once
+-> allocate_quantum -> queue_remove_min -> scan_ready -> select_better
+-> compare_pass.
+
+The entry sets 101 clients. One receives 100 tickets, and 100 receive one.
+For client 0, stride = 100 / 100 = 1; initial pass = 1.
+For client 1, stride = 100 / 1 = 100; initial pass = 100.
+The next-pass comparison selects client 0 while its pass is below 100.
+At pass = 100, equal values select client 0 because 0 precedes 1.
+After the grant, client 0's pass becomes 101.
+Every smaller client still has pass 100, so all 100 become eligible
+before client 0's next turn. The next 100 slots go to those clients.
+After 200 slots: client 0 = 100; each other client = 1.
+The long-run share is correct although the short-window error was large.
+
+What Waldspurger's other papers add to the same question
+
+1989 MIT master's thesis:
+A Distributed Computational Economy for Utilizing Idle Resources.
+Resource ownership and allocation are negotiated across machines.
+Use the thesis for historical origins, not as evidence of later KVM code.
+
+1994 OSDI paper:
+Lottery Scheduling: Flexible Proportional-Share Resource Management.
+Random selection makes dynamic resource changes easier, but service
+rates fluctuate across short windows. The paper reports a Mach 3.0 prototype.
+
+1995 MIT memo and thesis:
+Stride scheduling replaces random choice with a stored next-turn value.
+The benefit is deterministic pairwise accuracy.
+The failure is that pairwise accuracy alone does not bound global error.
+Hierarchical stride grouping reduces worst-case absolute error from
+an amount proportional to client count to an amount growing with its log.
+This is an asymptotic mathematical result under the paper's model, not a
+claim of a tested modern Linux scheduler implementation.
+
+2002 ESX memory paper:
+A virtual machine monitor can reclaim memory, but it does not possess
+all the guest OS's page-replacement knowledge. Forced host paging can
+cause double paging. The balloon driver instead requests pages from
+inside the guest, causing the guest to use its own replacement policy.
+The guest supplies page numbers to the hypervisor for reclamation.
+The hypervisor retains responsibility for machine-page mappings.
+
+The paper also shows why pure share ratios fail for idle memory.
+One VM can hold large memory allocations while touching few pages.
+The default idle tax in the paper is 75%, giving idle page cost
+1 / (1 - 0.75) = 4 in its adjusted shares-per-page metric.
+
+For an illustrative 100-share VM allocated 100 pages with 25 active:
+Active fraction = 25 / 100 = 0.25.
+Adjusted equivalent page count = 100 * (0.25 + 4 * 0.75) = 325.
+Adjusted shares per page = 100 / 325 = 0.3076923077.
+With all 100 pages active, adjusted count = 100, ratio = 1.
+The ratio controls reclamation preference; it is not a command to
+remove 75 pages immediately.
+
+The original 2002 sampling method selected 100 pages per 30-second period.
+It invalidated cached guest-page translations, counted touches, then
+estimated the active fraction by touched / sampled. Three smoothed
+estimates supported fast expansion but slower contraction of the estimate.
+An estimate does not identify every cold page with certainty.
+
+2010 LKML patch, not authored by Waldspurger:
+The VMware balloon driver could keep collecting refused pages while
+its hypervisor's target changed. An unbounded retry does not become
+safe merely because each individual page allocation is legal.
+The May 2010 patch limited accumulated refused pages to 16 per cycle.
+This is a documented historical Linux driver change. No VMware guest
+or hypervisor was run in this local reproduction.
+
+2012 VMware distributed resource management paper:
+VM placement adds another decision layer. A VM that fits on an individual
+host may still create imbalance across a cluster. CPU, memory, power and
+placement constraints must be considered together.
+
+The likely methodological pattern, inferred from publications rather
+than personal knowledge of Waldspurger's private reasoning, is:
+Choose an explicit service objective.
+State which programs are competing and over what time window.
+Construct the smallest counterexample that defeats a weak guarantee.
+Add a mechanism that uses the information available at its own layer.
+Check both short-term damage and long-term resource utilization.
+
+Errors in reasoning to watch for
+
+Saying "proportional" without defining the time interval.
+Using a pairwise theorem to claim an all-client bound.
+Mistaking a 14-frame call stack for proof that the historical kernel ran.
+Mistaking an idle-memory weighting formula for an immediate page count.
+Assuming host and guest know the same page-access information.
+Treating the documented 2010 balloon patch as Waldspurger's authorship.
+Treating a known algorithmic limitation as a spelling or compiler error.
+Inferring an author's private thoughts from papers rather than deriving
+claims from the published formulas and measurements.
+
+The crucial unresolved reproduction is an actual historical kernel or
+VMware driver running under a VM monitor with a real kernel debugger.
+The C test below proves its own computations and source-level call path;
+it cannot prove undocumented ESX implementation behavior.
+
+Historical original sources
+
+Carl Waldspurger, primary publication index:
+https://www.waldspurger.org/carl/research.html
+
+MIT Master's thesis, 1989:
+https://www.waldspurger.org/carl/papers/mit-sm-thesis.pdf
+
+OSDI lottery scheduling, 1994:
+https://www.waldspurger.org/carl/papers/lottery-osdi94.pdf
+
+MIT stride technical memo, June 22, 1995, figure 1, pages 2-3,
+plus the section on hierarchical stride and skewed ticket ratios:
+https://www.waldspurger.org/carl/papers/stride-mit-tm528.pdf
+
+MIT PhD thesis, September 1995, chapter 3 section 3.3,
+figure 3-11, and section 3.4's 101-client / 100-allocation example:
+https://www.waldspurger.org/carl/papers/phd-mit-tr667.pdf
+https://dspace.mit.edu/entities/publication/3105629e-350a-46b1-9009-e0ad3dfcce6a
+
+OSDI ESX memory management, 2002, sections 3.1, 3.2, 5.2 and 5.3:
+https://www.waldspurger.org/carl/papers/esx-mem-osdi02.pdf
+https://www.usenix.org/legacy/publications/library/proceedings/osdi02/tech/waldspurger/waldspurger_html/index.html
+
+Linux KSM original page-sharing series, 2009, authored by Izik Eidus:
+https://lkml.iu.edu/0903.3/03638.html
+
+VMware virtio balloon refused pages, March 2010, authored by Dmitry Torokhov:
+https://lkml.iu.edu/hypermail/linux/kernel/1003.2/01689.html
+
+VMware balloon unbounded refused-page list fix, May 2010:
+https://lkml.iu.edu/1005.3/01548.html
+
+VMware DRS research, March 2012:
+https://www.waldspurger.org/carl/papers/drs-vmtj-mar12.pdf
+
+Independent academic exercises, not Waldspurger's source tree:
+MIT 6.828 Fall 2003 original operating-system course and lab:
+https://pdos.csail.mit.edu/6.828/2003/
+https://pdos.csail.mit.edu/6.828/2003/labs/lab3.html
+Berkeley CS162 Spring 2005 CPU scheduling simulation:
+https://www-inst.eecs.berkeley.edu/~cs162/sp05/schedule.shtml
+Berkeley CS162 Spring 2007 Nachos lottery scheduling:
+https://www-inst.eecs.berkeley.edu/~cs162/sp07/Nachos/phase2.shtml
+Stanford CS140 Fall 2008 Pintos scheduler assignment:
+https://web.stanford.edu/class/cs140/projects/
+Caltech CS124 original university course materials, later archive:
+https://users.cms.caltech.edu/~donnie/cs124/lectures/
+
+The old university assignments provide separate implementation paths.
+They do not independently validate the exact 1995 Linux prototype.
+
+All source code used in the local C reproduction follows. One file can
+be extracted using these exact lines as markers. The source is included
+for inspection, rebuilding, and debugger reproduction.
+
+BEGIN_C_SOURCE
+#include <stddef.h>
+#include <stdint.h>
+
+enum { MAX_CLIENTS = 101, MAX_TICKS = 200 };
+
+typedef struct {
+    uint32_t tickets;
+    uint32_t stride;
+    uint32_t pass;
+    uint32_t grants;
+} Client;
+
+typedef struct {
+    Client clients[MAX_CLIENTS];
+    uint32_t history[MAX_TICKS];
+    uint32_t count;
+    uint32_t tick_index;
+    uint32_t stride_unit;
+} Scheduler;
+
+typedef struct {
+    uint32_t paper_sequence[6];
+    uint32_t after_100[MAX_CLIENTS];
+    uint32_t after_200[MAX_CLIENTS];
+    uint32_t baseline_ok;
+    uint32_t stress_ok;
+} Evidence;
+
+static Scheduler g_scheduler;
+static Evidence g_evidence;
+static uint32_t g_active_case;
+
+/* USER_SOURCE_ERRORS: none provided; no user source was edited. */
+/* HISTORICAL_LIMIT: basic stride cannot bound global short-window error by 1. */
+
+__attribute__((noinline)) static uint32_t compare_pass(uint32_t left, uint32_t right)
+{
+    uint32_t left_pass = g_scheduler.clients[left].pass;
+    uint32_t right_pass = g_scheduler.clients[right].pass;
+    if (left_pass < right_pass) {
+        return left;
+    }
+    if (right_pass < left_pass) {
+        return right;
+    }
+    return left < right ? left : right;
+}
+
+__attribute__((noinline)) static uint32_t select_better(uint32_t best, uint32_t challenger)
+{
+    return compare_pass(best, challenger);
+}
+
+__attribute__((noinline)) static uint32_t scan_ready(void)
+{
+    uint32_t best = 0;
+    for (uint32_t i = 1; i < g_scheduler.count; ++i) {
+        best = select_better(best, i);
+    }
+    return best;
+}
+
+__attribute__((noinline)) static uint32_t queue_remove_min(void)
+{
+    /* Scan substitutes for the original paper's abstract priority queue. */
+    return scan_ready();
+}
+
+__attribute__((noinline)) static void allocate_quantum(void)
+{
+    uint32_t winner = queue_remove_min();
+    g_scheduler.history[g_scheduler.tick_index] = winner;
+    ++g_scheduler.clients[winner].grants;
+    g_scheduler.clients[winner].pass += g_scheduler.clients[winner].stride;
+}
+
+__attribute__((noinline)) static void tick_once(uint32_t index)
+{
+    g_scheduler.tick_index = index;
+    allocate_quantum();
+}
+
+__attribute__((noinline)) static void drive_burst(uint32_t first, uint32_t last)
+{
+    for (uint32_t i = first; i < last; ++i) {
+        tick_once(i);
+    }
+}
+
+__attribute__((noinline)) static void run_phase(uint32_t first, uint32_t last)
+{
+    drive_burst(first, last);
+}
+
+static void initialise(uint32_t count, uint32_t stride_unit)
+{
+    g_scheduler.count = count;
+    g_scheduler.stride_unit = stride_unit;
+    g_scheduler.tick_index = 0;
+    for (uint32_t i = 0; i < count; ++i) {
+        g_scheduler.clients[i].tickets = 1;
+        g_scheduler.clients[i].stride = stride_unit;
+        g_scheduler.clients[i].pass = stride_unit;
+        g_scheduler.clients[i].grants = 0;
+    }
+}
+
+static int run_baseline(void)
+{
+    initialise(3, 6);
+    g_active_case = 3;
+    g_scheduler.clients[0].tickets = 3;
+    g_scheduler.clients[1].tickets = 2;
+    g_scheduler.clients[2].tickets = 1;
+    for (uint32_t i = 0; i < 3; ++i) {
+        g_scheduler.clients[i].stride = g_scheduler.stride_unit / g_scheduler.clients[i].tickets;
+        g_scheduler.clients[i].pass = g_scheduler.clients[i].stride;
+    }
+    run_phase(0, 6);
+    static const uint32_t expected[6] = {0, 1, 0, 0, 1, 2};
+    for (uint32_t i = 0; i < 6; ++i) {
+        g_evidence.paper_sequence[i] = g_scheduler.history[i];
+        if (g_scheduler.history[i] != expected[i]) {
+            return 1;
+        }
+    }
+    g_evidence.baseline_ok = 1;
+    return 0;
+}
+
+__attribute__((noinline)) static int run_stress(void)
+{
+    initialise(101, 100);
+    g_active_case = 101;
+    g_scheduler.clients[0].tickets = 100;
+    g_scheduler.clients[0].stride = g_scheduler.stride_unit / 100;
+    g_scheduler.clients[0].pass = g_scheduler.clients[0].stride;
+    run_phase(0, 100);
+    for (uint32_t i = 0; i < MAX_CLIENTS; ++i) {
+        g_evidence.after_100[i] = g_scheduler.clients[i].grants;
+    }
+    if (g_evidence.after_100[0] != 100) {
+        return 2;
+    }
+    for (uint32_t i = 1; i < MAX_CLIENTS; ++i) {
+        if (g_evidence.after_100[i] != 0) {
+            return 3;
+        }
+    }
+    run_phase(100, 200);
+    for (uint32_t i = 0; i < MAX_CLIENTS; ++i) {
+        g_evidence.after_200[i] = g_scheduler.clients[i].grants;
+    }
+    if (g_evidence.after_200[0] != 100) {
+        return 4;
+    }
+    for (uint32_t i = 1; i < MAX_CLIENTS; ++i) {
+        if (g_evidence.after_200[i] != 1) {
+            return 5;
+        }
+    }
+    g_evidence.stress_ok = 1;
+    return 0;
+}
+
+__attribute__((noinline)) static int run_all(void)
+{
+    if (run_baseline() != 0) {
+        return 10;
+    }
+    return run_stress();
+}
+
+int main(void)
+{
+    return run_all();
+}
+END_C_SOURCE
+
+Compile and reproduce from the one report file
+
+awk '/^BEGIN_C_SOURCE$/{n=1;next}/^END_C_SOURCE$/{n=0}n' \
+Carl_Waldspurger_Mind_Debug_Research.txt > reproduce.c
+
+Compile using GCC flags recorded above. Run ./repro_debug and check exit 0.
+Run ./repro_sanitized and check exit 0. A nonzero exit means a failed
+model assertion, not proof of a guest-kernel fault.
+
+An installed LLDB can break at compare_pass with the condition recorded
+above and execute thread backtrace -c 14, frame variable, and expression.
+The exact evidence captured by this run appears earlier in this file.
+
+Git record
+
+One report file is tracked. Its C source is embedded above. The local
+Git commit stores the research text and debugger evidence. It does not
+include any edits to user code, historical kernel code, or VMware ESX.
+No syntax, spelling or brace error was supplied by the user or emitted
+by GCC. No logic-error correction was attempted; the reproduced limitation
+was intentionally retained so the failed guarantee remains visible.
+
+Subagent statement
+
+No autonomous coding subagent was launched. Compilation, sanitizers,
+reproduction and LLDB inspection ran directly in the available sandbox.
+No access to the user's laptop, guest kernel or local Git tree is implied.
+
+
+-> A predicted first wrong thought is not an observed mistake until the interviewer hears it.
+-> Results reproduced in C do not automatically transfer to an unexecuted historic OS.
+-> Correctly stated numbers require the correct competitor set, time interval and measurement rule.
+-> Restart from 100 + 100×1 = 200, 100/200 = 1/2, 100×1/2 = 50.
+-> Verify the first excess at 3 and the observed excess of 50 at 100 before expanding to VM memory management.
+
+ROOT BUGS
+=========
+• First wrong assumption: 100 tickets means 100 of the next 100 grants instead of 100/200 share.
+• Missing mental model: the first 100 grants and the first 200 grants can satisfy different fairness properties.
+• Wrong abstraction: a two-program comparison was used as if 100 additional runnable competitors did not exist.
+• Hidden dependency I ignored: the least next-turn value and deterministic tie rule select each next recipient.
+• Incorrect invariant: a correct final distribution was treated as a guarantee for every earlier prefix.
+• Memorized instead of understood: reproducing a paper's result was confused with proving the historic Linux or ESX implementation ran.
+• Where the interview was effectively lost: the first unsupported jump from expected fraction to observed distribution, before reading the actual selection rule.
+
+
+
+
+
