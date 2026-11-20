@@ -8,7 +8,7 @@ PATCH / REVIEW: https://bugzilla.redhat.com/show_bug.cgi?id=623552#c16
 PINNED VERSION: RHEL6 host qemu-kvm-0.12.1.2-2.109 and kernel 2.6.32-62.el6; verified fixed in qemu-kvm-0.12.1.2-2.129.el6
 END-USER FAILURE: Live migration loses guest changes made by vhost-net after final dirty-page scan
 EARLIEST WRONG ASSUMPTION:
-Vhost continued touching guest memory after QEMU's final dirty bitmap synchronization. At save time the kernel's vhost dirties were not synchronized at a point where QEMU could still transfer them.
+CONFIRMED: vhost dirty bits were not transferred correctly during live migration, leaving guest data stale at the destination. A 2010 maintainer proposed that vhost stopped after QEMU's final dirty-page scan, but labeled that ordering as a suspicion, not a proven complete root cause. The RHEL6 fix's technical note establishes dirty-bit synchronization as the problem family.
 CALL / DATA / STATE PATH:
 SCP into guest -> vhost-net writes used rings -> QEMU last RAM dirty sync -> vhost device still operates -> late dirty changes not sent -> destination resumes with stale queue structures -> SCP fails
 ACTUAL REPRODUCTION OR SOURCE-BOUND PLAN:
