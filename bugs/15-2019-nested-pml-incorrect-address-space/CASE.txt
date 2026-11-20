@@ -1,0 +1,32 @@
+B15 | KVM nested dirty logging records L2 addresses where L1 addresses are required
+PUBLIC ORIGIN YEAR: 2019
+EVIDENCE STATUS: CONFIRMED_KVM_PATCH_WITH_REGRESSION_TEST
+CAN TRY ON SECOND LAPTOP: REQUIRES_INTEL_VMX_PML_NOT_AMD_RYZEN
+LOCAL REPRODUCED: NO_REPRO_RUN
+CORE FAILURE, NOT AN ERROR-RETURN EXERCISE:
+Hardware EPT page-modification logging reports L2 guest-physical page numbers. When KVM uses shadow paging to run L2 under L1 and must record dirty memory for migration of L1, these numbers are NOT in L1 guest-physical address space; copying them into L1's dirty map loses the actual modified L1 pages. Correct mode has to force shadow-SPTE write protection to trap writes and derive the L1 address.
+OBSERVED OPERATION THAT MATTERS:
+L2 writes -> hardware PML records L2 GPA -> KVM dirty bitmap belongs to L1 GPA -> wrong bit -> migration omits modified L1 page -> restored guest has old content
+FUNCTION-TO-FUNCTION REASONING PATH:
+L2 writes -> hardware PML records L2 GPA -> KVM dirty bitmap belongs to L1 GPA -> wrong bit -> migration omits modified L1 page -> restored guest has old content
+ORIGINAL REPORT / PATCH (READ BODY NOT TITLE): https://lists.openwall.net/linux-kernel/2019/09/26/690
+REVIEW AND FOLLOW-UP: 2019-09-26 Paolo Bonzini patch + 2019-09-27 v2 (https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg2114004.html) -> SPTE write-protect correction -> tools/testing/selftests/kvm/x86_64/vmx_dirty_log_test.c reproduces wrong dirty logging
+FIX OR UNCERTAINTY: Original shadow paging corrupts/omits L1 dirty tracking; protected SPTE forcing EPT violations yields L1 GPA dirties. Verify read->write sequence in the regression test.
+REPRODUCTION PROCEDURE AND REQUIRED RESOURCES:
+Requires Intel VMX with PML available to the disposable host, an affected KVM tree before 2019 patch, and nested L1/L2 with dirty tracking. Use original tools/testing/selftests/kvm/x86_64/vmx_dirty_log_test.c after checkout of the fix series and compare against the old tree. The test verifies the real dirty-logging mechanism; do not label a failing test as the bug itself. A Ryzen SVM machine does not provide Intel PML.
+MEANINGFUL SUCCESS/FAILURE SIGNAL:
+Original shadow paging corrupts/omits L1 dirty tracking; protected SPTE forcing EPT violations yields L1 GPA dirties. Verify read->write sequence in the regression test.
+EXACT UNIVERSITY ASSIGNMENTS INVOLVED: 11-unc-comp790-vmm; 13-ut-cs360v-jos-hypervisor; 10-iitb-2023-kvm-a3
+STUDENT-OWNED CORE LOGICAL PUZZLE:
+Draw L2 GPA -> L1 GPA -> host physical mapping. Find the layer that owns the dirty bitmap and derive why PML hardware page index is wrong without copying KVM's fix.
+FIRST THINGS TO DO BY HAND:
+01. DRAW the actual user operation and every transition until the first lost state.
+02. FILL the exact function names from the pinned source tree, not current master source.
+03. RECORD which participant owns each address, flag, page and completion.
+04. TRACE a second concurrent actor when the bug requires a race.
+05. IDENTIFY the first false inference, including early proposals refuted in review.
+06. RECORD machine CPU, KVM API and kernel git SHA before running a nested workload.
+07. TRACE expected versus observed vCPU progress, migration states or dirty pages.
+08. COMPARE original failing revision against the exact reviewed correction.
+09. NEVER claim the preflight build proves the failure or that the source project is security-free without checking.
+10. RUN all liveness experiments in a disposable VM with serial console and throwaway disks.

@@ -1,0 +1,32 @@
+B16 | Nested AMD SVM migration loses pending-run status, discards already saved interrupt injection
+PUBLIC ORIGIN YEAR: 2021
+EVIDENCE STATUS: CONFIRMED_AUTHOR_REPRO_REVIEW_CORRECTED_HYPOTHESIS
+CAN TRY ON SECOND LAPTOP: MODERATE_NESTED_AMD_SVM_WITH_VERSION_PINNED_L0
+LOCAL REPRODUCED: NO_REPRO_RUN
+CORE FAILURE, NOT AN ERROR-RETURN EXERCISE:
+The nested VMCB containing pending L1->L2 interrupt data DID survive migration. The 'nested_run_pending' state flag was saved but not restored. On destination a spurious nested exit erased pending interrupt injection before L2 entry. Because interrupt never arrived, I/O-intensive L2 guest hung. Original author's first proposed remedy to copy injections was mistaken; reviewed v2 restored the missing flag.
+OBSERVED OPERATION THAT MATTERS:
+L1 requests L2 VMRUN with event_inj=0x80000036 -> L1 migration saves VMCB and flag -> target restores VMCB but omits nested_run_pending -> unwanted nested vmexit clears event_inj -> L2 waits for missing interrupt -> L2 hangs
+FUNCTION-TO-FUNCTION REASONING PATH:
+L1 requests L2 VMRUN with event_inj=0x80000036 -> L1 migration saves VMCB and flag -> target restores VMCB but omits nested_run_pending -> unwanted nested vmexit clears event_inj -> L2 waits for missing interrupt -> L2 hangs
+ORIGINAL REPORT / PATCH (READ BODY NOT TITLE): https://lists.openwall.net/linux-kernel/2021/01/07/367
+REVIEW AND FOLLOW-UP: 2021-01-06 initial patch https://lists.openwall.net/linux-kernel/2021/01/06/456 -> reviewer Sean Christopherson challenge https://lists.openwall.net/linux-kernel/2021/01/07/54 -> author's original KVM trace and concession -> 2021-01-07 v2 restores KVM_STATE_NESTED_RUN_PENDING (the actual necessary state).
+FIX OR UNCERTAINTY: Original interrupt field is present, so 'not saved' is false. Check KVM_STATE_NESTED_RUN_PENDING after restore and whether spurious nested_vmexit occurs.
+REPRODUCTION PROCEDURE AND REQUIRED RESOURCES:
+Inside a disposable nested-capable AMD host, compile L0 kernel from a pre-2021 affected revision, launch L1 QEMU/KVM with nested SVM enabled, start an I/O-intensive L2 workload and migrate L1 repeatedly while VMRUN entry is pending. Capture kvm_nested_vmrun, kvm_nested_intr_vmexit, kvm_userspace_exit and VMCB event_inj traces. Author observed bug usually after 20-40 iterations; after v2 changed condition it survived 170 iterations in an early trial, not a proved universal reliability level.
+MEANINGFUL SUCCESS/FAILURE SIGNAL:
+Original interrupt field is present, so 'not saved' is false. Check KVM_STATE_NESTED_RUN_PENDING after restore and whether spurious nested_vmexit occurs.
+EXACT UNIVERSITY ASSIGNMENTS INVOLVED: 12-unc-2017-amd-svm; 10-iitb-2023-kvm-a3; 13-ut-cs360v-jos-hypervisor
+STUDENT-OWNED CORE LOGICAL PUZZLE:
+Trace every stored field and restored field. Before touching event_inj, mark whether nested_run_pending was restored and why an interrupt can disappear even with correct event bytes.
+FIRST THINGS TO DO BY HAND:
+01. DRAW the actual user operation and every transition until the first lost state.
+02. FILL the exact function names from the pinned source tree, not current master source.
+03. RECORD which participant owns each address, flag, page and completion.
+04. TRACE a second concurrent actor when the bug requires a race.
+05. IDENTIFY the first false inference, including early proposals refuted in review.
+06. RECORD machine CPU, KVM API and kernel git SHA before running a nested workload.
+07. TRACE expected versus observed vCPU progress, migration states or dirty pages.
+08. COMPARE original failing revision against the exact reviewed correction.
+09. NEVER claim the preflight build proves the failure or that the source project is security-free without checking.
+10. RUN all liveness experiments in a disposable VM with serial console and throwaway disks.

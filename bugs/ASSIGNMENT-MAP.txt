@@ -7,13 +7,13 @@ A DIRECT mapping means the bug exercises a mechanism in the course, NOT that the
 04-ucr-2019-stride-syscalls | DIRECT=NONE | RELATED=B06 | Concurrent dirty-ring producer/consumer teaches snapshot consistency but is not an xv6 scheduler defect
 05-iit-cs450-lottery | DIRECT=NONE | RELATED=B05 | No direct lottery bug; map at concurrency principle only
 06-wisc-2019-mlfq | DIRECT=NONE | RELATED=B10,B13 | CPU progress and lock holding, NOT an MLFQ bug
-07-gatech-6210-vm-coordinator | DIRECT=B04,B05,B09 | RELATED=B11 | VM management, NUMA and migration are direct; worker lifetime is adjacent
-08-iitb-cs695-kvm-pa1 | DIRECT=B02,B05,B06,B07,B08 | RELATED=B09 | Guest memory mapping, notifier, dirty ring, VFIO faults; migrations are QEMU rather than PA1
-09-iitb-cs695-libvirt-pa2 | DIRECT=B04,B08,B09 | RELATED=B07 | VM coordination and migration return paths, not a libvirt auto-scaler code defect
-10-iitb-2023-kvm-a3 | DIRECT=B03,B06 | RELATED=B10 | Nested time and dirty ring are KVM mechanisms
-11-unc-comp790-vmm | DIRECT=B03,B07 | RELATED=B01 | Second-stage mapping and device BAR access, no claim of an exact JOS bug
-12-unc-2017-amd-svm | DIRECT=B03 | RELATED=B01 | 2020 nested TSC issue explicitly observed on SVM
-13-ut-cs360v-jos-hypervisor | DIRECT=B03,B07 | RELATED=B08 | VMM state and address-domain validation
+07-gatech-6210-vm-coordinator | DIRECT=B04,B05,B09,B14 | RELATED=B11 | VM management, NUMA and migration are direct; worker lifetime is adjacent; mapped 2019/2021 primary-source migration failure
+08-iitb-cs695-kvm-pa1 | DIRECT=B02,B05,B06,B07,B08,B14 | RELATED=B09 | Guest memory mapping, notifier, dirty ring, VFIO faults; migrations are QEMU rather than PA1; mapped 2019/2021 primary-source migration failure
+09-iitb-cs695-libvirt-pa2 | DIRECT=B04,B08,B09,B14 | RELATED=B07 | VM coordination and migration return paths, not a libvirt auto-scaler code defect; mapped 2019/2021 primary-source migration failure
+10-iitb-2023-kvm-a3 | DIRECT=B03,B06,B15,B16 | RELATED=B10 | Nested time and dirty ring are KVM mechanisms; mapped 2019/2021 primary-source migration failure
+11-unc-comp790-vmm | DIRECT=B03,B07,B15 | RELATED=B01 | Second-stage mapping and device BAR access, no claim of an exact JOS bug; mapped 2019/2021 primary-source migration failure
+12-unc-2017-amd-svm | DIRECT=B03,B16 | RELATED=B01 | 2020 nested TSC issue explicitly observed on SVM; mapped 2019/2021 primary-source migration failure
+13-ut-cs360v-jos-hypervisor | DIRECT=B03,B07,B15,B16 | RELATED=B08 | VMM state and address-domain validation; mapped 2019/2021 primary-source migration failure
 14-mit-61810-cow | DIRECT=NONE | RELATED=B01,B02 | Reference and backing ownership are related, but the active bugs are not xv6 COW
 15-mit-61810-mmap | DIRECT=B02 | RELATED=B12 | DAX mapping lifetime directly; F2FS writeback related only
 16-mit-61810-superpages | DIRECT=B01 | RELATED=B05 | Host THP issue directly exercises large-page interaction; cause still not fully isolated

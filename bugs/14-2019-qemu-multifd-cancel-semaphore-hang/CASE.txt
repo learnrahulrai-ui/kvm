@@ -1,0 +1,32 @@
+B14 | QEMU migration cancellation leaves destination hanging
+PUBLIC ORIGIN YEAR: 2019
+EVIDENCE STATUS: CONFIRMED_MERGED_FIX_NO_MINIMAL_SCRIPT_IN_SOURCE
+CAN TRY ON SECOND LAPTOP: GOOD_SOFTWARE_ONLY_VERSION_PINNED_QEMU
+LOCAL REPRODUCED: NO_REPRO_RUN
+CORE FAILURE, NOT AN ERROR-RETURN EXERCISE:
+Migration source cancellation and multifd receive worker teardown lacked a completion/wake path; destination could wait on a semaphore for work that the canceled source would never provide. The v4.1.0-rc2 fix series covers distinct endless loops and destination deadlock. Individual patch diff not yet verified, so exact wake primitive beyond this must be derived by opening source.
+OBSERVED OPERATION THAT MATTERS:
+QMP migrate starts -> RAM sent on multiple channels -> QMP migrate_cancel -> sender quits -> receiver still waits on migration semaphore -> destination hangs
+FUNCTION-TO-FUNCTION REASONING PATH:
+QMP migrate starts -> RAM sent on multiple channels -> QMP migrate_cancel -> sender quits -> receiver still waits on migration semaphore -> destination hangs
+ORIGINAL REPORT / PATCH (READ BODY NOT TITLE): https://patchew.org/QEMU/20190725105724.2562-1-quintela@redhat.com/
+REVIEW AND FOLLOW-UP: 2019-06-25 Ivan Ren 3-patch cancellation failure series -> July 25 Juan Quintela pull review -> Peter Maydell applied -> merged f193bc0c5342496ce07355c0c30394560a7f4738
+FIX OR UNCERTAINTY: Before fix: migration may leave destination blocked; after fix: cancellation must release all waiters and destination must terminate or return to accepting state.
+REPRODUCTION PROCEDURE AND REQUIRED RESOURCES:
+Build QEMU v4.1.0-rc2 (base before f193bc0c5342496ce07355c0c30394560a7f4738) and fixed git revision in separate dirs. Create two disposable VMs or QEMU monitor-driven guest starts. Enable multifd and set parallel channels > 1; start live migration; send migrate_cancel while several channels are active; query source/destination migration status and attach gdb to hanging destination workers. Original source has no deterministic standalone command; mark this a conditional race reproduction.
+MEANINGFUL SUCCESS/FAILURE SIGNAL:
+Before fix: migration may leave destination blocked; after fix: cancellation must release all waiters and destination must terminate or return to accepting state.
+EXACT UNIVERSITY ASSIGNMENTS INVOLVED: 07-gatech-6210-vm-coordinator; 09-iitb-cs695-libvirt-pa2; 08-iitb-cs695-kvm-pa1
+STUDENT-OWNED CORE LOGICAL PUZZLE:
+Draw the source and destination state machines and list who signals each semaphore after cancellation. Identify the exact wait whose producer was just destroyed.
+FIRST THINGS TO DO BY HAND:
+01. DRAW the actual user operation and every transition until the first lost state.
+02. FILL the exact function names from the pinned source tree, not current master source.
+03. RECORD which participant owns each address, flag, page and completion.
+04. TRACE a second concurrent actor when the bug requires a race.
+05. IDENTIFY the first false inference, including early proposals refuted in review.
+06. RECORD machine CPU, KVM API and kernel git SHA before running a nested workload.
+07. TRACE expected versus observed vCPU progress, migration states or dirty pages.
+08. COMPARE original failing revision against the exact reviewed correction.
+09. NEVER claim the preflight build proves the failure or that the source project is security-free without checking.
+10. RUN all liveness experiments in a disposable VM with serial console and throwaway disks.
