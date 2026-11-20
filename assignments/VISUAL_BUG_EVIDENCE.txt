@@ -1,0 +1,59 @@
+Verified technical failures and their relationship to the 22 university assignments. 2026-11-20. Primary code/patch bodies checked; course implementations are NOT claimed to contain these bugs.
+A SVG arrow conveys a dependency. It is not evidence that a particular lab solution has the corresponding defect.
+All SVG text is schematic; 'slot.hva' means struct kvm_userspace_memory_region.userspace_addr, 'slot.gpa' means .guest_phys_addr, and 'run.exit' means struct kvm_run.exit_reason. Similarly, 'domain.cpu' means virDomainInfo.cpuTime, and 'domain.vcpu' means virDomainInfo.nrVirtCpu; do not paste diagram words into a C struct.
+
+EXACT UPSTREAM DEFECT: KSM anon_vma use-after-free, November 2026.
+Primary contemporary reproduction / review: https://lkml.iu.edu/2611.0/02293.html
+Call chain read: ksmd -> ksm_scan_thread -> try_to_merge_with_ksm_page -> try_to_merge_one_page -> write_protect_page -> page_address_in_vma.
+Competing chain: mremap_to -> do_mremap -> unlink_anon_vmas -> __put_anon_vma.
+Error: holding a page reference does not hold the lifetime of the page-side anon_vma. A stale nonnull anon_vma may be dereferenced.
+Reproduced on v6.18 (7d0a66e4bb90, KASAN generic): 4 workers, 2048 slots, ~220 seconds; 4096 slots, ~142 seconds. Those are reporter measurements, NOT results from this laptop.
+The reply challenged attribution of the earliest triggering commit, and the patch author agreed to drop a redundant folio_test_ksm() check in v2; no final merge state proven by this source.
+Relevance: mmap, external pager, frame ownership, KSM in KVM guest RAM. Does not demonstrate a bug inside MIT xv6 mmap or Michigan pager.
+
+EXACT UPSTREAM DEFECT: KVM mmu_notifier release race, April 2017.
+Original patch and threaded execution: https://lkml.iu.edu/1704.3/00256.html
+Thread A: process exit -> exit_mm -> exit_mmap -> mmu_notifier_release -> kvm_arch_flush_shadow_all.
+Thread B: kvm_destroy_vm -> mmu_notifier_unregister -> kvm_arch_flush_shadow_all -> free kvm.
+Failure: two release paths can overlap so an invalidation callback dereferences a freed KVM object; a shared mmu_lock alone does not guarantee the object survives after unlock. Patch proposes ownership/lifetime adjustment.
+Relevance: KVM guest memory and secondary mapping lifetime; not proof that user PA1 is affected by this historical ARM race.
+
+EXACT UPSTREAM DEFECT: QEMU postcopy shared-page request leak, August 2026.
+Original patch and code: https://www.mail-archive.com/qemu-devel@nongnu.org/msg1221024.html
+Add page_requested entry: postcopy_request_shared_page -> postcopy_request_page -> migrate_send_rp_req_pages uses the external backend's client_addr.
+Remove page_requested entry: qemu_ufd_copy_ioctl uses QEMU host virtual address for the same page. These are different address spaces, so equal page contents/offsets DO NOT imply equal keys.
+Outcome reported: postcopy-active with remaining=0, yet teardown waits for page_requested_count=0; as few as 9 unmatched requests among about 244,000 reproduce a hang.
+Patch changes insertion key to QEMU host address rb->host + aligned_rbo; wakeup still uses the backend address.
+Relevance: KVM PA1 guest/host address distinction, JOS VMM memory, later VM migration. It is a real QEMU bug, not an error in these university assignments.
+
+EXACT UPSTREAM DEFECT: AMD KVM SVM SNP protected VMSA destroy vs VMRUN, March 2025.
+Patch v2: https://lkml.iu.edu/2503.3/05791.html
+Another vCPU can request protected AP destruction and remove the VMSA attribute after the target enters a path to VMRUN. Under the described HLT-in-guest option, a late VMRUN exits #VMEXIT_INVALID and crashes the guest.
+Patch adds KVM_REQUEST_WAIT handling to the protected guest state update event so the target processes the request before the initiator proceeds.
+Relevance: AMD SVM and VCPU concurrency. Requires SEV-SNP protected AP handling; do not treat a plain JOS SVM lab as SEV-SNP.
+
+EXACT UPSTREAM DEFECT FAMILY: Linux COW with extra page references / DMA pins, 2021.
+Detailed original kernel-mm engineer's causality and repro classes: https://lkml.iu.edu/hypermail/linux/kernel/2111.1/07621.html
+Reading through O_DIRECT or long-term pinning can retain a reference to the old page while a later write-protect/write-fault causes the process page table to map a new COW page. I/O and process now observe DIFFERENT page objects when they expected one, leading to data loss/corruption.
+A concurrent reclaim/swapcache interaction is discussed, and the mail also names a VFI0 guest-memory consequence.
+Relevance: xv6 COW, Pintos eviction, hypervisor DMA pins. The individual source mechanisms require separate version checks.
+
+EXACT UPSTREAM DESIGN RACE: THP deferred split list, November 2025.
+Patch v6 body: https://lkml.iu.edu/hypermail/linux/kernel/2511.1/01219.html
+A folio's _deferred_list was reused on a local list, allowing split_queue_len to disagree with actual queue occupancy. The sequence had a subtle race with a third party freeing or migrating the previous folio; a temporary reference delayed the free. The reviewed folio_batch design makes queue membership explicit.
+Relevance: xv6 superpages granularity and lifetime, not an exact xv6 bug.
+
+EXACT HARDWARE-DEPENDENT BUG: AMD Family 17h x2AVIC IPI virtualization erratum #1235, 2025.
+Patch: https://lkml.iu.edu/hypermail/linux/kernel/2504.0/06483.html
+Hardware can observe an old IsRunning value and miss a VM exit that should wake a target vCPU. Fix disables IPI virtualization for AMD Family 17h, preserving the other AVIC uses.
+Relevance: native AMD SVM and vCPU wake-up. Hardware feature and kernel version decide whether a specific system can exercise it.
+
+CONSTRUCTED FAILURES, NOT VERIFIED UPSTREAM BUGS:
+Ticket-pool changing between scheduler scans; lost service to MLFQ low queue; routing to VM before app ready; drawing LRU as minimum frame index; source libvirt counter interpreted as utilization; treating 101-client stride pairwise fairness as absolute error bound. These are reasoning prompts or instructor-noted pitfalls, not established bug reports for individual coursework.
+
+PRIMARY TECHNICAL SOURCES FOR NON-BUG MECHANISMS:
+Waldspurger 1995 thesis, section 3.4.1 and 3.4.2 (101-client short-window counterexample): https://publications.csail.mit.edu/lcs/pubs/pdf/MIT-LCS-TR-667.pdf
+KVM UAPI, KVM_EXIT_IO / KVM_EXIT_MMIO and completion after KVM_RUN re-entry: https://www.kernel.org/doc/html/latest/virt/kvm/api.html
+UVA CS4414 lottery handout notes locking, double-counting and modulo bias: https://www.cs.virginia.edu/~cr4bd/4414/S2020/lottery.html
+KSM original implementation paper (2009), stable and unstable tree details: https://www.kernel.org/doc/ols/2009/ols2009-pages-19-28.pdf
+SHARDS FAST 2015: https://www.usenix.org/system/files/conference/fast15/fast15-paper-waldspurger.pdf (redirects to files.usenix.org; paper content not newly fetched in this run).
