@@ -1,0 +1,73 @@
+name: Render assignment diagrams
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'assignments/*/visuals/*.svg'
+      - '.github/workflows/render-assignments.yml'
+permissions:
+  contents: write
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install rasterizer and image checks
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y librsvg2-bin python3-pil
+      - name: Validate and rasterize all assignment diagrams
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import subprocess, xml.etree.ElementTree as ET
+          from PIL import Image
+          import json
+          folders=sorted(Path('assignments').glob('[0-9][0-9]-*/visuals'))
+          expected=['01-cause.svg','02-data.svg','03-correction.svg','04-trap.svg']
+          if len(folders)!=22: raise SystemExit(f'Expected 22 folders, got {len(folders)}')
+          for folder in folders:
+              actual=sorted(p.name for p in folder.glob('*.svg'))
+              if actual!=expected: raise SystemExit(f'{folder}: expected {expected}, got {actual}')
+              pngs=[]
+              for name in expected:
+                  source=folder/name
+                  svg=ET.parse(source).getroot()
+                  if not svg.tag.endswith('svg'):
+                      raise SystemExit(f'{source}: invalid SVG root')
+                  texts=[x.text or '' for x in svg.iter() if x.tag.endswith('text')]
+                  if not texts or len(texts)>12:
+                      raise SystemExit(f'{source}: unexpected label count {texts}')
+                  if any(any(ch.isdigit() for ch in text) for text in texts):
+                      raise SystemExit(f'{source}: digits inside diagrams')
+                  out=folder/(source.stem+'.png')
+                  subprocess.run(['rsvg-convert','-w','1500','-h','920','-o',str(out),str(source)],check=True)
+                  with Image.open(out) as im:
+                      if im.size!=(1500,920): raise SystemExit(f'{out}: dimensions={im.size}')
+                      if len(im.resize((100,61)).convert('RGB').getcolors(10000) or [])<15:
+                          raise SystemExit(f'{out}: missing color variation')
+                      pngs.append(im.copy().convert('RGB'))
+              contact=Image.new('RGB',(1500,920),'#f8f4ed')
+              for i,im in enumerate(pngs):
+                  x=(i%2)*750;y=(i//2)*460
+                  contact.paste(im.resize((744,454),Image.Resampling.LANCZOS),(x+3,y+3))
+              contact.save(folder/'contact.png',optimize=True)
+          print(json.dumps({'folders':len(folders),'individual_pngs':len(folders)*4,'contact_sheets':len(folders)}))
+          PY
+      - name: Package downloadable visuals
+        run: |
+          zip -q -r /tmp/kvm-88-visuals.zip assignments -i 'assignments/*/visuals/*.png' 'assignments/*/visuals/*.svg' 'assignments/*/VISUAL_GUIDE.txt' 'assignments/VISUAL_GALLERY.html'
+          ls -lh /tmp/kvm-88-visuals.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kvm-88-diagrams-and-contact-sheets
+          path: /tmp/kvm-88-visuals.zip
+          compression-level: 0
+      - name: Commit PNG assets to source tree
+        continue-on-error: true
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add 'assignments/*/visuals/*.png'
+          git commit -m 'visuals: rasterize 88 causal sketches and 22 contact sheets'
+          git push
