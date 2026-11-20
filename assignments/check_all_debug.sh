@@ -45,6 +45,73 @@ for dir in "$ROOT"/[0-9][0-9]-*; do
         errors=$((errors+1))
       fi
       tail -n 1 .logic.stdout | sed "s/^/$name: /"
+      if ./build/logic_drill >.logic.check 2>.logic.checkerr; then
+        if ! grep -q '^pass=20 blank=0 fail=0
+    for exe in build/*; do
+      [ -f "$exe" ] && [ -x "$exe" ] || continue
+      if ! readelf -S "$exe" | grep -q '.debug_info'; then debug='NO'; errors=$((errors+1)); fi
+    done
+  fi
+  printf '%-37s %-8s %-8s %-10s %-12s %-14s\n' "$name" "$compile" "$smoke" "$debug" "$build_ms" "$rss"
+done
+cd "$ROOT" || exit 2
+# Additional starter programs: compile and link, do not execute targets that
+# require KVM hardware or a guest libvirt daemon.
+libvirt_count=0
+if pkg-config --exists libvirt; then
+  for dir in 07-gatech-6210-vm-coordinator 09-iitb-cs695-libvirt-pa2; do
+    if "$COMPILER" $FLAGS $(pkg-config --cflags libvirt)        "$ROOT/$dir/src/libvirt_inventory.c"        $(pkg-config --libs libvirt) -o "$ROOT/$dir/build/inventory"; then
+      echo "$dir libvirt_inventory LINK PASS"
+      libvirt_count=$((libvirt_count+1))
+    else
+      echo "$dir libvirt_inventory LINK FAIL" >&2
+      errors=$((errors+1))
+    fi
+  done
+else
+  echo 'libvirt-dev absent: two libvirt inventories NOT TESTED'
+fi
+printf 'RESULT folders_built=%d libvirt_linked=%d failures=%d\n' "$built" "$libvirt_count" "$errors"
+if [ "$built" -ne 22 ]; then exit 1; fi
+if [ "$errors" -ne 0 ]; then exit 1; fi
+ .logic.check; then
+          echo "$name: test exited 0 without all 20 PASS" >&2
+          errors=$((errors+1))
+        fi
+      else
+        if ! grep -Eq '^pass=[0-9]+ blank=[0-9]+ fail=[0-9]+
+    for exe in build/*; do
+      [ -f "$exe" ] && [ -x "$exe" ] || continue
+      if ! readelf -S "$exe" | grep -q '.debug_info'; then debug='NO'; errors=$((errors+1)); fi
+    done
+  fi
+  printf '%-37s %-8s %-8s %-10s %-12s %-14s\n' "$name" "$compile" "$smoke" "$debug" "$build_ms" "$rss"
+done
+cd "$ROOT" || exit 2
+# Additional starter programs: compile and link, do not execute targets that
+# require KVM hardware or a guest libvirt daemon.
+libvirt_count=0
+if pkg-config --exists libvirt; then
+  for dir in 07-gatech-6210-vm-coordinator 09-iitb-cs695-libvirt-pa2; do
+    if "$COMPILER" $FLAGS $(pkg-config --cflags libvirt)        "$ROOT/$dir/src/libvirt_inventory.c"        $(pkg-config --libs libvirt) -o "$ROOT/$dir/build/inventory"; then
+      echo "$dir libvirt_inventory LINK PASS"
+      libvirt_count=$((libvirt_count+1))
+    else
+      echo "$dir libvirt_inventory LINK FAIL" >&2
+      errors=$((errors+1))
+    fi
+  done
+else
+  echo 'libvirt-dev absent: two libvirt inventories NOT TESTED'
+fi
+printf 'RESULT folders_built=%d libvirt_linked=%d failures=%d\n' "$built" "$libvirt_count" "$errors"
+if [ "$built" -ne 22 ]; then exit 1; fi
+if [ "$errors" -ne 0 ]; then exit 1; fi
+ .logic.check; then
+          echo "$name: check failed without expected per-case result" >&2
+          errors=$((errors+1))
+        fi
+      fi
     fi
     debug='YES'
     for exe in build/*; do
