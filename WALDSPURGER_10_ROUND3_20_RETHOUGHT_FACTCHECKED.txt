@@ -1,0 +1,457 @@
+CARL WALDSPURGER — ROUND 3 QUESTION BANK, FACT-CHECKED REVISION
+Version 2026-11-21. Original 20-topic reasoning bank retained, corrected for primary-source claims. No source reveals Carl Waldspurger's actual interview questions, who interviews in which round, or whether the round involves live coding. Never present a question in this file as a quotation by him. "ASK" is a proposed practice prompt, not attributed speech.
+
+CORE RULE: A party may control a resource without knowing its application-level value, while another party knows that value but cannot safely control host hardware. This is an organizing model, not an assertion that it governs every component he ever built. Correctness depends on what each party OBSERVES, AUTHORIZES and can PROVE remains true while others act.
+
+EVIDENCE STATUS:
+DIRECT = the original source explicitly describes the mechanism. DERIVED = a consequence with stated assumptions. DESIGN = a useful interview choice, not documented product implementation. UNKNOWN = no direct proof or no live system measurement. Every numerical input below says PUBLISHED or CONSTRUCTED. A published number from 2002 or 2024 is not a measurement of the user's laptop.
+
+ORDER: Follow the causal progression Q1/Q2 -> page ownership Q3-Q7 -> scheduling Q8-Q10 -> I/O Q11-Q14 -> shared host pressure Q15/Q16 -> migration/upgrade Q17/Q18 -> profiling/judgment Q19/Q20. Ring labels are practice gates, not a verified interviewer rubric: R1 one actor; R2 concurrency; R3 failed component; R4 adversarial guest; R5 scale/transients.
+
+PRIMARY FACT-CHECK CHANGES:
+1. Q1 PA1 guest file-write functionality is NOT established solely by KVM Hello World; do not invent it.
+2. Q2 KVM_IOEVENTFD avoids a userspace-visible exit, NOT necessarily all hardware VM exits.
+3. Q3 compression is not one of ESX 2002's three original reclaim mechanisms. No universal best-order ranking exists.
+4. Q4 device DMA applies only to VMs with suitable mapped I/O; invalidating host PTE alone does not revoke secondary/device access.
+5. Q5 2002 ESX uses three estimates, not two. Sampling does not automatically reveal every DMA touch.
+6. Q6 ESX idle-memory tax is not Linux cgroup v2's documented proportional-share memory controller.
+7. Q7 hashes are not proof of equality. Later VMware per-VM salting changes the cross-VM sharing policy.
+8. Q8 sleeping consumes less wall-clock CPU by definition, not necessarily an entitlement violation; correct compensation does not inflate expected service.
+9. Q9 spinning vCPU may consume real CPU without forward progress; gang scheduling is a choice, not a necessity.
+10. Q10 customer I/O accounting is a design decision; no proof that actual Nutanix CVM CPU is charged to initiating VM.
+11. Q11 virtual disk completion is not fsync durability. Source of storage/replica guarantees must be verified.
+12. Q12 caches do not always all contain the same block; guest direct I/O and host cache.direct change layering.
+13. Q13 SHARDS is spatial block-identity sampling, not independent reference sampling or a worst-case error theorem.
+14. Q14 2025 patent details ARE public: entropy, compression, DMA/I/O inspection, sampling, remedies; it is not a proven deployed classifier.
+15. Q15 memory->storage feedback is plausible; a deadlock needs a demonstrated circular wait; the Nutanix patent does not establish such a deadlock.
+16. Q16 Memstrata OSDI 2024 uses hardware-managed cacheline-granular tiering + software isolation and slowdown-based page allocation.
+17. Q17 pre-copy convergence depends on the DISTINCT newly dirtied pages, not only total byte writes. Sharing-aware migration can preserve source sharing.
+18. Q18 QEMU CPR does support specified reboot scenarios; not arbitrary kernel replacement. It stops VMs before transfer.
+19. Q19 ProfileMe proposes a particular hardware sample scheme; random instruction samples cannot exactly attribute EVERY CPU cycle.
+20. Q20 guest cooperation does not grant authority to free unconfirmed host-backed pages or eliminate host isolation.
+
+Q01 The guest-to-host operation you implemented | OWN WORK
+ASK: In the actual KVM PA1 program, trace one guest instruction through KVM_RUN, the exit record, host handling, return state and the next guest instruction. If that program performs an actual host file write, trace it separately. Which guest-controlled bytes cross the boundary?
+VERIFIED BOUNDARY: KVM_RUN returns a defined exit reason for operations sent to userspace. The documented completion of several emulated exits requires a subsequent KVM_RUN. Do not assert the PA1 starter implements file I/O until its guest and host sources establish that fact.
+R1: OPERATIONS IN REQUIRED CAUSAL ORDER:
+  1) Find the first guest instruction that produces the relevant exit in the PA1 source. Write its instruction bytes, the exit reason and the vCPU number.
+  2) Record every guest register field and guest memory address that supplies its arguments; distinguish guest virtual, guest physical and QEMU/host virtual addresses.
+  3) Draw how guest inputs become host inputs. Check integer addition and address-range authorization before following a guest pointer.
+  4) Identify when guest execution stops and when the specific exit's operation becomes complete. Reenter KVM_RUN only under the API's specified state semantics.
+  5) If an actual file write exists, distinguish returned byte count from the later durability operation. Otherwise do not invent a file path in PA1.
+OUTER RINGS:
+  R2: a second guest vCPU mutates a request while the host reads it. Does one host copy provide a consistent snapshot of all fields?
+  R3: an operation completes partially or process dies; define guest-observed reply and replay safety.
+  R4: guest supplies invalid fd/range or floods requests; show permissions, bounds and quotas.
+  R5: measure the cost of a real guest→host→guest round trip; separate KVM exit from userspace exit.
+FIRST INVALID ASSUMPTION: One vCPU exited → the guest's entire memory is frozen. Another vCPU can keep modifying it.
+MANUAL EXECUTION: CONSTRUCTED: guest buffer begins 4096 and length is 32; derive the first and last byte and test against the actually registered memory slot, not a guessed physical address.
+REQUIRED OBSERVATION: Observed host TSC/vDSO clocks and kvm_exit tracepoints, with version and frequency; do not claim KVM_RUN cost from pure instructions alone.
+PRIMARY SOURCE CODES: E1,E23
+
+Q02 An I/O notification without a userspace exit | DESIGN / ESTIMATION
+ASK: A guest submits many virtio requests. Which notification needs hardware handling, which can avoid returning to QEMU, and when does polling cost less than waking a thread?
+VERIFIED BOUNDARY: KVM_IOEVENTFD can signal an event rather than return a KVM_EXIT_IO/MMIO to userspace. This is NOT proof that no hardware VM exit occurs. Batching, notifications and pollers may exist at different layers.
+R1: OPERATIONS IN REQUIRED CAUSAL ORDER:
+  1) Mark guest descriptor publication and the ordering needed before notifying a backend.
+  2) Distinguish hardware VM exit, KVM in-kernel event handling, userspace wakeup, and device service.
+  3) Locate where batching ends and who makes the next notification necessary.
+  4) Define polling CPU budget and the wakeup penalty when a polling thread sleeps.
+  5) Derive a break-even inequality from arrival rate, event-handling cost and polling cost before choosing a mode.
+OUTER RINGS:
+  R2: two guests share CPU; who is charged for backend polling?
+  R3: backend thread is descheduled; what delay enters I/O completion?
+  R4: guest issues useless notifications; what rate/CPU constraints remain?
+  R5: overload; determine whether interrupts consume all service time or the queue simply saturates.
+FIRST INVALID ASSUMPTION: Suppressing userspace exits eliminates all exits and all I/O processing.
+MANUAL EXECUTION: CONSTRUCTED: 100000 events/s × 2 µs/event = 0.2 CPU seconds/s; compare with a dedicated polling core only after identifying whether those 2 µs are actually saved.
+REQUIRED OBSERVATION: Counters for KVM exits, ioeventfd notifications, backend CPU and guest I/O latency under light/load/overload.
+PRIMARY SOURCE CODES: E1,E8,E25
+
+Q03 Reclaim memory without one universal ranking | DESIGN
+ASK: When free host memory falls, rank page sharing, ballooning, compression and host swap for a SPECIFIED workload and deadline; show why no permanent ordering can be correct.
+VERIFIED BOUNDARY: ESX 2002 describes content sharing, ballooning and host demand paging; modern compression/zswap is a separate design and was not one of the paper's three interchangeable reclamation mechanisms. Ballooning moves victim choice toward the guest; its response can be delayed or unavailable.
+R1: OPERATIONS IN REQUIRED CAUSAL ORDER:
+  1) Define the resource needed now: bytes, latency budget, and possible storage traffic.
+  2) For each mechanism, identify who chooses the page, what work happens before RAM is recovered, and who pays on a future access.
+  3) Trace guest and host selecting the same page for paging: where do a host read and a guest write become coupled?
+  4) From §3.2, follow balloon pinned guest pages and reclaimed machine pages; include recovery if the guest reboots and touches an old ballooned PPN.
+  5) Identify the fallback that preserves progress when the cooperative tool has not returned enough memory.
+OUTER RINGS:
+  R2: simultaneous guest pressure and competition for the same reclaim pool.
+  R3: balloon driver absent or slow; how is target changed and recovered?
+  R4: guest refuses or violates the balloon protocol; which mapping safety rule survives?
+  R5: concurrent boot; quantify which pages are shared and which must be paged on the original paper's timeline.
+FIRST INVALID ASSUMPTION: One fixed order of reclaim techniques always minimizes cost; a fast technique can cost much more later.
+MANUAL EXECUTION: PUBLISHED 2002 case: 256+256+320+320+320=1472 MB guest config; add ~160 MB overhead for ~1632 MB configured. Do not treat later 325 MB sharing and 35 MB paging as one simultaneous ledger.
+REQUIRED OBSERVATION: Balloon inflation pages/s, reclaim bytes, cache misses, compressed bytes, swap latency and guest stalls on a pinned host/kernel version.
+PRIMARY SOURCE CODES: E2,E3,E12
+
+Q04 Revoke one physical page before reuse | OWNERSHIP / CONCURRENCY
+ASK: A host must reuse a machine frame mapped into a running VM. Trace the exact order by which each CPU and device stops reaching the old frame.
+VERIFIED BOUNDARY: A host PTE and KVM secondary mapping can both reach memory; cached CPU translations and IOMMU mappings must respect their own invalidation protocols. A page that is pinned by a device may not be reclaimable until I/O is quiesced. Not every VM uses passthrough or the same translation structure.
+R1: OPERATIONS IN REQUIRED CAUSAL ORDER:
+  1) Write the mapping path guest VA → guest PA → host physical frame and separately the QEMU userspace VA → host physical frame.
+  2) List the address translations that exist in the actual configuration, including device DMA only if present.
+  3) Name the invalidate operation that prevents NEW mappings while old ones drain; identify its lock or notifier contract.
+  4) Before final frame reuse, show when CPUs stop using cached translations and in-flight DMA can no longer write the frame.
+  5) Derive the next guest touch path: does the guest see a page fault, or does KVM resolve a nested fault transparently?
+OUTER RINGS:
+  R2: other vCPU reaches the backing while it is being invalidated.
+  R3: invalidation callback fails or stalls; who is allowed to wait and which references stay live?
+  R4: a tenant pins pages persistently; what memory remains reclaimable?
+  R5: many invalidations cause shootdown cost; where can batching preserve correctness?
+FIRST INVALID ASSUMPTION: Removing a single host page-table entry invalidates every secondary CPU and device translation.
+MANUAL EXECUTION: CONSTRUCTED: 2 MiB / 4096 B = 512 base pages; count mappings only where the chosen configuration actually splits into those entries.
+REQUIRED OBSERVATION: mmu_notifier intervals, secondary SPTE invalidation, TLB flush count and device pin count.
+PRIMARY SOURCE CODES: E1,E21
+
+Q05 Sample active VM memory without manufacturing certainty | ESTIMATION
+ASK: From outside the guest, estimate the fraction of its pages accessed during a period, price the observation, and state what the resulting fraction does NOT tell you.
+VERIFIED BOUNDARY: ESX §5.3 samples 100 pages per 30-second period of VM execution and invalidates selected cached translations so later access is intercepted. Its active estimate is the MAXIMUM of slow average, fast average, and current-period-adjusted fast estimate. Hardware accessed-bit techniques have different semantics and TLB issues.
+R1: OPERATIONS IN REQUIRED CAUSAL ORDER:
+  1) Define the estimation target: fraction accessed at least once in a chosen interval, not byte traffic or value of a cache page.
+  2) For the historical ESX algorithm, derive f=t/n only after counting sampled page identities and observed access faults.
+  3) Under independent uniform sampling, derive sampling error; identify where time correlation or huge mappings violate a modeling assumption.
+  4) Compare sampling by forced re-fault with reading/clearing hardware accessed bits; name the CPU translation-cache condition required for reliable future observation.
+  5) Show how each of the THREE ESX estimates reacts to a sudden increase versus a sudden decrease.
+OUTER RINGS:
+  R2: vCPUs touch pages concurrently with the sampler.
+  R3: measurement itself adds page faults and flushes; report resulting overhead.
+  R4: adversarial accesses bias the estimate; identify the direction that benefits a dishonest guest.
+  R5: a tax or allocation loop reacts to estimate delay; derive condition for oscillation.
+FIRST INVALID ASSUMPTION: Uniform page sampling means uniform time sampling, or two historical averages are the entire ESX estimator.
+MANUAL EXECUTION: CONSTRUCTED: 35 touched out of 100 samples → estimated active fraction 35/100; if independent and Bernoulli, compute sqrt(0.35×0.65/100). This is standard error, not an absolute bound.
+REQUIRED OBSERVATION: Controllable guest touch set, false-negative/positive fraction across working-set phases and actual sampler CPU/fault cost.
+PRIMARY SOURCE CODES: E2,E3
+
+Q06 Memory shares with idle-page tax | DESIGN
+ASK: VM A has twice VM B's shares but is largely idle while B is busy. Which claimant should surrender the next memory page, and when must the policy stop taking idle memory?
+VERIFIED BOUNDARY: The ESX 2002 policy extends share-per-page allocation by the active fraction and an idle tax; default τ=75% in that historical implementation. It is not Linux memcg's documented memory.min/low/high/max model and does not imply a fixed RAM fraction unconditionally.
+R1: OPERATIONS IN REQUIRED CAUSAL ORDER:
+  1) Define shares S, allocated pages P, measured active fraction f. Establish the raw shares-per-page S/P before charging idle pages.
+  2) From ESX §5.2, derive k=1/(1−τ) and adjusted ratio ρ=S/[P(f+k(1−f))].
+  3) Compare clients' adjusted ratios under pressure and identify which can lose one page without crossing an explicit reservation.
+  4) At τ=0 show the original pure-share behavior; as τ approaches 1 trace the cost of reclaiming idle pages and the remaining wakeup buffer.
+  5) Compare the tax with Linux memory.low/min/high/max using their documented protections and effects; do not relabel one as the other.
+OUTER RINGS:
+  R2: guests wake at different times; how quickly must memory return?
+  R3: estimator understates an active VM; how does the over-reclaim show up?
+  R4: guests touch data only to appear hot; compare cost of faking to benefit.
+  R5: high-frequency oscillation between protected allocations; when would gradual allocation be more stable?
+FIRST INVALID ASSUMPTION: The share is a fixed physical-RAM partition, or a measured idle fraction has zero refill cost.
+MANUAL EXECUTION: CONSTRUCTED: S=100,P=100,f=0.25,τ=0.75 and S=50,P=50,f=0.75,τ=0.75. Compute k then both ρ; the 2002 formula, not a guess, determines comparison.
+REQUIRED OBSERVATION: Page reclaim rate, per-VM throughput, wakeup latency, protection violations and allocation oscillation.
+PRIMARY SOURCE CODES: E2,E3,E6
+
+Q07 Content-based page sharing across tenants | DESIGN / TRUST
+ASK: Two guest pages have identical bytes. Under what conditions may a host map them to one frame, and why might the platform still choose not to?
+VERIFIED BOUNDARY: ESX §4.2 uses hashing as a candidate filter followed by a full byte comparison. A shared mapping is write-protected for copy-on-write. VMware later restricted inter-VM TPS by default using per-VM salting; that security policy differs from the original 2002 design. Hash equality is never sufficient.
+R1: OPERATIONS IN REQUIRED CAUSAL ORDER:
+  1) Compute candidate hashes and verify full equality before modifying either mapping.
+  2) Trace how a writer gets a private page and how that changes refcounts, map permissions and latency.
+  3) Identify why ESX uses hint frames when a candidate had not yet found a match; avoid making every scanned page COW.
+  4) Separate same-tenant sharing, inter-tenant sharing, large-page mappings, and any existing content-scanning rate limit.
+  5) Ask what physical and timing observations a malicious tenant can gain even when shared contents are protected by COW.
+OUTER RINGS:
+  R2: a concurrent writer modifies the candidate during verification.
+  R3: tenants diverge rapidly and the backing footprint expands under host overcommit.
+  R4: cross-tenant timing or disturbance leaks shared-content facts; determine an isolation policy.
+  R5: compute net benefit = freed RAM value − scanner CPU − future write faults; identify when sharing loses.
+FIRST INVALID ASSUMPTION: A matching digest proves equal data, or COW sharing has no observable guest latency.
+MANUAL EXECUTION: CONSTRUCTED: 3 identical 4096-byte pages → 1 backing frame before metadata rather than 3; calculate bytes saved, then add the two future COW pages after writes.
+REQUIRED OBSERVATION: Deduplicated resident bytes, scanner CPU, COW faults, tenant timing correlation and policy settings.
+PRIMARY SOURCE CODES: E2,E7,E22
+
+Q08 Sleep and proportional CPU service | SCHEDULING
+ASK: One guest computes continuously; another repeatedly blocks for I/O. Distinguish CPU share while runnable from CPU consumed over elapsed wall time. Compare a correct lottery compensation mechanism with Linux EEVDF.
+VERIFIED BOUNDARY: A sleeping client is not demanding CPU; consuming less CPU while blocked is not itself an unfair allocation. Waldspurger's compensation tickets offset an unfinished quantum without granting extra EXPECTED total CPU service when applied as specified. Linux's EEVDF uses virtual lag, eligibility and deadlines, not lottery draws.
+R1: OPERATIONS IN REQUIRED CAUSAL ORDER:
+  1) Count actual CPU execution time, runnable time and wall-clock time separately before defining a share violation.
+  2) Read the thesis' compensation formula: grant a temporary increase inversely related to quantum fraction consumed, then clear transient compensation after the designated allocation.
+  3) Derive expected SERVICE time after compensation, not merely the probability of winning a draw.
+  4) From Linux EEVDF docs, identify lag, virtual deadline and delayed dequeue. Trace a task's sleep and wake without assuming that vruntime resets to zero.
+  5) Contrast short-window probabilistic drift and deterministic stride guarantees, including the multi-client error example.
+OUTER RINGS:
+  R2: many guests sleep and wake; what does compensation do to runnable competitors?
+  R3: I/O stalls dominate; CPU share correction cannot repair slow storage.
+  R4: guest intentionally yields; show why correct compensation does not automatically steal extra CPU.
+  R5: sleep/wakeup accounting, rounding and scheduler overhead at high frequency.
+FIRST INVALID ASSUMPTION: More lottery wins means more CPU service, or Linux EEVDF is just stride scheduling with another name.
+MANUAL EXECUTION: PUBLISHED thesis example: base tickets 400 and 400; one client uses 1/5 of a quantum, so temporary draw tickets 400/(1/5)=2000. Reconcile more lottery wins with less CPU per winning quantum.
+REQUIRED OBSERVATION: vCPU runtime and runnable delay (not guest wall time alone), scheduler lag and I/O wait.
+PRIMARY SOURCE CODES: E4,E5
+
+Q09 Running but not progressing vCPUs | DIAGNOSIS
+ASK: A guest receives its allocated CPU time, but its work rate drops when the host gets busy. Demonstrate the lock-holder preemption mechanism and compare host interventions.
+VERIFIED BOUNDARY: A virtual CPU can spin while the vCPU holding its guest lock is not scheduled. KVM has mechanisms such as pause-loop exiting to respond to contention, but no guarantee that every spin is waste or every vCPU should be co-scheduled.
+R1: OPERATIONS IN REQUIRED CAUSAL ORDER:
+  1) Separate CPU consumed in a spin loop from guest lock-protected work completed.
+  2) Trace guest vCPU owner holding a lock, host preempting that vCPU, and sibling guest vCPU spinning while the owner is off CPU.
+  3) Identify exactly how the host detects a PAUSE-loop or receives a paravirtual yield request in the selected architecture.
+  4) Compare yielding, waking the lock holder, gang/co-scheduling and a CPU reservation; state which resource each consumes.
+  5) Distinguish SMT sibling security policies from strict guest-vCPU co-scheduling.
+OUTER RINGS:
+  R2: multiple guests need co-scheduling and host cores are finite.
+  R3: false positive spin detection yields a vCPU doing useful work.
+  R4: malicious guest intentionally creates spin patterns; what CPU share is charged?
+  R5: throughput, runnable delay and oversubscription change the best policy over time.
+FIRST INVALID ASSUMPTION: Receiving 100% of entitled CPU cycles implies useful guest progress.
+MANUAL EXECUTION: CONSTRUCTED: vCPU-A preempted while holding a lock for 200 µs; vCPU-B spins for 200 µs. Report CPU consumed and lock-protected operations completed separately.
+REQUIRED OBSERVATION: kvm_exit pause-loop reason, vCPU scheduling, guest lock wait time and work units per CPU-second.
+PRIMARY SOURCE CODES: E4,E25,E5
+
+Q10 Hierarchical shares and work done by a storage VM | RESOURCE ACCOUNTING
+ASK: A tenant creates more VMs inside an unchanged share. The controller VM processes requests for several tenants. How should nested shares compose and which party bears service CPU cost?
+VERIFIED BOUNDARY: Waldspurger's tickets/currencies support modular resource-rights grouping. The OSDI 1999 resource-container argument separates resource principals from execution contexts. This does NOT prove current AHV attributes all CVM CPU to requesters or that per-request attribution is possible.
+R1: OPERATIONS IN REQUIRED CAUSAL ORDER:
+  1) First divide the physical CPU budget between two tenants, before allocating each tenant's budget to its own child VMs.
+  2) Trace whether adding a child VM can change an unrelated tenant's share.
+  3) Name the request principal before crossing into the storage service execution domain.
+  4) Check work serving many clients: shared batching, metadata, replication and background jobs cannot all be assigned uniquely without a policy.
+  5) State reservation or minimum capacity for critical services separately from per-request billing.
+OUTER RINGS:
+  R2: a shared batch contains requests from both tenants; define a charging rule.
+  R3: controller VM backlog grows and its processing lags incoming work; identify which delay is charged to whom.
+  R4: tenant issues low-payload but expensive requests; per-byte accounting fails.
+  R5: at fleet scale accounting's measurement work itself consumes CPU.
+FIRST INVALID ASSUMPTION: Storage-VM CPU belongs to nobody, or billing every thread's CPU to the process executing it always gives fair tenant accounting.
+MANUAL EXECUTION: CONSTRUCTED: tenants A:B = 2:1 and A's children weights = 3:1. Derive each child share of TOTAL host CPU, not merely of A's subtree.
+REQUIRED OBSERVATION: Attributable CPU/request under mixed I/O, shared background work and controller service reserve.
+PRIMARY SOURCE CODES: E4,E19,E8
+
+Q11 Durability is a promise made by each layer | STORAGE
+ASK: A guest writes a file and calls fsync. Trace which completion can be merely buffered, which is durable under the actual device contract, and what failures can invalidate the promise.
+VERIFIED BOUNDARY: QEMU cache.writeback can acknowledge data in host page cache pending later guest flush. QEMU cache.direct avoids HOST page cache; cache.no-flush can sacrifice crash durability. Nutanix Frodo is a documented alternative I/O path, but the precise replica-ack durability rule must be checked in the specific product version.
+R1: OPERATIONS IN REQUIRED CAUSAL ORDER:
+  1) Trace application write, guest filesystem, virtual block command, virtqueue, backend, and authoritative storage. Mark which steps are optional in the chosen stack.
+  2) Separate write()/pwrite() return, block completion, flush completion, fsync() return and acknowledged replica state.
+  3) For each ACK, name the actor issuing it and the volatile state that might still disappear.
+  4) Show how errors from asynchronous writeback reach one or more file descriptors; compare to documented fsyncgate history rather than claiming one fsync success proves everything.
+  5) Decide the promised crash/failure model before discussing replicas or barriers.
+OUTER RINGS:
+  R2: overlapping writes and flush ordering for multiple vCPUs.
+  R3: source-host, drive or replica fails after an ACK; identify which promise must have survived and which didn't.
+  R4: a guest disables flushing; who is then entitled to assume durability?
+  R5: measure percentile latency of the true durable completion, not just write acceptance.
+FIRST INVALID ASSUMPTION: Data in host RAM is equivalent to durable media; a successful retry necessarily repairs a prior writeback error.
+MANUAL EXECUTION: CONSTRUCTED: 4096-byte write, host reports success, then device loses power before a valid flush. Determine what was actually promised by the selected cache mode.
+REQUIRED OBSERVATION: Block flush traces, errors, replica commit telemetry and isolated crash-recovery experiments, not a claim from one happy fsync.
+PRIMARY SOURCE CODES: E1,E8,E9,E20
+
+Q12 Three caches with different contracts | STORAGE / ALLOCATION
+ASK: Guest cache, QEMU host page cache and controller cache can hold copies of the same block. Under pressure which copies should persist and what benefit could a duplicate still provide?
+VERIFIED BOUNDARY: Copies can overlap, but guest page cache may be bypassed by guest direct I/O and QEMU cache.direct may avoid the HOST page cache. Lower layers see requests that passed upper layers (reads) but can also process writes and other traffic. Different layers also hold different durability and tenant-sharing responsibilities.
+R1: OPERATIONS IN REQUIRED CAUSAL ORDER:
+  1) Trace one read and one write through the precise configured cache path; do not assume all three caches were populated.
+  2) For each hit, name avoided I/O and latency saved; for each copy, name RAM cost and its owner.
+  3) Separate cache clean evictability from dirty writeback obligations.
+  4) Under balloon pressure, derive what a dropped guest cache page does to later READ demand without assuming it will be reread.
+  5) Explain how a controller shared by guests may exploit cross-VM data reuse even when each guest page cache is private.
+OUTER RINGS:
+  R2: one writer and one reader observe shared block copies; enforce coherence ordering.
+  R3: controller cache becomes cold after restart; distinguish refill storm from corruption.
+  R4: one tenant churns shared cache capacity; consider admission and isolation.
+  R5: allocate space using measured marginal misses, accounting for conditional requests between layers.
+FIRST INVALID ASSUMPTION: Every duplicate is completely wasted, or cache=none means no cache exists at any layer.
+MANUAL EXECUTION: CONSTRUCTED: three distinct 4096-byte allocations for one 4096-byte clean block consume 12288 bytes; only count all three when trace proves all exist.
+REQUIRED OBSERVATION: Cache hit/miss/reuse patterns per tier, overlap, service latency and flush costs.
+PRIMARY SOURCE CODES: E9,E8,E2
+
+Q13 Estimate cache usefulness from sampled reuse | ESTIMATION
+ASK: For each virtual disk, estimate misses as cache capacity changes without running a separate full simulation for every capacity.
+VERIFIED BOUNDARY: For LRU, stack/reuse-distance methods construct a full miss-ratio curve in one pass. SHARDS chooses locations by hash so ALL references to a selected block remain in the sample, then approximately rescales distances by sample rate. Fixed-size adaptive sampling bounds memory, not adversarial error.
+R1: OPERATIONS IN REQUIRED CAUSAL ORDER:
+  1) Define a block identity and its reuse distance as the number of DISTINCT intervening blocks since the last access to the same block.
+  2) Use one trace and compute the reuse-distance histogram without skipping repeated references.
+  3) Explain why independent event sampling would break reuse pairs; then replace it with spatial hash selection.
+  4) Derive approximate distance scaling by 1/R and state why it is NOT exact on arbitrary traces.
+  5) Compare fixed sampling fraction with adaptive bounded-size sample; identify the threshold update and histogram rescaling.
+  6) When a cache does not have the LRU stack property, state what must be simulated or estimated separately.
+OUTER RINGS:
+  R2: shared blocks and per-tenant isolation change who owns a cache hit.
+  R3: hot blocks excluded by hash may distort the curve; compare error across many samples.
+  R4: a tenant intentionally changes access pattern to win more cache allocation.
+  R5: workload drift causes new curves; bound recommputation cost and oscillation.
+FIRST INVALID ASSUMPTION: Picking random references preserves reuse distance, or a fixed sample-size guarantees a fixed error.
+MANUAL EXECUTION: CONSTRUCTED access trace A,B,C,A,B,A. Write the distinct intervening block set before each reuse and derive LRU misses at capacities one, two and three.
+REQUIRED OBSERVATION: Whole-trace exact MRC versus sampled estimate; report error distribution by cache size and workload (not median alone).
+PRIMARY SOURCE CODES: E10
+
+Q14 Detect unencrypted VM I/O without trusting the guest | PATENT-DERIVED DESIGN
+ASK: A VM is expected to keep its data confidential. Inspect an I/O transaction without trusting the guest and decide whether the bytes suggest unencrypted data, while bounding inspection overhead.
+VERIFIED BOUNDARY: US 12,259,982 is a 2025 issued Nutanix patent naming Carl Waldspurger and Bijan Mottahedeh. It explicitly proposes inspection at interception/DMA, randomness/entropy checks, compression reduction, sampling I/O and possible alerts, suspension or I/O errors. A patent does not prove the feature was deployed or its classifier accuracy. High-entropy plaintext that is compressed and ciphertext can be difficult to distinguish.
+R1: OPERATIONS IN REQUIRED CAUSAL ORDER:
+  1) Name the actual observation point: DMA bounce buffer, host QEMU I/O emulation, or device; show what bytes are observable given guest memory encryption.
+  2) Derive a candidate classifier based on entropy or compression of observed bytes as explicitly described in patent claims.
+  3) Construct clean plaintext, precompressed plaintext, ciphertext and mixed blocks; determine whether candidate evidence can distinguish each.
+  4) Specify aggregation across blocks/transactions and a false-positive cost BEFORE setting a threshold.
+  5) Bound per-request work so the checker cannot itself dominate storage latency.
+OUTER RINGS:
+  R2: inspection threads race I/O completion; decide what needs a stable copy.
+  R3: a wrong decision persists and false alarms become operational failures.
+  R4: attacker modifies I/O contents to evade the classifier; distinguish a detector from a cryptographic proof.
+  R5: many active VMs; bound scanning CPU and sampling bias for sparse misconfiguration.
+FIRST INVALID ASSUMPTION: Random-looking data is necessarily encrypted; a simple entropy threshold is a correctness proof.
+MANUAL EXECUTION: CONSTRUCTED: inspect 4096 bytes of plain ASCII, 4096 bytes of compressed data and 4096 bytes of ciphertext. Compare actual compressibility and empirical entropy; mark which cases remain indistinguishable.
+REQUIRED OBSERVATION: False positive/negative rates and CPU latency overhead on labeled data under actual confidential-VM configurations.
+PRIMARY SOURCE CODES: E11
+
+Q15 Memory reclamation can increase storage work | DIAGNOSIS
+ASK: When a host reclaims guest RAM, why could a storage-controller VM become slower and force further host pressure? Identify the exact dependency cycle instead of assuming every reclaim causes deadlock.
+VERIFIED BOUNDARY: Ballooning can reclaim guest cache and increase future storage reads. A Nutanix AHV storage controller serves virtual disk I/O and needs CPU and memory. A circular-wait deadlock is CONDITIONAL: the reclaim path must wait for I/O whose service cannot acquire a needed resource. Patent US 12,147,844 describes buffering swap-bound pages and attempting alternate reclaim, not a documented product deadlock.
+R1: OPERATIONS IN REQUIRED CAUSAL ORDER:
+  1) Trace guest memory pressure to a specific guest cache page being dropped; only a subsequent access causes a re-read.
+  2) Trace host swap write and the backend service resources required for progress.
+  3) Write a wait-for graph and show whether a real cycle exists, not simply two slow paths.
+  4) Choose which service must have an independent CPU/memory reserve or nonblocking path.
+  5) For a temporary buffer, derive occupancy as input rate minus successful drain and alternative-reclaim rate; check boundedness.
+  6) During mass boot, distinguish zero-page sharing from device image read workload and driver availability.
+OUTER RINGS:
+  R2: several guests recreate the same cache demand and share a controller queue.
+  R3: controller VM is stalled; which reclaim tasks can still make progress?
+  R4: one tenant thrashes; impose resource isolation at request and memory levels.
+  R5: test stability of feedback loop, measurement delay and service headroom.
+FIRST INVALID ASSUMPTION: Reclaiming a page immediately causes one I/O, or a patent proves a production deadlock.
+MANUAL EXECUTION: CONSTRUCTED: 128 MiB buffer, 256 MiB/s incoming swap-bound bytes, zero drain → calculate seconds until full; introduce a measured drain rate before deriving steady state.
+REQUIRED OBSERVATION: Actual cache re-reads after reclaim, controller queue depth, CPU pressure and page-out stalls.
+PRIMARY SOURCE CODES: E2,E8,E12
+
+Q16 CXL/DRAM tiers as a shared hardware/software problem | DESIGN
+ASK: Place multiple virtual machines in local DRAM and slower CXL-backed memory, and decide which work must be done by hardware versus software.
+VERIFIED BOUNDARY: Memstrata OSDI 2024, coauthored by Waldspurger, combines hardware-managed cacheline-granularity tiering, page coloring for tenant isolation, and online slowdown estimation with dedicated DRAM-page reallocation. Treating it as a generic per-page heat ranking omits the paper's main architecture. It reports PEBS limitations in virtualized systems, not 'PEBS always works'.
+R1: OPERATIONS IN REQUIRED CAUSAL ORDER:
+  1) Name performance tier, capacity tier and hardware-managed local cache; distinguish local cachelines from software-owned dedicated DRAM pages.
+  2) Identify where cross-VM cacheline conflicts arise under hardware-managed tiering and what page coloring changes.
+  3) Explain the observable metrics available to the host when hardware implements the fine-grained placement.
+  4) Read Memstrata §4.2–4.3: estimate slowdown, identify outliers, and move dedicated local-memory pages; distinguish this from migrating every hot page.
+  5) Derive when migrating a unit of memory is worthwhile after migration cost, measurement delay and expected slowdown reduction.
+OUTER RINGS:
+  R2: several VMs compete for same local memory; separate within-VM from cross-VM conflicts.
+  R3: phase changes invalidate a slowdown estimate; test controller response.
+  R4: a VM changes access pattern to win dedicated pages; define allocation policy.
+  R5: compare hardware tiering with software page migration and large-page preservation as fast-tier capacity changes.
+FIRST INVALID ASSUMPTION: Sort every page by hotness and fill fast memory: hardware line-level contention, estimation and movement can dominate.
+MANUAL EXECUTION: PUBLISHED Memstrata method uses a default 10-second measurement interval and at most a fraction of a VM's pages moved per adjustment step. Extract the actual paper values and compute budget only after the chosen version is fixed.
+REQUIRED OBSERVATION: Page exchange rate, local miss estimate, CXL bandwidth, outlier slowdown and cross-tenant interference.
+PRIMARY SOURCE CODES: E13
+
+Q17 Migration that will not converge | MIGRATION
+ASK: A VM changes memory while pages are being copied. Determine the condition under which pre-copy reduces remaining dirty state, and the costs of stopping, throttling or switching to post-copy.
+VERIFIED BOUNDARY: NSDI 2005 demonstrates workloads with hot writable working sets that must be copied in final stop phase. Comparing total writes/s to link bytes/s alone is insufficient because repeated writes to a page count as one dirty page in a round. Post-copy can resume with missing pages, but source failure after switch can lose the VM.
+R1: OPERATIONS IN REQUIRED CAUSAL ORDER:
+  1) Separate resident bytes from distinct dirty pages per copy interval.
+  2) Compute source memory transfer, guest dirties during transfer, and the remaining DISTINCT dirty set for each round.
+  3) Identify the hot writable working set that repeatedly dirties, and bound the final stop-and-copy pause.
+  4) Compare guest write throttling, compression, better bandwidth, sharing-aware transfer, and post-copy demand faults.
+  5) For migration of shared pages, distinguish transferred page contents from source PFN/COW relationships; read the 2024 SLM counterexample.
+  6) Trace acknowledged storage writes across source/destination switch without assuming all source local data migrates automatically.
+OUTER RINGS:
+  R2: several migrations share NIC and storage traffic.
+  R3: source crash during post-copy, or failure during switchover.
+  R4: guest intentionally dirties its entire memory; admission and throttle policies.
+  R5: host evacuation time depends on the slowest VM and total spare RAM plus network budget.
+FIRST INVALID ASSUMPTION: Migration time = memory / bandwidth, or ordinary migration necessarily preserves all deduplication relations.
+MANUAL EXECUTION: CONSTRUCTED: migration network 500 MiB/s and distinct dirty production up to 600 MiB/s when every write targets a new page. Derive whether iterative pre-copy can shrink its remaining bytes under those assumptions.
+REQUIRED OBSERVATION: Dirty bitmap per interval, effective link throughput, post-copy fault rate, switchover pause and source-failure recovery.
+PRIMARY SOURCE CODES: E14,E15,E17
+
+Q18 Upgrade QEMU or kernel without evacuating the guest | UPGRADE
+ASK: Which exact state must survive replacing QEMU, and how does the answer change for replacing the host kernel or keeping assigned devices alive?
+VERIFIED BOUNDARY: Current QEMU CPR docs describe cpr-reboot, cpr-transfer and cpr-exec. They do not mean an arbitrary reboot works with any RAM backend. cpr-reboot can optionally cross kernel reboot when persistent shared memory and other conditions hold. cpr-transfer/exeс have different fd and virtual address semantics. All CPR modes stop guest execution before state transfer.
+R1: OPERATIONS IN REQUIRED CAUSAL ORDER:
+  1) Inventory guest CPU registers, virtual device queues, kernel KVM vCPU state, RAM backing, VFIO/IOMMU device state and block storage state.
+  2) Choose one documented CPR mode. Verify memory backend and FD preservation requirements before asserting a valid handover.
+  3) For QEMU exec, distinguish guest physical page identity from newly mapped QEMU virtual address.
+  4) For reboot, check whether guest RAM is persistent across the host reboot or must be saved externally; read actual device suspension requirement.
+  5) Show which run state prevents in-flight DMA from corrupting restored device/memory ownership.
+  6) Define rollback if a new QEMU or host kernel fails and state formats are not compatible.
+OUTER RINGS:
+  R2: CPU threads and devices race the old process as handover begins.
+  R3: new QEMU cannot load the state or new kernel fails; test fallback and guest recovery.
+  R4: guest controls an assigned DMA device; which mappings remain protected across handover?
+  R5: rolling upgrade across hosts needs compatibility bounds and capacity planning.
+FIRST INVALID ASSUMPTION: Guest RAM surviving alone means the VM survived, or every CPR mode can reboot a host transparently.
+MANUAL EXECUTION: CONSTRUCTED: a 4 GiB guest RAM image remains in a shared memory file, while the new QEMU maps it at another host VA. Derive which references must use guest-physical IDs or file offsets rather than raw old VAs.
+REQUIRED OBSERVATION: Guest-visible pause, preserved device types, state-image compatibility, residual migration traffic and failed restart recovery.
+PRIMARY SOURCE CODES: E16,E1
+
+Q19 Fleet profiling without claiming perfect attribution | ESTIMATION / OPERATIONS
+ASK: Estimate where CPU time goes across many hosts and tenants with a bounded profiling cost. Which cost can be attributed to guest code, host code or shared storage, and which cannot be inferred from a sample alone?
+VERIFIED BOUNDARY: ProfileMe MICRO 1997 proposes hardware support for tagging selected instructions, recording pipeline events, and notifying software via interrupt. It is not equivalent to universal contemporary guest PMU support. A sample of an instruction is not proof of exact attribution of EVERY CPU cycle or every shared-backend request; sampling frequency and interrupt cost vary.
+R1: OPERATIONS IN REQUIRED CAUSAL ORDER:
+  1) Define target: cycles, elapsed time, stalls, CPU service by task, or CPU charged to original request.
+  2) Choose timer-based samples or PMU/event samples and list selection bias and instruction-skid limitations.
+  3) Use ProfileMe's actual four hardware tasks (choose, tag, record, interrupt) before arguing overhead.
+  4) Estimate binomial error for a function that occupies a small fraction of samples; exclude timer events if the sampling period itself is correlated with workloads.
+  5) Define attribution boundary for nested guest/host mode and shared storage services. Treat unknown tenant ownership as unknown, not free.
+  6) Normalize across CPU architectures before aggregating; missing hosts must not disappear from denominator without a flag.
+OUTER RINGS:
+  R2: vCPU and host profiler interrupts perturb execution.
+  R3: profiler stops on overloaded hosts; fleet averages become selection-biased.
+  R4: guest code/addresses in samples cross trust boundaries; limit release.
+  R5: detect regression with enough independent hosts, samples and confidence.
+FIRST INVALID ASSUMPTION: Lower sampling rate makes overhead zero and reporting exact; a sample count cannot prove attribution for unsampled work.
+MANUAL EXECUTION: CONSTRUCTED: 10000 random instruction samples and 100 samples from a function → estimated 1% activity; derive standard error under an independent sampling assumption.
+REQUIRED OBSERVATION: PMU sampling overhead versus disabled-control hosts, attribution coverage, confidence intervals, lost event count and fleet selection bias.
+PRIMARY SOURCE CODES: E18,E19
+
+Q20 Cooperation, transparency and the dishonest guest | JUDGMENT
+ASK: If every guest could cooperate with a hypervisor, which policies would simplify, and which host responsibilities must stay regardless of guest help?
+VERIFIED BOUNDARY: ESX 2002 targets unmodified guests yet uses optional in-guest balloon drivers when supported; transparent sharing, host paging and sampled estimation remain available. Guest cooperation can improve knowledge, but does not transfer hardware authority or guarantee truthful input. Neither side makes the other's checks redundant.
+R1: OPERATIONS IN REQUIRED CAUSAL ORDER:
+  1) For page reporting, ballooning, sharing, activity sampling, reclaim and tiering, label guest knowledge, host control and protocol assurance.
+  2) Separate voluntary guest reporting from host authorization to recycle machine frames.
+  3) Trace guest boot, crash, out-of-date agent and malicious status; identify fallback without assuming the agent always exists.
+  4) Compare transparent measurements with guest-reported hotness, including accuracy and sampling overhead.
+  5) Identify where shared hardware constraints, IO-MMU safety, isolation and accounting remain host responsibilities.
+  6) Use the specified threat model to decide what a report is allowed to influence but never blindly authorize.
+OUTER RINGS:
+  R2: cooperative and unmodified guests compete for same physical pool.
+  R3: balloon driver dies mid-inflation or free-page report comes too late.
+  R4: guest deliberately lies about free or hot pages to gain RAM; what can the host independently verify?
+  R5: mixed versions and transient upgrades change which cooperation features exist.
+FIRST INVALID ASSUMPTION: Full cooperation makes transparent mechanisms and host protection checks unnecessary.
+MANUAL EXECUTION: CONSTRUCTED: guest reports 1000 free pages of 4096 bytes = 4096000 candidate bytes; derive why a report alone does not prove these frames can be reused before the protocol permits it.
+REQUIRED OBSERVATION: Feature availability across guest OS versions, actual reclaim completion, misreport handling, guest slowdown and fallback time.
+PRIMARY SOURCE CODES: E2,E3,E6,E13,E21,E22
+
+PRIMARY EVIDENCE LEDGER — ORIGINAL DOCUMENT OR SPECIFICATION BODY
+E1 | KVM UAPI, KVM_RUN, KVM_EXIT_IO/MMIO, ioeventfd | https://www.kernel.org/doc/html/latest/virt/kvm/api.html
+E2 | ESX OSDI 2002, §3.1–3.3 and §4.2 | https://www.usenix.org/legacy/events/osdi2002/tech/waldspurger/waldspurger_html/esx-mem-html.html
+E3 | ESX OSDI 2002, §5.1–5.3 and §6 | https://www.usenix.org/legacy/events/osdi2002/tech/waldspurger/waldspurger_html/node14.html
+E4 | Waldspurger 1995 thesis, Chapters 2–4 | https://dspace.mit.edu/entities/publication/bdf65551-de4e-46b4-8f8d-9e89da6c01b4
+E5 | Linux scheduler EEVDF current documentation | https://kernel.org/doc/html/latest/scheduler/sched-eevdf.html
+E6 | Linux cgroup v2 memory controller memory.min/low/high/max | https://www.kernel.org/doc/html/latest/admin-guide/cgroup-v2.html
+E7 | VMware TPS salting and per-VM default | https://knowledge.broadcom.com/external/article/323624/additional-transparent-page-sharing-mana.html
+E8 | Nutanix Bible AHV Frodo vs traditional I/O path | https://www.nutanixbible.com/5b-book-of-ahv-how-it-works.html
+E9 | QEMU cache modes, writeback, direct, no-flush | https://www.qemu.org/docs/master/system/qemu-manpage.html
+E10 | SHARDS FAST 2015 original paper §§2–4 | https://www.usenix.org/system/files/conference/fast15/fast15-paper-waldspurger.pdf
+E11 | Nutanix patent issued 2025, US 12,259,982, technical description and claims | https://patents.justia.com/patent/20230237169
+E12 | Nutanix patent issued 2024, US 12,147,844, swap-buffer description | https://patents.google.com/patent/US12147844B2/en
+E13 | Memstrata OSDI 2024 full paper §§3–6 | https://www.usenix.org/system/files/osdi24-zhong-yuhong.pdf
+E14 | Live Migration NSDI 2005 original paper, WWS pre-copy | https://www.usenix.org/legacy/publications/library/proceedings/nsdi05/tech/full_papers/clark/clark_html/index.html
+E15 | QEMU postcopy migration design and failure limits | https://www.qemu.org/docs/master/devel/migration/postcopy.html
+E16 | QEMU CPR current modes, constraints and examples | https://www.qemu.org/docs/master/devel/migration/CPR.html
+E17 | Binghamton sharing-aware live migration, CCGrid 2024, §§3–4 | https://kartikgopalan.github.io/publications/ccgrid24.pdf
+E18 | ProfileMe MICRO 1997 instruction sample mechanism | https://www.waldspurger.org/carl/papers/profileme-micro30.pdf
+E19 | Resource Containers OSDI 1999 publication | https://research.google/pubs/resource-containers-a-new-facility-for-resource-management-in-server-systems/
+E20 | PostgreSQL primary project history of fsync failure | https://wiki.postgresql.org/wiki/Fsync_Errors
+E21 | KVM MMU notifier ordering and secondary translations | https://docs.kernel.org/mm/mmu_notifier.html
+E22 | Linux KSM documentation and merge scope | https://docs.kernel.org/admin-guide/mm/ksm.html
+E23 | IITB KVM PA1 assignment specification | https://www.cse.iitb.ac.in/~cs695/pa/pa1.html
+E24 | Nutanix Staff Engineer Linux & Kernel job requirements | https://careers.nutanix.com/en/jobs/31520/staff-engineer-linux-kernel/
+E25 | Linux KVM VMX pause-loop exit review | https://lists.ubuntu.com/archives/kernel-team/2010-March/008678.html
+
+CROSS-SOURCE LIMITATIONS
+- The old 1995 dissertation's scheduling model and modern Linux EEVDF are not identical implementations.
+- The 2002 VMware ESX memory model is not a statement of AHV 2026 production settings.
+- A patent explains an implementation idea and claims, not production deployment, actual detection accuracy or the interviewer's preferences.
+- QEMU latest/master docs may differ from a version pinned by your distro; use QEMU --version and exact source revision before asserting its CPR or KVM behavior.
+- User's personal hardware features, current /dev/kvm access, low-level measured addresses and availability of real course starter code were NOT measured during this research.
+- This is a practice bank with premises verified where possible. It deliberately withholds implementation solutions and keeps tests as tasks.
+- New primary research tracks include ESX historical mechanisms, thesis scheduling proof and hierarchy, the 2025 issued patent, Memstrata middle-section algorithm, QEMU UAPI and CPR, SHARDS FAST 2015 methodology, and cross-tenant sharing changes.
+- Some source references are older originals; later linked changes are identified as separate versions rather than silently merged.
+
+TRACE RULE FOR EACH QUESTION
+ENTER from one user-visible operation -> record currently existing actor and state -> name next called function or hardware mechanism -> derive only the next newly available state -> identify another actor that can modify it -> record one invariant -> calculate the smallest divergent path -> identify which source or live measurement would refute the inference.
