@@ -1,0 +1,4 @@
+# first,second,third; original numeric fixture (not course data)
+4096,8192,16384
+8192,16384,4096
+16384,4096,8192

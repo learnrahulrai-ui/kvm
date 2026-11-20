@@ -1,0 +1,4 @@
+# first,second,third; original numeric fixture (not course data)
+1,2,4096
+2,4096,1
+4096,1,2
