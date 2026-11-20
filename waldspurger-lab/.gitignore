@@ -1,0 +1,14 @@
+/build/
+/runs/
+**/__pycache__/
+*.pyc
+*.qcow2
+*.qcow
+*.img
+*.raw
+*.qmp
+*.pid
+*.serial.log
+*.csv
+*.trace
+*.log
