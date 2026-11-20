@@ -1,0 +1,14 @@
+Lottery accounting
+GOAL: Record the CPU time of eligible programs and return a consistent snapshot.
+CAUSE: eligible task -> ticket pool -> winner -> tick count
+DATA: pstat.inuse | pstat.tickets | pstat.pid | pstat.ticks
+CORRECTION: double count -> biased draw -> one eligible scan -> valid draw
+INTERVIEWER TRAP: forked child -> inherited ticket -> pool sum -> wrong share
+MANUAL CALCULATION: A parent with 10 tickets and a child inheriting 10 contributes 20 tickets when both are runnable, not 10.
+EVIDENCE STATUS: Instructor identifies ticket double-counting as a known implementation failure mode; not a verified incident.
+PRIMARY/RELEVANT SOURCE: https://www.cs.virginia.edu/~cr4bd/4414/S2020/lottery.html
+
+Four separate, colorful, three-dimensional vector drawings live in visuals/.
+Image 01: cause chain. Image 02: vertically stacked data fields. Image 03: invalid/valid relationship comparison. Image 04: counterexample/trap.
+The drawings express concept-level relationships, not tested implementation source. They contain no assignment answer or bug-fix patch.
+Do not describe a related Linux or QEMU bug as an observed failure in the xv6/JOS/Pintos lab.

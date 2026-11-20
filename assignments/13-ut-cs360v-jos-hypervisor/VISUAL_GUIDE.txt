@@ -1,0 +1,14 @@
+JOS inside a virtual machine
+GOAL: Construct guest memory, hypercall boundaries, and device handling while enforcing isolation.
+CAUSE: JOS guest -> EPT -> hypercall -> host I/O
+DATA: guest.env | ept.page | vmexit.code | disk.req
+CORRECTION: mutable guest -> double read -> owned snapshot -> checked action
+INTERVIEWER TRAP: one vCPU exit -> other vCPU -> shared record -> racing edit
+MANUAL CALCULATION: Two guest vCPUs share the guest physical memory; a VM exit by one does not make the other stop.
+EVIDENCE STATUS: No exact JOS coursework bug verified; the shared-memory race is a constructed interviewer case.
+PRIMARY/RELEVANT SOURCE: https://www.cs.unc.edu/~porter/courses/comp790/s20/lab6b.html
+
+Four separate, colorful, three-dimensional vector drawings live in visuals/.
+Image 01: cause chain. Image 02: vertically stacked data fields. Image 03: invalid/valid relationship comparison. Image 04: counterexample/trap.
+The drawings express concept-level relationships, not tested implementation source. They contain no assignment answer or bug-fix patch.
+Do not describe a related Linux or QEMU bug as an observed failure in the xv6/JOS/Pintos lab.

@@ -1,0 +1,14 @@
+Cache trace simulator
+GOAL: Map addresses to sets and count hits, misses and eviction using per-set recency.
+CAUSE: trace address -> set lookup -> tag match -> LRU
+DATA: cache.set | line.valid | line.tag | line.age
+CORRECTION: access sample -> reuse broken -> block sampling -> reuse preserved
+INTERVIEWER TRAP: one hot block -> sample misses -> curve bias -> wrong capacity
+MANUAL CALCULATION: For 64 sets and 4 ways, capacity is 256 cache lines; 16-byte blocks give 4096 data bytes excluding metadata.
+EVIDENCE STATUS: No exact Cache Lab implementation bug verified; SHARDS 2015 is original sampling method, not a bug.
+PRIMARY/RELEVANT SOURCE: https://www.usenix.org/system/files/conference/fast15/fast15-paper-waldspurger.pdf
+
+Four separate, colorful, three-dimensional vector drawings live in visuals/.
+Image 01: cause chain. Image 02: vertically stacked data fields. Image 03: invalid/valid relationship comparison. Image 04: counterexample/trap.
+The drawings express concept-level relationships, not tested implementation source. They contain no assignment answer or bug-fix patch.
+Do not describe a related Linux or QEMU bug as an observed failure in the xv6/JOS/Pintos lab.

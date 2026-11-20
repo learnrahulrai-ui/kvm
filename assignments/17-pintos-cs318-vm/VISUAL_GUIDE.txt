@@ -1,0 +1,14 @@
+Frame eviction and swap
+GOAL: Choose a reclaimable frame while tracking its reference, dirtiness and swap destination.
+CAUSE: fault -> frame lookup -> clock scan -> swap
+DATA: frame.owner | frame.access | frame.dirty | swap.slot
+CORRECTION: pinned frame -> evict early -> pin checked -> safe eviction
+INTERVIEWER TRAP: access bit -> DMA pin -> clock choice -> wrong victim
+MANUAL CALCULATION: Clock search uses reference bits and a moving hand; smallest numeric frame index is not the victim rule.
+EVIDENCE STATUS: Linux upstream COW/pin race is a related real lifetime failure, not an identified Pintos bug.
+PRIMARY/RELEVANT SOURCE: https://lkml.iu.edu/hypermail/linux/kernel/2111.1/07621.html
+
+Four separate, colorful, three-dimensional vector drawings live in visuals/.
+Image 01: cause chain. Image 02: vertically stacked data fields. Image 03: invalid/valid relationship comparison. Image 04: counterexample/trap.
+The drawings express concept-level relationships, not tested implementation source. They contain no assignment answer or bug-fix patch.
+Do not describe a related Linux or QEMU bug as an observed failure in the xv6/JOS/Pintos lab.

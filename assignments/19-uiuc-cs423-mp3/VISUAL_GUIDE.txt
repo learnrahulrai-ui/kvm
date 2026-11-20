@@ -1,0 +1,14 @@
+Page-fault profiler
+GOAL: Sample running tasks without reading freed task state and expose ordered measurements.
+CAUSE: register PID -> sample worker -> fault deltas -> mmap
+DATA: pid.list | task.mm | fault.count | ring.sample
+CORRECTION: task exits -> worker reads -> lifetime hold -> safe sample
+INTERVIEWER TRAP: PID reused -> old task -> new task -> false continuity
+MANUAL CALCULATION: A cumulative fault count growing 1250→1290 in 2s is 20 faults/s over that sample; task identity must stay stable.
+EVIDENCE STATUS: No exact MP3 module defect verified; 2026 KSM UAF demonstrates a related lifetime trap.
+PRIMARY/RELEVANT SOURCE: https://lkml.iu.edu/2611.0/02293.html
+
+Four separate, colorful, three-dimensional vector drawings live in visuals/.
+Image 01: cause chain. Image 02: vertically stacked data fields. Image 03: invalid/valid relationship comparison. Image 04: counterexample/trap.
+The drawings express concept-level relationships, not tested implementation source. They contain no assignment answer or bug-fix patch.
+Do not describe a related Linux or QEMU bug as an observed failure in the xv6/JOS/Pintos lab.

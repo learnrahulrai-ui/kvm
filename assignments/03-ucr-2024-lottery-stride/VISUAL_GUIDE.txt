@@ -1,0 +1,14 @@
+Lottery versus stride
+GOAL: Compare random selection with deterministic pass-based selection under the same workload.
+CAUSE: tickets -> policy -> selection -> CPU
+DATA: proc.tickets | proc.pass | proc.state | proc.ticks
+CORRECTION: same work -> two policies -> same units -> fair comparison
+INTERVIEWER TRAP: random mean -> stride bound -> short interval -> wrong claim
+MANUAL CALCULATION: For 30:20:10 tickets, ideal shares are 1/2,1/3,1/6. A ten-quantum sample need not match those fractions.
+EVIDENCE STATUS: Published stride short-window counterexample; not an identified xv6 defect.
+PRIMARY/RELEVANT SOURCE: https://publications.csail.mit.edu/lcs/pubs/pdf/MIT-LCS-TR-667.pdf
+
+Four separate, colorful, three-dimensional vector drawings live in visuals/.
+Image 01: cause chain. Image 02: vertically stacked data fields. Image 03: invalid/valid relationship comparison. Image 04: counterexample/trap.
+The drawings express concept-level relationships, not tested implementation source. They contain no assignment answer or bug-fix patch.
+Do not describe a related Linux or QEMU bug as an observed failure in the xv6/JOS/Pintos lab.

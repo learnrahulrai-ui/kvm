@@ -1,0 +1,14 @@
+Lazy mapped files
+GOAL: Load file pages on first fault and keep MAP_SHARED changes observable and durable.
+CAUSE: mmap region -> page fault -> file page -> unmap
+DATA: vma.start | vma.end | pte.map | file.offset
+CORRECTION: freed mapping -> stale owner -> lifetime guard -> safe lookup
+INTERVIEWER TRAP: map moves -> scan runs -> owner freed -> invalid pointer
+MANUAL CALCULATION: Mapping 8192 bytes at 4096-byte pages spans two pages; writeback applies to dirty MAP_SHARED pages under the specified policy.
+EVIDENCE STATUS: Verified 2026 KSM anon_vma UAF during mremap and concurrent merge; related kernel VMA lifetime.
+PRIMARY/RELEVANT SOURCE: https://lkml.iu.edu/2611.0/02293.html
+
+Four separate, colorful, three-dimensional vector drawings live in visuals/.
+Image 01: cause chain. Image 02: vertically stacked data fields. Image 03: invalid/valid relationship comparison. Image 04: counterexample/trap.
+The drawings express concept-level relationships, not tested implementation source. They contain no assignment answer or bug-fix patch.
+Do not describe a related Linux or QEMU bug as an observed failure in the xv6/JOS/Pintos lab.

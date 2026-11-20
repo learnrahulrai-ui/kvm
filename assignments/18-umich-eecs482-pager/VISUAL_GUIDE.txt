@@ -1,0 +1,14 @@
+External virtual-memory pager
+GOAL: Translate faults into page residency and evict shared frames without leaving dangling mappings.
+CAUSE: fault -> reference bit -> clock -> disk
+DATA: frame.owners | frame.ref | frame.dirty | swap.block
+CORRECTION: one owner removed -> other owner alive -> all mappings -> safe eviction
+INTERVIEWER TRAP: one shared frame -> two address spaces -> single invalidate -> stale read
+MANUAL CALCULATION: Two virtual mappings of one frame require two mapping invalidations before freeing that frame.
+EVIDENCE STATUS: Linux 2026 KSM anon_vma UAF is a related ownership-lifetime race; not an identified class pager bug.
+PRIMARY/RELEVANT SOURCE: https://lkml.iu.edu/2611.0/02293.html
+
+Four separate, colorful, three-dimensional vector drawings live in visuals/.
+Image 01: cause chain. Image 02: vertically stacked data fields. Image 03: invalid/valid relationship comparison. Image 04: counterexample/trap.
+The drawings express concept-level relationships, not tested implementation source. They contain no assignment answer or bug-fix patch.
+Do not describe a related Linux or QEMU bug as an observed failure in the xv6/JOS/Pintos lab.

@@ -1,0 +1,14 @@
+VMX and EPT hypervisor
+GOAL: Run a virtual machine with a second-stage translation and controlled VM exits.
+CAUSE: guest address -> EPT lookup -> machine page -> VM exit
+DATA: ept.index | ept.entry | ept.flags | guest.page
+CORRECTION: stale EPT -> unsafe reuse -> invalidate EPT -> reuse later
+INTERVIEWER TRAP: guest PTE -> EPT entry -> device DMA -> different reach
+MANUAL CALCULATION: An EPT entry that maps a 2 MiB region represents 512 4 KiB base pages; host mapping lifetime is separate.
+EVIDENCE STATUS: Verified KVM notifier release race is related to secondary translation lifetime, not an exact JOS bug.
+PRIMARY/RELEVANT SOURCE: https://lkml.iu.edu/1704.3/00256.html
+
+Four separate, colorful, three-dimensional vector drawings live in visuals/.
+Image 01: cause chain. Image 02: vertically stacked data fields. Image 03: invalid/valid relationship comparison. Image 04: counterexample/trap.
+The drawings express concept-level relationships, not tested implementation source. They contain no assignment answer or bug-fix patch.
+Do not describe a related Linux or QEMU bug as an observed failure in the xv6/JOS/Pintos lab.

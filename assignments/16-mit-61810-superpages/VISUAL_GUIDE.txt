@@ -1,0 +1,14 @@
+Superpages and translation
+GOAL: Trade larger translation coverage against splitting cost and fine-grained ownership.
+CAUSE: small pages -> superpage -> TLB reach -> split
+DATA: pte.level | pte.flags | page.ref | split.queue
+CORRECTION: split racing -> freed folio -> held reference -> safe split
+INTERVIEWER TRAP: large mapping -> small write -> split needed -> invalid stale
+MANUAL CALCULATION: A 2 MiB page contains 512 base pages at 4 KiB each. Splitting changes translation granularity, not allocated bytes by itself.
+EVIDENCE STATUS: 2025 Linux THP deferred-split changes address races during migration/free; related mechanism.
+PRIMARY/RELEVANT SOURCE: https://lkml.iu.edu/2509.3/06589.html
+
+Four separate, colorful, three-dimensional vector drawings live in visuals/.
+Image 01: cause chain. Image 02: vertically stacked data fields. Image 03: invalid/valid relationship comparison. Image 04: counterexample/trap.
+The drawings express concept-level relationships, not tested implementation source. They contain no assignment answer or bug-fix patch.
+Do not describe a related Linux or QEMU bug as an observed failure in the xv6/JOS/Pintos lab.

@@ -1,0 +1,14 @@
+KVM hello-world internals
+GOAL: Translate guest events into host handling and re-enter the guest with coherent state.
+CAUSE: guest code -> KVM run -> exit data -> host action
+DATA: run.reason | run.io | guest.ram | vcpu.regs
+CORRECTION: exit pending -> save early -> completed exit -> reentry
+INTERVIEWER TRAP: guest stops -> sibling runs -> shared memory -> false freeze
+MANUAL CALCULATION: A 4 KiB page is 4096 bytes; a guest physical address is not interchangeable with the host virtual address returned by mmap.
+EVIDENCE STATUS: KVM API documents that pending I/O completion occurs on re-entering KVM_RUN.
+PRIMARY/RELEVANT SOURCE: https://www.kernel.org/doc/html/latest/virt/kvm/api.html
+
+Four separate, colorful, three-dimensional vector drawings live in visuals/.
+Image 01: cause chain. Image 02: vertically stacked data fields. Image 03: invalid/valid relationship comparison. Image 04: counterexample/trap.
+The drawings express concept-level relationships, not tested implementation source. They contain no assignment answer or bug-fix patch.
+Do not describe a related Linux or QEMU bug as an observed failure in the xv6/JOS/Pintos lab.
