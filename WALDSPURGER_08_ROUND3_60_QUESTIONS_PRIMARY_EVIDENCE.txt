@@ -1,0 +1,548 @@
+ROUND 3: WALDSPURGER — 60 FACT-CHECKED PRACTICE QUESTIONS
+2026-11-20
+
+Purpose: 20 user-supplied predictions corrected and preserved, followed by 40 more distinct failure-centred questions. No leaked questions. No evidence that any named individual is assigned to interview or that this exact format will occur. These are interview PRACTICE designs, not statements of what Carl Waldspurger will ask.
+
+SOURCE ORDER: Start at the MIDDLE of the user's bank (Q11), move to Q20, then reverse to Q1-Q10 to resolve dependent foundations. Only after that come Q21-Q60, grouped by dependencies. No new symbol, threshold, number, or state is evidence of production behaviour unless explicitly attributed to the primary source. 'Constructed' = a hypothetical numeric exercise. This file does NOT solve core algorithm-design choices.
+
+MOST IMPORTANT CORRECTIONS
+- Q5: ESX uses maximum of THREE activity estimates, not simply maximum of two averages. See §5.3; the fast and slow EMA plus current-sample adjusted value are explicitly discussed.
+- Q9/Q55: 1995 dissertation proves correct lottery compensation does NOT permit a client to steal expected CPU by yielding early. It increases win frequency to offset shorter consumption.
+- Q12: Dec 2010 patch avoids wasted retries on PPN_NOTNEEDED before the old 16-refusal cap; the author described it as a SMALL OPTIMIZATION, not an unbounded-loop memory safety fix.
+- Q13: the Nutanix patent documents buffering swap-bound pages and attempting alternate reclaim, not a proof of a particular CVM deadlock or universal deployment.
+- Q17: CCGrid 2024 implements sharing-aware migration and measures destination expansion under conventional schemes. The source memory-saving relationship alone is not part of migrated guest bytes.
+- Q19: QEMU CPR stops guest execution; cpr-exec preserves shared RAM and selected state across QEMU exec but is not a guarantee of zero pause or arbitrary host kernel replacement.
+- Q49: SHARDS' reported median MAE is a measurement over 124 traces, not a deterministic guarantee for an adversarial trace.
+- Q52: 101-client standard stride can generate 50-quanta transient error despite its 1-quantum PAIRWISE guarantee.
+- Q58: CFS/EEVDF and stride share virtual-time ideas but are not the same implementation or a proven direct derivation of modern Linux code.
+
+READING KEY
+Numerical premise = either published figures (explicitly marked) or constructed test inputs, never silent real measurements.
+Question = the logical puzzle to derive unaided.
+First wrong step = earliest mistaken inference to challenge.
+Falsifier = observation or source that would invalidate an answer; it is NOT an answer.
+Evidence codes expand to URLs in EVIDENCE LEDGER below.
+
+Q11 Balloon pressure causes storage latency
+NUMBERS: 8 guests each discard 1 GiB clean file cache => 8 GiB no longer resident; future re-read volume cannot be inferred from evicted bytes alone.
+WHY / WHERE / HOW / WHICH: Trace guest cache eviction to future read arrivals to the storage-controller VM. Distinguish activity from value; reserve enough critical-path resources, not 'never reclaim any CVM page'.
+FIRST WRONG INFERENCE: Idle ≠ worthless; reclaim 8 GiB ≠ immediately incur 8 GiB of disk reads.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: E6 (ESX 2002 §3.2); E14 (ESX 2002 §5.2); P (US20220283873A1 detailed specification and claim)
+
+Q12 Balloon target changed during page request
+NUMBERS: The preexisting driver bound was 16 refused pages. At 4096 bytes each, 16 × 4096 = 65536 B of candidates; not 65536 B successfully reclaimed.
+WHY / WHERE / HOW / WHICH: Explain the Dec 3 patch's PPN_NOTNEEDED status and the Dec 7 author's remark 'a small optimization'; distinguish bounded retry from true unbounded loop.
+FIRST WRONG INFERENCE: Wrong: 16 refused pages means the driver had no retry cap. That cap existed before the December change.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: VB (December 3 2010 VMware balloon patch); VR (December 7 2010 patch review and author response)
+
+Q13 Swap when storage depends on the VM
+NUMBERS: Constructed: 256 MiB buffer, incoming swapped pages at 512 MiB/s and no drain => buffer fills in 0.5 s.
+WHY / WHERE / HOW / WHICH: Prove a real resource-cycle only if the reclaim path actually depends on storage-VM CPU/RAM; patent buffers swap-bound pages and tries alternate reclaim, not proof of a deployed deadlock.
+FIRST WRONG INFERENCE: Wrong: the patent demonstrates a specific CVM deadlock on all Nutanix hosts.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: P (US20220283873A1 detailed specification and claim); E7 (ESX 2002 §3.3)
+
+Q14 Charge storage VM CPU to originating guest
+NUMBERS: Constructed: A sends 9000 IOPS, B sends 1000 IOPS; 20 µs CPU per I/O gives 180 ms/s and 20 ms/s respectively.
+WHY / WHERE / HOW / WHICH: Trace request identity across protection domains and propose the accounting boundary; explain cases when CPU work cannot be assigned exactly once.
+FIRST WRONG INFERENCE: Wrong: CPU service by the CVM always belongs to the CVM's tenant rather than the originating workload.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: RC (OSDI 1999 Resource Containers §3-4)
+
+Q15 Estimate miss-ratio curves without all cache sizes
+NUMBERS: Constructed: 10000 requests/s, a 0.10 miss-ratio drop saves 1000 misses/s; no latency reduction follows until miss service cost and queueing are known.
+WHY / WHERE / HOW / WHICH: Derive reuse distance -> LRU miss at a chosen capacity; explain why SHARDS samples address identity, what R=0.001 means, and why the paper reports MAE not a universal bound.
+FIRST WRONG INFERENCE: Wrong: every sampled access is independently random; wrong: the SHARDS curve is exact.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: SH (FAST 2015 SHARDS §§2-4 (PDF middle and evaluation))
+
+Q16 Concurrent boot overcommit
+NUMBERS: Published: 256+256+320+320+320=1472 MB guest config; +160 MB overhead=1632 MB; approx 1 GB available.
+WHY / WHERE / HOW / WHICH: Explain why the historical Windows guests touched pages before balloon drivers started. Distinguish observed 325 MB shared and 35 MB paged from same-time accounting components.
+FIRST WRONG INFERENCE: Wrong: 1632-1024-325-35=248 MB proves missing allocations; observed event values are not one simultaneous ledger.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: E20 (ESX 2002 §6.3)
+
+Q17 Migration expands pages shared at the source
+NUMBERS: Constructed: four guests each map 1 GiB identical content; source has roughly 1 GiB of shared backing for those pages, destination could allocate 4 GiB without deduplication.
+WHY / WHERE / HOW / WHICH: Trace whether PFN identity and copy-on-write relationships survive the migration; inspect SLM's QEMU changes and measurement methodology.
+FIRST WRONG INFERENCE: Wrong: source's saved memory automatically carries to destination; migration may reproduce content without sharing relationships.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: S (CCGrid 2024 sharing-aware live migration middle/evaluation (PDF))
+
+Q18 Durability during storage locality change
+NUMBERS: Constructed: write 4096 B, ACK at 10 ms, migration switchover at 20 ms, source fails at 30 ms.
+WHY / WHERE / HOW / WHICH: Identify which stable or replicated store is authoritative before and after handoff. Separate network access latency from durability and device state.
+FIRST WRONG INFERENCE: Wrong: guest memory migration alone guarantees that every already-ACKed storage write survives.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: L (NSDI 2005 Live Migration §5-6 experiments); QV (QEMU VFIO migration documentation, P2P and states); QIO (QEMU user documentation, cache.direct and cache.no-flush)
+
+Q19 Upgrade without full guest evacuation
+NUMBERS: Constructed lower bound: 32 GiB / 1.25 GB/s = 27.49 s using GiB/GByte distinction, ignoring dirtying and overhead.
+WHY / WHERE / HOW / WHICH: Compare cross-host migration with QEMU cpr-exec/cpr-reboot modes. Identify what survives an exec, guest stop, host reboot, VFIO state and persistent RAM.
+FIRST WRONG INFERENCE: Wrong: QEMU CPR promises zero pause or that arbitrary kernel reboot preserves all VM state.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: QC (QEMU CPR documentation, stop/restart and device descriptors); QV (QEMU VFIO migration documentation, P2P and states)
+
+Q20 Full cooperation versus transparent reclaim
+NUMBERS: Constructed: 2 guests each report 512 MiB free. A truthful report gives 1024 MiB candidate pages; it does not authorize unsafe reuse before protocol acknowledgment.
+WHY / WHERE / HOW / WHICH: Separate balloon inflation, virtio free-page reporting, hash sharing, sampling, and host swap by what each actor observes and controls.
+FIRST WRONG INFERENCE: Wrong: the guest's report is always truthful and sufficient, or an unmodified guest can support ballooning without a driver.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: E6 (ESX 2002 §3.2); E7 (ESX 2002 §3.3); VIR (virtio 1.3 balloon device primary specification); KSM (Linux KSM documentation including smart scan and savings counters)
+
+Q01 Durable write and exit ownership
+NUMBERS: Constructed: guest buffers 4096 B; QEMU uses cache.direct=on for one image and cache.no-flush=on for another.
+WHY / WHERE / HOW / WHICH: Follow application fsync through guest/kernel/backend and ask at what operation each layer may ACK. KVM may avoid a userspace exit with ioeventfd; guest block implementations differ.
+FIRST WRONG INFERENCE: Wrong: every virtqueue kick yields a visible KVM_EXIT_MMIO; wrong: any host receipt equals durability.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: KB (Linux KVM API documentation, KVM_RUN, IOEVENTFD, dirty ring); QIO (QEMU user documentation, cache.direct and cache.no-flush); PG (PostgreSQL fsync error discussion and kernel history)
+
+Q02 The price of a VM exit
+NUMBERS: Constructed: notification rate 100000/s, measured extra 2 µs per exit => 0.2 CPU-seconds/s under that assumption.
+WHY / WHERE / HOW / WHICH: Contrast observed per-event cost with total polling cost including idle time, cache churn and guest scheduling; identify which exits were actually avoided.
+FIRST WRONG INFERENCE: Wrong: eliminating userspace exits eliminates all hardware VM exits and all CPU work.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: KB (Linux KVM API documentation, KVM_RUN, IOEVENTFD, dirty ring)
+
+Q03 Host swap and double paging
+NUMBERS: Constructed: host swaps page A (4 KiB); guest later selects A for swap and must first fault it back. Extra read precedes guest's write.
+WHY / WHERE / HOW / WHICH: Name the two independent victim-selection policies and why one cannot know the other's clean/dirty/reuse decisions.
+FIRST WRONG INFERENCE: Wrong: selecting the same victim at both layers proves it optimal; the paper shows even agreement can cause double paging.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: E5 (ESX 2002 §3.1); E7 (ESX 2002 §3.3)
+
+Q04 Reclaim page while translations persist
+NUMBERS: Constructed: host frees a 4 KiB machine page while CPU0 still holds a second-level translation and a device still has a DMA mapping.
+WHY / WHERE / HOW / WHICH: Trace host PTE, KVM SPTE, hardware translation cache and device IOMMU mapping lifetimes; order invalidate, finish readers, release frame.
+FIRST WRONG INFERENCE: Wrong: removing one host PTE instantaneously invalidates all nested and DMA translations.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: KN (Linux mmu_notifier header and contracts); KM (Linux KVM host memory invalidation source)
+
+Q05 Can 100 memory samples estimate the active fraction?
+NUMBERS: Constructed Bernoulli model: 100 independent uniform page samples, true activity 50%, standard error sqrt(0.5*0.5/100)=0.05.
+WHY / WHERE / HOW / WHICH: Explain random-sample assumptions, skew, transient execution and the THREE estimates: slow EMA, fast EMA, and current-sample adjusted estimate.
+FIRST WRONG INFERENCE: Wrong: the paper uses only two averages; wrong: 5 percentage points is a deterministic worst-case bound.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: E15 (ESX 2002 §5.3)
+
+Q06 Identical contents and sharing leaks
+NUMBERS: Constructed: 3 VMs each hold one 4096-byte identical page. Mapping three guest pages to one frame saves two 4096-byte frames before metadata.
+WHY / WHERE / HOW / WHICH: Why verify the full bytes after a hash match, and why later write may fault. Evaluate salt-based security boundaries.
+FIRST WRONG INFERENCE: Wrong: hashing alone proves equality, or sharing is timing-invisible.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: E10 (ESX 2002 §4.2); E11 (ESX 2002 §4.3); TPS (VMware salting settings and inter-VM default)
+
+Q07 Guest changes argument after validation
+NUMBERS: Constructed: guest CPU0 sends address of 16-byte request, guest CPU1 changes field 8 at t=2 after host checked at t=1.
+WHY / WHERE / HOW / WHICH: Copy guest-provided bytes once into protected host memory, validate snapshot, avoid re-reading mutable fields; check length and overflow first.
+FIRST WRONG INFERENCE: Wrong: all guest CPUs halt whenever one vCPU exits.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: KB (Linux KVM API documentation, KVM_RUN, IOEVENTFD, dirty ring)
+
+Q08 2 MiB translations versus 4 KiB sharing
+NUMBERS: 2 MiB/4 KiB=512 base pages; one large map spans 512 independent small-page sharing candidates.
+WHY / WHERE / HOW / WHICH: Compare costs of huge mapped entries and splits, and VMware ESX old page sharing and newer TPS salting; avoid universal claims about always splitting on pressure.
+FIRST WRONG INFERENCE: Wrong: the benefits of huge pages, KSM and fine sampling are additive without contention.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: KSM (Linux KSM documentation including smart scan and savings counters); TPS (VMware salting settings and inter-VM default); E15 (ESX 2002 §5.3)
+
+Q09 I/O-bound client and proportional shares
+NUMBERS: Published dissertation example: A=400 and B=400 tickets; B runs 1/5 quantum, so effective next-lottery tickets =400/(1/5)=2000; transient addition=1600.
+WHY / WHERE / HOW / WHICH: Derive B's expected completed CPU time rather than its count of wins. Distinguish sleep/resume from voluntary yield and assume correctly implemented compensation.
+FIRST WRONG INFERENCE: Wrong: correctly implemented compensation necessarily lets a client game CPU service by yielding.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: T (MIT 1995 dissertation, chapter 3-4 (PDF middle))
+
+Q10 Guest/host/controller caches overlap
+NUMBERS: Constructed: guest retains 4096 B clean data; host file cache retains same 4096 B; controller cache retains another 4096 B; total 12288 B allocated across distinct layers.
+WHY / WHERE / HOW / WHICH: Trace which caches really exist for cache.direct=on and cache.writeback, then ask who can drop or reconstruct each.
+FIRST WRONG INFERENCE: Wrong: cache=none guarantees no cache anywhere, including storage appliances; it only selects QEMU's host page-cache behavior.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: QIO (QEMU user documentation, cache.direct and cache.no-flush)
+
+Q21 Admission control with RAM and swap promises
+NUMBERS: Constructed: 3 VMs each max 8 GiB and min 2 GiB, overhead 32 MiB each => reserved RAM 6 GiB+96 MiB; reserved swap 18 GiB.
+WHY / WHERE / HOW / WHICH: Prove whether an additional 4-GiB-max VM with min 1 GiB can be admitted given independent RAM and swap free totals.
+FIRST WRONG INFERENCE: Configured max is not the same as simultaneously reserved RAM.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: E19 (ESX 2002 §6.2); E18 (ESX 2002 §6.1)
+
+Q22 Why the 6/4/2/1 states need hysteresis
+NUMBERS: Constructed 100 GiB managed pool; thresholds 6,4,2,1 GiB; free sequence 4.1 -> 3.9 -> 4.1 GiB.
+WHY / WHERE / HOW / WHICH: Explain why the exact crossing and return thresholds must differ to avoid expensive repeated reclamation and guest stalls.
+FIRST WRONG INFERENCE: Hysteresis cannot be inferred by just memorizing 6/4/2/1 labels.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: E20 (ESX 2002 §6.3)
+
+Q23 Who loses one page with idle tax?
+NUMBERS: Constructed: guest A 100 shares/100 pages, 10% active; B 50 shares/50 pages, 100% active; tax 75%, idle page cost 4.
+WHY / WHERE / HOW / WHICH: Calculate adjusted shares-per-page for A and B from published rho formula before selecting a victim; then test when A becomes active.
+FIRST WRONG INFERENCE: A page's 'idle' status does not itself give an unconditional eviction order.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: E14 (ESX 2002 §5.2)
+
+Q24 Sample-period attack on working-set estimate
+NUMBERS: Constructed: sampled at 30s intervals, alternating 15s hot and 15s cold; 100 page samples each period.
+WHY / WHERE / HOW / WHICH: Find observation bias when timing synchronizes and formulate two different sample schedules; do not claim exact confidence if access is correlated.
+FIRST WRONG INFERENCE: Random sampling of pages does not imply random sampling of time.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: E15 (ESX 2002 §5.3)
+
+Q25 Admission success yet runaway swap
+NUMBERS: Constructed: admitted max=8 GiB, min=2 GiB => 6 GiB reserved swap. Guest writes 8 GiB constantly.
+WHY / WHERE / HOW / WHICH: Derive which guarantees remain once working set exceeds resident target and page dirtying competes with paging bandwidth.
+FIRST WRONG INFERENCE: Swap reservation is a capacity guarantee, not a response-time guarantee.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: E19 (ESX 2002 §6.2); E7 (ESX 2002 §3.3)
+
+Q26 One balloon page that guest touches anyway
+NUMBERS: Constructed: guest balloon pins page 0x200, host releases backing frame 0x900; guest later reads 0x200.
+WHY / WHERE / HOW / WHICH: Read the historical ESX pmap annotation and recovery path; distinguish balloon protocol violation from memory corruption.
+FIRST WRONG INFERENCE: A guest balloon page can never be touched after inflation is not a valid correctness assumption.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: E6 (ESX 2002 §3.2)
+
+Q27 Free page reporting versus inflation
+NUMBERS: Constructed guest reports 1000 free 4 KiB pages (3.90625 MiB); later guest allocates 100 of them.
+WHY / WHERE / HOW / WHICH: Derive which protocol promises ownership and whether host must restore content or avoid destroying it; use actual virtio feature contract.
+FIRST WRONG INFERENCE: Free-page reporting is identical to permanent balloon allocation.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: VIR (virtio 1.3 balloon device primary specification)
+
+Q28 Sampling active data via DMA
+NUMBERS: Constructed: CPU touches 0/100 sampled pages but NIC DMA updates 64 KiB in those guest pages.
+WHY / WHERE / HOW / WHICH: Show why invalidating CPU translations alone misses device access; track a separate device address space.
+FIRST WRONG INFERENCE: CPU page-fault activity is a complete measure of DMA activity.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: E15 (ESX 2002 §5.3); KN (Linux mmu_notifier header and contracts)
+
+Q29 Buffered frontswap with a bounded deadline
+NUMBERS: Constructed: patent buffer 128 MiB, input rate 256 MiB/s, alternative reclaim needs 700 ms; zero drain would fill in 500 ms.
+WHY / WHERE / HOW / WHICH: Derive buffer occupancy, fallback disk writes and claimant priority from the actual patent embodiment; identify policy decision left unspecified.
+FIRST WRONG INFERENCE: A buffer can indefinitely convert swap I/O into free memory.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: P (US20220283873A1 detailed specification and claim)
+
+Q30 Host reclaims CVM memory while IO waits
+NUMBERS: Constructed: host has 4 GiB free; 3 GiB requested for guests and 2 GiB critical path reserve desired.
+WHY / WHERE / HOW / WHICH: Propose safety conditions for the 1 GiB over-demand before selecting any victim, without asserting any real product's reserve amount.
+FIRST WRONG INFERENCE: 'Never reclaim CVM memory' is too broad; critical-path progress is the invariant.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: P (US20220283873A1 detailed specification and claim); RC (OSDI 1999 Resource Containers §3-4)
+
+Q31 KVM dirty ring is readable but incomplete
+NUMBERS: Constructed: vCPU wrote 100 pages; userspace saw 97 ring entries before forcing exit.
+WHY / WHERE / HOW / WHICH: Explain hardware dirty-bit buffering, the required vCPU synchronization, and how to prove remaining entries before declaring migration clean.
+FIRST WRONG INFERENCE: Reading a shared dirty ring is a complete snapshot without synchronization.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: KB (Linux KVM API documentation, KVM_RUN, IOEVENTFD, dirty ring)
+
+Q32 Dirty-ring capacity and loss of progress
+NUMBERS: Constructed 1024 ring slots, writes to 2000 distinct pages between consumer drains; producer can fill before consumer reacts.
+WHY / WHERE / HOW / WHICH: Explain KVM_EXIT_DIRTY_RING_FULL and KVM_RESET_DIRTY_RINGS interaction without inventing a fixed write-per-exit ratio.
+FIRST WRONG INFERENCE: Ring full is equivalent to an ordinary guest page fault.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: KB (Linux KVM API documentation, KVM_RUN, IOEVENTFD, dirty ring)
+
+Q33 Two simultaneous KVM invalidation ranges
+NUMBERS: Constructed concurrent invalidations GFN [100,120) and [1000,1010). Their union envelope is [100,1010).
+WHY / WHERE / HOW / WHICH: Read kvm_mmu_invalidate_range_add and justify conservative interval widening and generation visibility.
+FIRST WRONG INFERENCE: Tracking the envelope means kernel invalidated all intermediate host pages for every purpose.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: KM (Linux KVM host memory invalidation source)
+
+Q34 DMA follows freed page
+NUMBERS: Constructed IOVA 0x4000 -> physical frame 0x900 while CPU translation for 0x900 was removed.
+WHY / WHERE / HOW / WHICH: Trace IOMMU/device outstanding writes separately from KVM SPTE invalidation; identify quiescing signal.
+FIRST WRONG INFERENCE: TLB shootdown on vCPUs automatically cancels in-flight DMA.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: KN (Linux mmu_notifier header and contracts); QV (QEMU VFIO migration documentation, P2P and states)
+
+Q35 Pre-copy cannot converge at the write rate
+NUMBERS: Constructed 1 GiB dirty each second, 800 MiB/s migration link. First pass creates at least 1 GiB of newly dirtied traffic during the next second under constant dirtying.
+WHY / WHERE / HOW / WHICH: Derive divergence or stop-and-copy selection; anchor in the 2005 paper's 3.5-second pathological experiment.
+FIRST WRONG INFERENCE: More pre-copy rounds always shorten downtime.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: L (NSDI 2005 Live Migration §5-6 experiments)
+
+Q36 Migration-time network budget steals application capacity
+NUMBERS: Constructed link capacity 10 Gb/s, application currently uses 6 Gb/s, migration allowed 7 Gb/s.
+WHY / WHERE / HOW / WHICH: Find capacity shortfall and derive throttling/pausing policy without claiming exact latency.
+FIRST WRONG INFERENCE: A bandwidth throttle controls only migration duration and never tenant throughput.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: L (NSDI 2005 Live Migration §5-6 experiments)
+
+Q37 Page sharing saved memory only on source
+NUMBERS: Constructed 8 × 1 GiB guest regions share 75% by identical content at source; destination disables deduplication.
+WHY / WHERE / HOW / WHICH: Derive worst-case destination capacity and the page identity information SLM would preserve.
+FIRST WRONG INFERENCE: Shared content bits are the same thing as shared physical frames after migration.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: S (CCGrid 2024 sharing-aware live migration middle/evaluation (PDF))
+
+Q38 PFN identity needed for sharing-aware migration
+NUMBERS: Constructed guest pages 10, 20, 30 all refer to host PFN 900; page 30 later dirties and diverges.
+WHY / WHERE / HOW / WHICH: Reason which mapping stays shared and which content must transfer privately. Check QEMU pagemap permissions and COW bookkeeping.
+FIRST WRONG INFERENCE: Hashing content is sufficient to preserve historical COW relationships.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: S (CCGrid 2024 sharing-aware live migration middle/evaluation (PDF))
+
+Q39 Post-copy blocked on unavailable source
+NUMBERS: Constructed VM has 8 GiB RAM; destination initially owns 512 MiB; guest faults on a missing 4 KiB page as network stalls.
+WHY / WHERE / HOW / WHICH: Identify thread lock dependencies and fault-service channel; inspect QEMU postcopy lock warning.
+FIRST WRONG INFERENCE: Guest resume means all data is present and no later vCPU can block on source.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: QP (QEMU postcopy documentation, synchronization and block time)
+
+Q40 QEMU multi-fd ordering before post-copy resume
+NUMBERS: Constructed 4 copy channels transfer pages out of order; channel 1 is delayed 20 ms while others finish.
+WHY / WHERE / HOW / WHICH: Find the synchronization barrier before vCPUs run and explain why async page installation races with execution.
+FIRST WRONG INFERENCE: More channels automatically improve post-copy demand-fault bandwidth.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: QP (QEMU postcopy documentation, synchronization and block time)
+
+Q41 VFIO peer-to-peer devices during migration
+NUMBERS: Constructed device A DMA-writes 4 KiB to B while migration stops A before B.
+WHY / WHERE / HOW / WHICH: Derive why quiescence of all P2P participants must precede state switch; distinguish single-device and two-device cases.
+FIRST WRONG INFERENCE: Saving two device files independently is an atomic snapshot.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: QV (QEMU VFIO migration documentation, P2P and states)
+
+Q42 QEMU restart with guest memory at new addresses
+NUMBERS: Constructed guest RAM 4 GiB remains in a memfd; new QEMU maps it at a different host virtual address.
+WHY / WHERE / HOW / WHICH: Trace stable guest-physical addresses versus changed QEMU host virtual pointers; list held raw pointers that cannot survive.
+FIRST WRONG INFERENCE: Retaining the host PID guarantees retained virtual addresses.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: QC (QEMU CPR documentation, stop/restart and device descriptors)
+
+Q43 Post-copy downtime versus total migration time
+NUMBERS: Constructed guest stops 150 ms, then waits 500 ms on a remote page at its next request.
+WHY / WHERE / HOW / WHICH: Define downtime, blocking time, and service-visible latency separately using QEMU definitions.
+FIRST WRONG INFERENCE: Short formal downtime guarantees low application tail latency.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: QP (QEMU postcopy documentation, synchronization and block time); S (CCGrid 2024 sharing-aware live migration middle/evaluation (PDF))
+
+Q44 Migration when remote storage has a locality cost
+NUMBERS: Constructed read path local=100 µs, remote=700 µs; 2000 compulsory misses/s => extra service time 1.2 CPU-equivalent seconds/s if serialized (not necessarily added latency).
+WHY / WHERE / HOW / WHICH: Derive which latency metric can be calculated and which needs a queueing model; avoid assuming local/remote values describe AHV.
+FIRST WRONG INFERENCE: A VM's memory can move without changing storage access path cost.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: L (NSDI 2005 Live Migration §5-6 experiments); QIO (QEMU user documentation, cache.direct and cache.no-flush)
+
+Q45 Live upgrade preserves CPU state but loses device queue
+NUMBERS: Constructed vCPU RIP=0x1000, two pending virtio descriptors, one completed DMA write.
+WHY / WHERE / HOW / WHICH: Find device ownership and pause boundaries across QEMU CPR; do not treat saved registers as a complete VM.
+FIRST WRONG INFERENCE: Register save + RAM copy = complete guest execution state.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: QC (QEMU CPR documentation, stop/restart and device descriptors); QV (QEMU VFIO migration documentation, P2P and states)
+
+Q46 Cache MRC and unit mismatch
+NUMBERS: Constructed 4096 cache blocks ×16 KiB each =64 MiB capacity. Trace uses byte offsets, not block IDs.
+WHY / WHERE / HOW / WHICH: Map requests onto 16-KiB blocks, then calculate LRU distance in distinct blocks, not bytes or requests.
+FIRST WRONG INFERENCE: Reuse distance measured in references automatically equals cache size in bytes.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: SH (FAST 2015 SHARDS §§2-4 (PDF middle and evaluation))
+
+Q47 One hot block omitted from SHARDS sample
+NUMBERS: Constructed block A receives 90% of 100000 requests; all others 10%; A's hash falls outside sample.
+WHY / WHERE / HOW / WHICH: Explain why a biased trace estimate may have a large vertical error and why SHARDS_adj measures total reference counts.
+FIRST WRONG INFERENCE: Sampling every chosen block on each access guarantees the chosen subset represents the access distribution.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: SH (FAST 2015 SHARDS §§2-4 (PDF middle and evaluation))
+
+Q48 Adaptive SHARDS sample set eviction
+NUMBERS: Constructed sample limit 256 locations, threshold accepts 257 distinct hashes; highest hash is removed and global threshold decreases.
+WHY / WHERE / HOW / WHICH: Prove later samples remain a subset of prior candidates and estimate how a changed R affects histogram scaling.
+FIRST WRONG INFERENCE: Constant-space sampling means no sampled record ever needs removal.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: SH (FAST 2015 SHARDS §§2-4 (PDF middle and evaluation))
+
+Q49 SHARDS is not a universal worst-case guarantee
+NUMBERS: Paper: 124 real traces; fixed-size 8K samples median MAE 0.0072, worst 0.078; adjusted median 0.0027 and worst 0.017.
+WHY / WHERE / HOW / WHICH: Use an adversarial trace and identify sampling assumption; distinguish observed sample outcomes from theorem.
+FIRST WRONG INFERENCE: A median observed error is a proof that all workloads meet that error.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: SH (FAST 2015 SHARDS §§2-4 (PDF middle and evaluation))
+
+Q50 Two guests share one cache and displace each other
+NUMBERS: Constructed each guest alone gets 128 MiB; together they compete in one 128 MiB LRU cache.
+WHY / WHERE / HOW / WHICH: Derive whether independent per-guest miss curves add to a joint miss curve and where interference breaks additive reasoning.
+FIRST WRONG INFERENCE: Cache quota allocation can be optimized from independent MRCs without shared-block/ordering effects.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: SH (FAST 2015 SHARDS §§2-4 (PDF middle and evaluation)); RC (OSDI 1999 Resource Containers §3-4)
+
+Q51 Cache miss benefit versus queue contention
+NUMBERS: Constructed removing 1000 misses/s, each requires 200 µs device service => 0.2 seconds of device busy time saved per second.
+WHY / WHERE / HOW / WHICH: Distinguish device utilization reduction from end-to-end latency reduction and tenant tail impact.
+FIRST WRONG INFERENCE: Saved service time divided by one request predicts its latency under shared queues.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: SH (FAST 2015 SHARDS §§2-4 (PDF middle and evaluation))
+
+Q52 Stride pairwise fairness does not scale
+NUMBERS: Published thesis: 101 clients, ticket vector 100:1×100; first 100 grants can all go to the first client -> expected 50, error +50.
+WHY / WHERE / HOW / WHICH: Derive tie handling and show why pairwise <=1 does not bound n-client total error; compare hierarchy's observed maximum 4.5 in thesis simulation.
+FIRST WRONG INFERENCE: Pairwise fairness always proves each client's global one-quantum error.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: T (MIT 1995 dissertation, chapter 3-4 (PDF middle))
+
+Q53 Hierarchical stride fixes one metric but can hurt another
+NUMBERS: Published thesis counterexample: nested response intervals [3,4] and [2,3] produce composite [6,12] units.
+WHY / WHERE / HOW / WHICH: Explain additive throughput-error bound versus multiplicative waiting-time variability.
+FIRST WRONG INFERENCE: Improving throughput fairness necessarily improves every client's maximum wait.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: T (MIT 1995 dissertation, chapter 3-4 (PDF middle))
+
+Q54 Dynamic tickets without pass rescaling
+NUMBERS: Constructed A=100 tickets with stride 10; after transfer A=200 with stride 5; pending pass interval was 6 units.
+WHY / WHERE / HOW / WHICH: Use dissertation's remaining-stride rescaling; explain why blindly retaining pass can over/underallocate immediately after change.
+FIRST WRONG INFERENCE: Only changing ticket integer is enough to change stride share safely.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: T (MIT 1995 dissertation, chapter 3-4 (PDF middle))
+
+Q55 Compensation tickets and the malicious yielder
+NUMBERS: Dissertation: 400:400 base tickets; B uses 1/5 quantum -> 2000 effective tickets for its next win, then transient compensation removed.
+WHY / WHERE / HOW / WHICH: Derive expected CPU service, not win count, from thesis proof; identify assumption that transient compensation ends on next win.
+FIRST WRONG INFERENCE: More wins under correct compensation implies more total CPU seconds.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: T (MIT 1995 dissertation, chapter 3-4 (PDF middle))
+
+Q56 Ticket transfers through nested service dependencies
+NUMBERS: Constructed guest A owns 60 shares, guest B 40; A blocks behind storage worker C while B remains runnable.
+WHY / WHERE / HOW / WHICH: Trace rights transfer, additive donors and return on reply. Ask if inherited tickets represent host CPU or CVM CPU entitlement.
+FIRST WRONG INFERENCE: A donor blocked on a service must continue retaining all effective CPU rights while the server works.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: T (MIT 1995 dissertation, chapter 3-4 (PDF middle)); RC (OSDI 1999 Resource Containers §3-4)
+
+Q57 CPU scheduler's owner is not its resource principal
+NUMBERS: Constructed request X uses 2 ms vCPU, then 3 ms CVM thread, then 1 ms kernel softirq.
+WHY / WHERE / HOW / WHICH: Associate 6 ms end-to-end CPU work with the original request without double-charging common paths.
+FIRST WRONG INFERENCE: task_struct identity is a sufficient accounting principal for a multi-tenant I/O path.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: RC (OSDI 1999 Resource Containers §3-4)
+
+Q58 EEVDF resemblance is not code provenance
+NUMBERS: Constructed weights 1:2:3 and six equal CPU slices; ideal allocations are 1,2,3 slices, independent of exact Linux algorithm.
+WHY / WHERE / HOW / WHICH: Distinguish stride pass selection from Linux eligible virtual deadlines and lag; do not assert Waldspurger implemented Linux EEVDF.
+FIRST WRONG INFERENCE: Both use virtual time => identical algorithm and implementation.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: EV (Linux EEVDF official scheduler documentation); T (MIT 1995 dissertation, chapter 3-4 (PDF middle))
+
+Q59 COW after page sharing meets faulting guest
+NUMBERS: Constructed guest A and B share one 4 KiB frame; guest A's first store changes byte 100.
+WHY / WHERE / HOW / WHICH: Trace guest PTE permission, host KSM COW and nested EPT/NPT mapping and actual fault cause. Identify two possible layers for interception.
+FIRST WRONG INFERENCE: One universal 'page fault' uniquely identifies whether guest or host performed COW.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: E10 (ESX 2002 §4.2); KSM (Linux KSM documentation including smart scan and savings counters); KM (Linux KVM host memory invalidation source)
+
+Q60 The memory tax meets guest working-set phase change
+NUMBERS: Constructed 100 shares, 100 pages, currently active fraction 0.1; next 30s all 100 pages become hot.
+WHY / WHERE / HOW / WHICH: Calculate rho before/after activity change and find why ESX takes max of THREE activity estimates. Then design metric that catches a false hot sample.
+FIRST WRONG INFERENCE: Idle tax is a constant 75% of the VM's RAM, independent of active fraction.
+ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
+FALSIFY: What measurement, source line, or alternate execution path would disprove your first conclusion?
+PRIMARY EVIDENCE: E14 (ESX 2002 §5.2); E15 (ESX 2002 §5.3)
+
+EVIDENCE LEDGER: ACTUAL PRIMARY BODY/IMPLEMENTATION ACCESSED
+E5 | ESX 2002 §3.1 | https://www.usenix.org/legacy/publications/library/proceedings/osdi02/tech/waldspurger/waldspurger_html/node5.html
+E6 | ESX 2002 §3.2 | https://www.usenix.org/legacy/publications/library/proceedings/osdi02/tech/waldspurger/waldspurger_html/node6.html
+E7 | ESX 2002 §3.3 | https://www.usenix.org/legacy/publications/library/proceedings/osdi02/tech/waldspurger/waldspurger_html/node7.html
+E10 | ESX 2002 §4.2 | https://www.usenix.org/legacy/publications/library/proceedings/osdi02/tech/waldspurger/waldspurger_html/node10.html
+E11 | ESX 2002 §4.3 | https://www.usenix.org/legacy/publications/library/proceedings/osdi02/tech/waldspurger/waldspurger_html/node11.html
+E13 | ESX 2002 §5.1 | https://www.usenix.org/legacy/publications/library/proceedings/osdi02/tech/waldspurger/waldspurger_html/node13.html
+E14 | ESX 2002 §5.2 | https://www.usenix.org/legacy/publications/library/proceedings/osdi02/tech/waldspurger/waldspurger_html/node14.html
+E15 | ESX 2002 §5.3 | https://www.usenix.org/legacy/publications/library/proceedings/osdi02/tech/waldspurger/waldspurger_html/node15.html
+E18 | ESX 2002 §6.1 | https://www.usenix.org/legacy/publications/library/proceedings/osdi02/tech/waldspurger/waldspurger_html/node18.html
+E19 | ESX 2002 §6.2 | https://www.usenix.org/legacy/publications/library/proceedings/osdi02/tech/waldspurger/waldspurger_html/node19.html
+E20 | ESX 2002 §6.3 | https://www.usenix.org/legacy/publications/library/proceedings/osdi02/tech/waldspurger/waldspurger_html/node20.html
+E21 | ESX 2002 §7 | https://www.usenix.org/legacy/publications/library/proceedings/osdi02/tech/waldspurger/waldspurger_html/node21.html
+T | MIT 1995 dissertation, chapter 3-4 (PDF middle) | https://publications.csail.mit.edu/lcs/pubs/pdf/MIT-LCS-TR-667.pdf
+SH | FAST 2015 SHARDS §§2-4 (PDF middle and evaluation) | https://www.usenix.org/system/files/conference/fast15/fast15-paper-waldspurger.pdf
+P | US20220283873A1 detailed specification and claim | https://patents.google.com/patent/US20220283873A1/en
+KB | Linux KVM API documentation, KVM_RUN, IOEVENTFD, dirty ring | https://www.kernel.org/doc/html/latest/virt/kvm/api.html
+KM | Linux KVM host memory invalidation source | https://github.com/torvalds/linux/blob/master/virt/kvm/kvm_main.c
+KN | Linux mmu_notifier header and contracts | https://github.com/torvalds/linux/blob/master/include/linux/mmu_notifier.h
+KSM | Linux KSM documentation including smart scan and savings counters | https://kernel.org/doc/html/latest/admin-guide/mm/ksm.html
+QIO | QEMU user documentation, cache.direct and cache.no-flush | https://www.qemu.org/docs/master/system/qemu-manpage.html
+QC | QEMU CPR documentation, stop/restart and device descriptors | https://www.qemu.org/docs/master/devel/migration/CPR.html
+QP | QEMU postcopy documentation, synchronization and block time | https://www.qemu.org/docs/master/devel/migration/postcopy.html
+QV | QEMU VFIO migration documentation, P2P and states | https://www.qemu.org/docs/master/devel/migration/vfio.html
+VB | December 3 2010 VMware balloon patch | https://lkml.iu.edu/1012.0/01291.html
+VR | December 7 2010 patch review and author response | https://lkml.iu.edu/1012.0/03016.html
+VIR | virtio 1.3 balloon device primary specification | https://docs.oasis-open.org/virtio/virtio/v1.3/csd01/virtio-v1.3-csd01.html
+S | CCGrid 2024 sharing-aware live migration middle/evaluation (PDF) | https://kartikgopalan.github.io/publications/ccgrid24.pdf
+L | NSDI 2005 Live Migration §5-6 experiments | https://www.usenix.org/legacy/publications/library/proceedings/nsdi05/tech/full_papers/clark/clark_html/index.html
+RC | OSDI 1999 Resource Containers §3-4 | https://www.usenix.org/legacy/publications/library/proceedings/osdi99/full_papers/banga/banga_html/node11.html
+EV | Linux EEVDF official scheduler documentation | https://kernel.org/doc/html/latest/scheduler/sched-eevdf.html
+TPS | VMware salting settings and inter-VM default | https://knowledge.broadcom.com/external/article/323624/additional-transparent-page-sharing-mana.html
+PG | PostgreSQL fsync error discussion and kernel history | https://wiki.postgresql.org/wiki/Fsync_Errors
+
+CAVEATS AND NEGATIVE EVIDENCE
+- The supplied source text is not committed in this repository as a previous ROUND3_20 file; the twenty questions are reconstructed here by exact topic and corrected, not claimed to be byte-for-byte restoration of the user's prose.
+- A patent describes a claimed design. It does not prove product installation, workload performance or an actual interview topic.
+- Academic demonstrations from 1995, 2002, 2005, 2015 and 2024 have different hardware, kernels, sampling rates and workloads; never move a measured number across systems without stating the change.
+- KVM API, QEMU master documentation and Linux current source are version-dependent and may differ from kernel 6.8 or an AHV build. Always name tested versions.
+- 'Full coherence' from a single synchronous copy is not guaranteed if the guest mutates shared memory during the copy; require a separately defined snapshot protocol if fields must be mutually consistent.
+- SLM's experimental method and capacity results apply to its implementation; it does not prove ordinary QEMU never supports any sharing-aware optimization in later releases.
+- The user's request to start in the middle is honored: topics 11-20 appear first, followed by 1-10, then the new deeper questions.
+- Do not interpret the 40 added hypotheticals as a forecast of a specific interviewer's question list.
