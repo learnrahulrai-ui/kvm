@@ -1,0 +1,36 @@
+BUG REPRODUCTION BRIDGE — existing catalog: https://github.com/learnrahulrai-ui/kvm/tree/main/bugs
+All case IDs refer to original upstream reports from 2008 to 2026. Do not claim the author of the ESX papers personally encountered these bugs. Do not count a unit-test failure alone as the end-user symptom. Use actual VM hang, wrong data, or prolonged stall as the verification signal. No bug was run on this laptop during repo creation.
+
+BUG B18 / 2008 SHADOW MMU. Paper relationship: guest page mapping changes → shadow mapping built from guest PTE. Two vCPUs can change a guest page-table entry during shadow prefetch. The original reporter looped dmsetup status inside an SMP Linux guest and observed hang. University: 08-iitb-cs695-kvm-pa1, 11-unc-comp790-vmm, 14-mit-61810-cow, 16-mit-61810-superpages. Required: old KVM (not modern EPT/NPT shortcut), disposable old kernel and guest. First work: trace kvm_mmu_get_page -> prefetch_page -> rmap_write_protect on original historical source, then verify protection precedes prefetch. Link: https://sourceforge.net/p/kvm/mailman/message/19067975/
+
+BUG B19 / 2009 virtio-net TX queue. Paper relationship: a producer waits after bounded queue fills; consumer completes work but fails to signal producer. University: 21-biswas-oslab-kvm, 19-uiuc-cs423-mp3. Required: old guest virtio_net; create sustained guest TX over disposable virtual NIC. First work: identify xmit_tasklet completion and netif_wake_queue. Link: https://bugzilla.redhat.com/show_bug.cgi?id=524651
+
+BUG B20 / 2010 KVM dirty/protection migration. Paper relationship: state changes during transfer need either a dirty record OR a write trap. Original RHEL6 Intel NON-EPT migration and netperf reproduced ~1 in 4 in reporter's environment. University: 08, 11, 18. Required: old Intel shadow MMU; AMD laptop should not be marked equivalent. Link: https://bugzilla.redhat.com/show_bug.cgi?id=647367
+
+BUG B21 / 2010 vhost-net lost dirties. Paper relationship: moving VM's page state is incomplete if a device backend changes guest pages after final scan. Original SCP transfer into guest failed across migration; exact race interleaving proposed in thread but not proven uniquely. University: 08,09,07. Link: https://bugzilla.redhat.com/show_bug.cgi?id=623552
+
+BUG B23 / 2011 VM pause/clock/watchdog false alert. Paper relationship: elapsed host time passes while guest CPU progress is frozen. University: 10,06,19. Safe demonstration: guest only, QMP stop, elapsed wall time, QMP cont, measure watchdog message and virtual time. Historical version matters. Link: https://lkml.iu.edu/1111.3/02146.html
+
+BUG B25 / 2013 QEMU zero-page migration. Paper relationship: source and destination contents must agree even when the source byte is zero. Incorrect optimization assumed destination initialized to zero and skipped sending that page. Revert source contains the exact causal explanation. University: 09-iitb-cs695-libvirt-pa2, 08-iitb-cs695-kvm-pa1, 18-umich-eecs482-pager. Old QEMU code read path arch_init.c -> ram_save_block; do not look for current source layout first. Original https://github.com/qemu/qemu/commit/f1c72795af573b24a7da5eb52375c9aba8a37972 ; correction https://github.com/qemu/qemu/commit/9ef051e5536b6368a1076046ec6c4ec4ac12b5c6
+
+BUG B26 / 2013 QEMU asynchronous I/O drain. Paper relationship: no completion in one iteration does NOT mean no outstanding work exists. University: 09,07,21. Compare aio_poll return value and bdrv_drain_all termination on source from 2013. Original fixed commit https://github.com/qemu/qemu/commit/2ea9b58f0bc62445b7ace2381b4c4db7d5597e19
+
+BUG B03 / 2020 nested KVM TSC migration. Paper relationship: a time counter belongs to a particular nested-clock domain. L2-derived TSC returned to userspace cannot be restored as L1-relative counter. University: 12-unc-2017-amd-svm, 10,13. Requires AMD nested SVM and affected version. Link: https://lkml.iu.edu/2009.2/06466.html
+
+BUG B16 / 2021 nested SVM missing run-pending restoration. Paper relationship: a valid message's bytes may survive even if its associated state flag is omitted. University: 12,10,13. Trace reviewer challenge and patch v2; a VM hang alone does not establish the original author's first hypothesis. Link: https://lists.openwall.net/linux-kernel/2021/01/07/367
+
+BUG B04 / 2023 QEMU postcopy recovery. Paper relationship: a failure must transition recovery out of a waiting state or allow retry; otherwise a live process never makes progress. University: 09,07. Original patch contains socat proxy procedure. Link: https://patchew.org/QEMU/20231017202633.296756-1-peterx@redhat.com/20231017202633.296756-3-peterx@redhat.com/
+
+BUG B05 / 2024 KSM-NUMA KVM stall. Paper relationship: memory invalidation retry can contend for the lock required to finish invalidation, amplifying memory-pressure stall. Original 256GiB dual NUMA host, 140GiB VM. NOT an exact laptop reproducer. University 08,19,07. Link: https://lists.openwall.net/linux-kernel/2024/01/04/582
+
+BUG B06 / 2025 dirty ring. Paper relationship: consumer processing a live producer's mutable shared queue may never reach a stable end. University: 08,10,21. Requires vulnerable KVM, real dirty-ring capability and two actors. Link https://lists.openwall.net/linux-kernel/2025/05/16/1409
+
+BUG B08 / 2026 QEMU postcopy request-page leak. Paper relationship: same backing page is identified by different virtual addresses in two processes. Insert key=backend VA, removal key=QEMU VA; pending requests leak, migration teardown blocks. University 08,09,21. Requires postcopy and vhost-user backend. Link https://www.mail-archive.com/qemu-devel@nongnu.org/msg1221024.html
+
+BUG B09 / 2026 QEMU multifd preempt arrival ordering. Paper relationship: a blocking read on an early connection stalls event loop that must accept later connections. University 09,07,08. Requires two QEMU revisions, source's migration test; the test exercises the real QEMU migration path. Link https://go.mail-archive.com/qemu-devel@nongnu.org/msg1239999.html
+
+BUG B10 / 2026 clocksource jiffies boot deadlock. Paper relationship: a timeout cannot make progress using a clock driven by an event the waiter itself suppresses. University 19,06,10. Disposable 2-vCPU kernel guest ONLY; never change real laptop clocksource. Link https://lkml.iu.edu/2611.0/04403.html
+
+HARDWARE LIMITS. B15 is Intel-only nested PML; Ryzen SVM cannot run its original Intel PML. B24 relies on host pages larger than guest pages, not the common 4KiB x86 case. B28 original report requires >2TiB sparse guest; the laptop can show a scaled mechanism but not the reported timing failure. B07 requires spare VFIO passthrough device, not the GPU driving the host display. B02 requires actual /dev/dax. B01 is a report with unproven precise cause, so keep it archival.
+
+EVIDENCE RECORD FOR EACH BUG: note original source and reviewed revisions, exact kernel/QEMU git SHA, real hardware, reproducibility frequency, correct failure symptom, negative control, and whether source reviewer corrected the initial causal hypothesis. Never claim source-level evidence is a locally executed reproduction.

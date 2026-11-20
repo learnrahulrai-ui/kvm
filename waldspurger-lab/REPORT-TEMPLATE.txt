@@ -1,0 +1,45 @@
+REPORT FOR ONE RESEARCH-LAB EXPERIMENT
+01. Run ID:
+02. Research mechanism:
+03. User-visible operation:
+04. Is this a numerical CONSTRUCTED exercise, a running user-space example, a real KVM guest test, or a historical bug repro?
+05. Verified kernel: uname -r output=
+06. Verified CPU model: /proc/cpuinfo model_name=
+07. Guest virtualization enabled? /dev/kvm and nested flag=
+08. QEMU --version output=
+09. Source root commit SHA=
+10. Exact old bug commit SHA=
+11. Exact fixed commit SHA=
+12. Host MemAvailable before and after (KiB)=
+13. Guest memory configured (MiB)=
+14. Real page size from getconf PAGESIZE=
+15. Host page size vs guest page size distinction=
+16. Operation input and exact command=
+17. Guest virtual address observed from debugger/log=
+18. Guest physical address observed from source/trace=
+19. Host userspace address observed from debugger/log=
+20. Host PFN proven from authorized page table inspection, or UNKNOWN=
+21. Process / thread / vCPU that reads state=
+22. Process / thread / vCPU that writes state=
+23. State / lock / mapping before operation=
+24. State / lock / mapping after operation=
+25. Why this transition is legal according to source=
+26. Smallest correctness invariant=
+27. If failure, first violated invariant=
+28. Expected output and calculation=
+29. Actual measured output, attach raw log=
+30. First negative control and its unchanged conditions=
+31. Pre-patch observation and count of repetitions=
+32. Post-patch observation and count of repetitions=
+33. Does fix target the exact reported failure or a possible alternative cause?
+34. Source citation: URL, file, function, line in this exact git SHA=
+35. Contradicting source/reviewer comment=
+36. Driver/module used? kernel version/headers, built .ko and run state=
+37. KVM guest ran? KVM_RUN or QMP evidence=
+38. C code compiled? compiler, debug flags, result=
+39. Source history retrieved? original report, patch, reviewer response=
+40. Causal claims DERIVED but not directly observed=
+41. Claims UNKNOWN / tests not run=
+42. First introduced inference not derived from cited premise=
+43. Required next experiment to distinguish two explanations=
+44. Precise current status: PLANNED / COMPILED_ONLY / EXECUTED_NO_REPRO / REPRODUCED_OLD / VERIFIED_FIXED=

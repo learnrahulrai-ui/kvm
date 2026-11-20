@@ -1,0 +1,25 @@
+PROJECT STAGE -> EXISTING UNIVERSITY FOLDER -> REAL MECHANISM -> HISTORICAL CASE
+
+00 preflight -> assignments/08-iitb-cs695-kvm-pa1 -> /dev/kvm capability check -> B06 dirty ring later
+01 KVM guest flow -> assignments/21-biswas-oslab-kvm -> KVM_RUN and exit_reason -> B27 stale VMX halt; Intel only
+02 guest page mapping -> assignments/11-unc-comp790-vmm -> shadow/nested translation -> B17 and B18 historical MMU races
+03 AMD nested guest -> assignments/12-unc-2017-amd-svm -> VMRUN and saved pending state -> B03 and B16
+04 host guest mapping -> assignments/13-ut-cs360v-jos-hypervisor -> machine/guest address domains -> B08 mismatched backend/QEMU VA
+05 COW shared page -> assignments/14-mit-61810-cow -> write protect, refcount and private copy -> B17/B18 relate to mapping safety but are not xv6 COW code bugs
+06 mapped-file lifetime -> assignments/15-mit-61810-mmap -> lazy page access and owner lifetime -> B02 DAX mapping lifetime and B24 page-size mismatch
+07 large-page mapping -> assignments/16-mit-61810-superpages -> 2 MiB base/page splitting -> B24 historic host-vs-target page-size error
+08 swap victim -> assignments/17-pintos-cs318-vm -> frame identity and clock hand -> B05 MMU retry contention as adjacent mechanism
+09 external pager -> assignments/18-umich-eecs482-pager -> invalidate references before frame reuse -> B20/B25 migration stale state are conceptually related, not course bugs
+10 profiler -> assignments/19-uiuc-cs423-mp3 -> sample failure measurements and task lifetime -> B05 and B10 long stalls
+11 trace MRC -> assignments/20-cmu-15213-cache-lab -> block identities, LRU, line capacities -> no exact KVM bug about SHARDS directly established
+12 lottery -> assignments/01-wisc-2018-lottery -> ticket share while runnable -> scheduling simulation and thesis counterexample, not KVM bug
+13 stride -> assignments/02-wisc-2015-stride -> deterministic pass update -> multi-client group error in thesis, not a kernel defect
+14 policy switch -> assignments/03-ucr-2024-lottery-stride -> common workload and metrics -> compare the two simulation policies
+15 scheduling syscalls -> assignments/04-ucr-2019-stride-syscalls -> snapshot state while processes change -> B06 shares producer/consumer progress concept only
+16 lottery fork -> assignments/05-iit-cs450-lottery -> inherited ticket count -> validate original lab code, no verified related KVM defect
+17 MLFQ -> assignments/06-wisc-2019-mlfq -> runnable wakeup and preemption -> B23 clock watchdog progress mismatch concept only
+18 VM manager -> assignments/07-gatech-6210-vm-coordinator -> CPU/memory observed signals -> B04/B09 migration liveness
+19 libvirt manager -> assignments/09-iitb-cs695-libvirt-pa2 -> VM state & balloon target -> B21/B25 migration state
+20 KVM second assignment -> assignments/10-iitb-2023-kvm-a3 -> nested state and dirty tracking -> B03/B16
+21 old course KVM guest -> assignments/21-biswas-oslab-kvm -> guest ioctls, I/O exit -> B06/B08 as follow-ups
+22 alternative lottery -> assignments/22-hws-331-lottery -> grants and compensation -> no exact KVM failure claimed

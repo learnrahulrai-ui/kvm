@@ -1,0 +1,39 @@
+SOURCE EVIDENCE REGISTER — original papers, implementation bodies and documentation. Visited/checked for core mechanisms in November 2026. Each claim below is scoped to its original system, not this laptop.
+
+1994 LOTTERY SCHEDULING: Waldspurger and Weihl. Lottery Scheduling: Flexible Proportional-Share Resource Management. Original source background and 1995 dissertation https://publications.csail.mit.edu/lcs/pubs/pdf/MIT-LCS-TR-667.pdf ; inspect thesis compensation tickets, client state and currencies. CPU ticket ratios are expectations, not exact scheduling counts on a finite randomized run. Historical simulator in src/scheduler.c makes its own deterministic policy and provides only a baseline.
+
+1995 STRIDE: Waldspurger dissertation, especially scheduling sections dealing with pass advancement and multi-client short-window unfairness. https://publications.csail.mit.edu/lcs/pubs/pdf/MIT-LCS-TR-667.pdf . The 101-client example refutes a leap from pairwise fairness to group error. Our scheduler updates pass by 1/tickets rather than a finite-integer stride; it does not capture integer wraparound or entire dynamic process lifecycle.
+
+2002 ESX: Memory Resource Management in VMware ESX Server original full HTML https://www.usenix.org/legacy/publications/library/proceedings/osdi02/tech/waldspurger/waldspurger_html/index.html . Specific memory sharing §4.2, activity fraction and tax §5.2 https://static.usenix.org/events/osdi02/tech/full_papers/waldspurger/waldspurger_html/node14.html and §5.3 https://usenix.org/legacy/events/osdi02/tech/waldspurger/waldspurger_html/node15.html . VERIFIED: S shares, P pages, f active, k=1/(1−tax), score=S/[P(f+k(1−f))], default tax=.75. Sampling 100 random VM physical pages / 30 seconds of VM execution; cached mappings invalidated; maximum of THREE slow/fast/current period estimates. Study the original actual experimental sections before claiming equivalence.
+
+KERNEL KSM: https://kernel.org/doc/html/latest/admin-guide/mm/ksm.html documents MADV_MERGEABLE, /sys/kernel/mm/ksm/run, pages_shared, pages_sharing and full_scans. run=1 activates daemon; run=0 stops scanning but keeps merged pages; run=2 also unmerges. Changing this is host-wide. pages_sharing counts additional mapping references, not exact private RSS. Active KSM does not guarantee any specific candidate has merged. Linux KSM merges suitable anonymous pages; QEMU exposes a memory backend merge=on property.
+
+QEMU MEMORY BACKEND: https://www.qemu.org/docs/master/system/invocation.html documents -object memory-backend-ram,id=...,size=...,merge=on and -machine memory-backend=..., plus guest memory size -m. Version may differ on installed QEMU; run --version and consult its own help before changing command lines. The lab uses a different overlay per guest.
+
+QEMU BALLOON STATS: https://www.qemu.org/docs/master/interop/virtio-balloon-stats.html documents guest-stats last-update and stat fields, which may be -1 if unsupported. The guest driver can be missing; a requested memory size is a target, not an immediate measured RAM release. QMP query-balloon.actual reports LOGICAL VM memory (modern QEMU schema), not the host RSS.
+
+QEMU QCOW2: https://www.qemu.org/docs/master/tools/qemu-img.html documents backing images, qemu-img create -f qcow2 -F qcow2 -b base overlay. Each overlay writes locally; base is shared readonly. Never have two running guests writing the same source image.
+
+KVM API: https://www.kernel.org/doc/html/latest/virt/kvm/api.html defines /dev/kvm, KVM_CREATE_VM, KVM_SET_USER_MEMORY_REGION, KVM_CREATE_VCPU, KVM_GET_VCPU_MMAP_SIZE, KVM_RUN, KVM_EXIT_IO/MMIO and KVM_CAP_DIRTY_LOG_RING. KVM_IOEVENTFD can suppress userspace-visible exits; it is not guaranteed to remove the hardware VM exit. Device or vCPU state may require another KVM_RUN before an operation completes.
+
+KVM SECONDARY MMU INVALIDATION: https://docs.kernel.org/mm/mmu_notifier.html documents ordering and constraints when secondary MMUs cache translations of backing host pages. A host PTE removal alone does not revoke all guest/device reachability; pinned pages and in-flight DMA have their own lifetime requirements.
+
+SHARDS FAST 2015: Efficient MRC Construction with SHARDS, original PDF https://www.usenix.org/system/files/conference/fast15/fast15-paper-waldspurger.pdf . §2.1 hashed BLOCK ID sampling ensures repeated references to selected blocks stay selected. §2.2 scales reuse distances by 1/R. §2.3 maintains a bounded sample and lowers threshold when necessary, with histogram count rescaling. Figure 2 shows hash filter, distance tree, priority queue and histogram. §4 evaluates actual trace experiments. src/mrc.c is exact small-trace LRU and a fixed-rate approximation, not the original fixed-size data structures.
+
+HOST AND GUEST CACHE: QEMU system manpage https://www.qemu.org/docs/master/system/qemu-manpage.html explains cache.direct and no-flush controls. Cache=none at the QEMU backing disk does not remove caches at all layers, and neither a write completion nor a read hit alone proves persistence.
+
+MIGRATION PRE-COPY: Clark et al., NSDI 2005 full paper https://www.usenix.org/legacy/publications/library/proceedings/nsdi05/tech/full_papers/clark/clark_html/index.html ; transfer repeated distinct dirty state. QEMU postcopy source failure documented at https://www.qemu.org/docs/master/devel/migration/postcopy.html . QEMU CPR modes and limitations https://www.qemu.org/docs/master/devel/migration/CPR.html . Do not claim arbitrary guest/device/kernel preserved by merely copying RAM.
+
+2013 QEMU ZERO-PAGE BUG ORIGINAL AND REVERT: original https://github.com/qemu/qemu/commit/f1c72795af573b24a7da5eb52375c9aba8a37972 ; revert https://github.com/qemu/qemu/commit/9ef051e5536b6368a1076046ec6c4ec4ac12b5c6 . Original optimization skipped source-zero pages during bulk transfer; revert explains destination may contain nonzero firmware contents and pseries migration was broken. This is source-verified; no laptop runtime reproduction here.
+
+2021 KVM NESTED AMD SVM MIGRATION: https://lists.openwall.net/linux-kernel/2021/01/07/367 ; reviewer corrected initial diagnosis: interrupt bytes survived but nested_run_pending flag was not restored, enabling a spurious nested exit. Requires version-pinned nested SVM.
+
+2008 KVM SHADOW MMU ORDER: https://sourceforge.net/p/kvm/mailman/message/19067975/ ; a prefetch/protection ordering bug on SMP guest, reproduced via looping dmsetup status. Full downstream patch needed to reproduce on historical shadow MMU.
+
+2025 KVM DIRTY RING LIVELOCK: https://lists.openwall.net/linux-kernel/2025/05/16/1409 ; consumer resetting ring while userspace changes entries. Need actual KVM_CAP_DIRTY_LOG_RING and vulnerable revision. Not a purely software lock abstraction.
+
+2024 MEMSTRATA: paper https://www.usenix.org/system/files/osdi24-zhong-yuhong.pdf . Architecture includes hardware-managed fine-grained CXL/DRAM tier and software performance isolation; cannot reproduce hardware benefits on ordinary DDR4 Ryzen laptop. Build mathematical component only.
+
+1997 PROFILEME: original research https://www.waldspurger.org/carl/papers/profileme-micro30.pdf . Different hardware PMU; contemporary perf is an analogy, not a replica.
+
+NUTANIX SWAP BUFFER PATENT: US12147844B2 https://patents.google.com/patent/US12147844B2/en . A patent proves an idea was disclosed, not that a given production failure was recorded or deployment is real.

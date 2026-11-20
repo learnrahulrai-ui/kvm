@@ -1,0 +1,18 @@
+BARRIERS TO HONEST PAPER REPLICATION
+
+1. A C scheduler simulation demonstrates ticket allocation under explicitly always-runnable assumptions. It does not implement a CPU scheduler in Linux, KVM, xv6 or QEMU.
+2. src/idle_tax.c implements exactly the historic formula for given S/P/f/tax inputs. It does not reclaim even one Linux page. It does not implement guest active-page tracking.
+3. Linux KSM implements sharing for opt-in mergeable anonymous pages. The host-wide /sys/kernel/mm/ksm/run setting must be observed and controlled explicitly. If another workload is mergeable, aggregate sysfs counters cannot identify savings caused only by the experiment.
+4. On Linux, anonymous page merging uses actual page identity and write-protection. QEMU reports userspace and guest physical ranges, not physical frames by printing one pointer. An example pointer is not a physical page number.
+5. virtio-balloon is a request/response driver protocol. QMP 'balloon value' requests logical guest memory in bytes; query-balloon actual is NOT the number of physical bytes freed. A driver without response can prevent a target from being reached.
+6. Exact MRC src/mrc.c uses a limited O(references × identities) implementation; it is not a production optimized order-statistics tree. The sampled mode uses deterministic FNV-1a, not the paper's specific hash or adaptive bounded sample.
+7. Historical OS bugs may need old kernels, special hardware, pre-patch QEMU, 4KB/64KB mismatch, huge RAM or particular guest firmware. A proof-of-concept race under a modern host is a new model, not necessarily the historic defect.
+8. Source files in assignments have many TODOs and generic fixtures. Passing their smoke tests does not mean the original university assignment is implemented or the grader passed.
+9. Memstrata OSDI2024 relies on CXL and hardware-managed fine-grained memory tiers; ordinary laptop DDR4 is not a physical two-tier equivalent. NVIDIA GPU VRAM is not automatically accessible as coherent host CXL memory.
+10. ProfileMe processor instruction tagging and event attribution is not reconstructible exactly with generic perf counters. A perf benchmark is an approximation.
+11. Root password being known does not make a host-wide KSM change, an old kernel module, VFIO rebinding, or guest image overwrite intrinsically risk-free. This lab defaults to no host mutation.
+12. Files at /usr/src/linux-headers-$(uname -r) are sufficient to build some out-of-tree modules, but not the full kernel source history for diagnosing KVM. For source-level bug reproduction, checkout the exact historical git tree.
+13. Github Actions has no guaranteed /dev/kvm or installed VM guest image. Its green build is intentionally limited to standalone C and source/schema tests, not VM behavior.
+14. The project's two guests are configured with ~1.5GiB guest RAM total but real host RSS may differ because pages are lazy, shared, ballooned, or otherwise backed. Never equate configured RAM with current resident RAM.
+15. A copied pointer may be stale if another vCPU edits shared data; guest pointer validation does not make the referenced memory immutable unless the data is snapshotted or a protocol establishes synchronization.
+16. Cross-tenant page sharing may be disabled by policy; a successful host KSM experiment is not proof that a deployed multi-tenant system allows it.
