@@ -2,8 +2,17 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 mkdir -p upstream
-if [ ! -d upstream/starter/.git ]; then git clone 'https://github.com/mit-pdos/xv6-riscv.git' upstream/starter; fi
-git -C upstream/starter fetch origin cow
-git -C upstream/starter checkout cow
-curl -fL --retry 2 'https://pdos.csail.mit.edu/6.1810/2025/labs/cow.html' -o upstream/assignment.html
-echo 'Source collection complete. No student implementation has been added.'
+# 6.1810/2025/labs/util.html explicitly identifies this course-specific source.
+# mit-pdos/xv6-riscv does NOT provide the required 2025 lab branch.
+if [ ! -d upstream/starter/.git ]; then
+  git clone 'git://g.csail.mit.edu/xv6-labs-2025' upstream/starter
+fi
+git -C upstream/starter fetch origin
+if ! git -C upstream/starter show-ref --verify --quiet refs/remotes/origin/cow; then
+  echo 'Official lab branch cow missing: do not substitute base xv6.' >&2
+  exit 2
+fi
+git -C upstream/starter switch --create course-cow --track origin/cow 2>/dev/null ||
+  git -C upstream/starter switch course-cow
+git -C upstream/starter rev-parse HEAD
+echo 'Use: cd upstream/starter && make grade'
