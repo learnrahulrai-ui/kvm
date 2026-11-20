@@ -1,0 +1,27 @@
+name: Waldspurger lab C debug build
+on:
+  push:
+    paths:
+      - 'waldspurger-lab/**'
+      - '.github/workflows/waldspurger-lab.yml'
+  workflow_dispatch:
+jobs:
+  build-test:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler: [gcc, clang]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and run paper baselines
+        env:
+          CC: ${{ matrix.compiler }}
+        run: |
+          cd waldspurger-lab
+          make clean
+          make CC="$CC" CFLAGS='-std=c11 -O0 -g3 -Wall -Wextra -Werror -Wpedantic' check
+          for binary in build/idle_tax build/scheduler build/mrc build/ksm_demo; do
+            readelf -S "$binary" | grep -q '.debug_info'
+          done
+          echo "verified=$CC 4 debug binaries; baseline tests PASS; KVM experiments NOT run"
