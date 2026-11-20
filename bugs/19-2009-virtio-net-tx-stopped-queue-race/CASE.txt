@@ -3,21 +3,21 @@ PUBLIC ORIGIN YEAR: 2009 (pre-2015)
 EVIDENCE STATUS: REAL_GUEST_NETWORK_FAILURE_AND_FIX; reported 2009, patch January 2010
 CAN TRY ON SECOND LAPTOP: GOOD_GUEST_KERNEL_EXERCISE / OLD_LINUX_GUEST_VIRTIO_NET; QEMU/KVM disposable bridge
 LOCAL REPRODUCED: NO_REPRO_RUN
-ORIGINAL SOURCE: https://bugzilla.redhat.com/show_bug.cgi?id=524651
+ORIGINAL REPORT / PATCH (READ BODY NOT TITLE): https://bugzilla.redhat.com/show_bug.cgi?id=524651
 PATCH / REVIEW: https://bugzilla.redhat.com/show_bug.cgi?id=524651#c19
 PINNED VERSION: RHEL 5.4-era guest virtio_net (2009) versus patch January 7 2010; modern virtio_net not expected to reproduce
 END-USER FAILURE: virtio_net completed transmit queue can remain stopped with no pending work
-EARLIEST WRONG ASSUMPTION:
+CORE FAILURE, NOT AN ERROR-RETURN EXERCISE:
 xmit_tasklet frees completed TX buffers but does not wake the stopped transmit queue, so the virtqueue has space but no producer can resume transmission.
 CALL / DATA / STATE PATH:
 guest netdev TX queue becomes stopped -> host completes packets -> xmit_tasklet reclaims descriptors -> queue still marked stopped -> guest sends no more packets
-ACTUAL REPRODUCTION OR SOURCE-BOUND PLAN:
+REPRODUCTION PROCEDURE AND REQUIRED RESOURCES:
 In a disposable old Linux guest use virtio-net, sustained TCP streams (iperf/netperf), monitor /proc/net/dev and TX queue state; reporter observed network disappearing. Trace tasklet and netif_wake_queue; compare with patch. Note this TX fix does NOT address other RX stalls reported in later comments.
 FAILURE SIGNAL AND CONTROL:
 Network TX stops even though completions freed descriptors; patched driver restarts TX after completion.
 MANUAL INPUT AND QUESTION:
 CONSTRUCTED: ring occupancy reaches capacity 256, completes 64 and frees them, but queue_stopped remains true. Derive descriptor availability and compare against driver's paused state.
-ASSIGNMENT MAPPING: 19-uiuc-cs423-mp3, 21-biswas-oslab-kvm, 07-gatech-6210-vm-coordinator
+EXACT UNIVERSITY ASSIGNMENTS INVOLVED: 19-uiuc-cs423-mp3, 21-biswas-oslab-kvm, 07-gatech-6210-vm-coordinator
 FIRST-PRINCIPLES REPRODUCTION CONTRACT
 Read the actual original patch code; identify the reader and writer of shared state. No unsupported cross-version inferences.
 CALCULATE page size from sysconf(_SC_PAGESIZE) or in-guest PAGE_SIZE, never use a made-up kernel address as an observed value.

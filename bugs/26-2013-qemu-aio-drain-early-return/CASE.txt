@@ -3,21 +3,21 @@ PUBLIC ORIGIN YEAR: 2013 (pre-2015)
 EVIDENCE STATUS: UPSTREAM_PATCH_2EA9_AND_STABLE_CHERRY_PICK_VERIFIED
 CAN TRY ON SECOND LAPTOP: GOOD_SOFTWARE_ONLY_CONDITIONAL / SOFTWARE_ONLY_HISTORICAL_QEMU_BLOCK_BACKEND
 LOCAL REPRODUCED: NO_REPRO_RUN
-ORIGINAL SOURCE: https://github.com/qemu/qemu/commit/2ea9b58f0bc62445b7ace2381b4c4db7d5597e19
+ORIGINAL REPORT / PATCH (READ BODY NOT TITLE): https://github.com/qemu/qemu/commit/2ea9b58f0bc62445b7ace2381b4c4db7d5597e19
 PATCH / REVIEW: https://github.com/qemu/qemu/commit/9d173df5538a73cb8be53684ab19ea201c783663
 PINNED VERSION: QEMU 1.3 stable series January 2013; pre-patch and post-fix historical source required
 END-USER FAILURE: QEMU aio_poll treats no immediate progress as no pending I/O
-EARLIEST WRONG ASSUMPTION:
+CORE FAILURE, NOT AN ERROR-RETURN EXERCISE:
 aio_poll() returned a progress flag even though there were outstanding operations. bdrv_drain_all() treated false as nothing remains and could stop before asynchronous requests completed.
 CALL / DATA / STATE PATH:
 backend has outstanding AIO -> aio_poll does not complete one on this iteration -> returns false -> bdrv_drain_all exits -> assert pending work or state transition races unfinished I/O
-ACTUAL REPRODUCTION OR SOURCE-BOUND PLAN:
+REPRODUCTION PROCEDURE AND REQUIRED RESOURCES:
 Build historical QEMU before 2ea9b58 then after it. Run guest disk AIO workload and repeatedly trigger block drain (e.g. snapshot, stop or migration flush) while outstanding requests exist. Use gdb on aio_poll / bdrv_drain_all to capture pending/busy versus progress; no deterministic original reproducer established by commit.
 FAILURE SIGNAL AND CONTROL:
 Original source says bdrv_drain_all could assert with outstanding work; fix ensures return reflects busy as well as immediate progress.
 MANUAL INPUT AND QUESTION:
 CONSTRUCTED: pending=3, completed_this_poll=0. Calculate progress boolean and pending-work boolean separately. Which boolean should determine whether draining stops?
-ASSIGNMENT MAPPING: 09-iitb-cs695-libvirt-pa2, 07-gatech-6210-vm-coordinator, 21-biswas-oslab-kvm
+EXACT UNIVERSITY ASSIGNMENTS INVOLVED: 09-iitb-cs695-libvirt-pa2, 07-gatech-6210-vm-coordinator, 21-biswas-oslab-kvm
 FIRST-PRINCIPLES REPRODUCTION CONTRACT
 Read the actual original patch code; identify the reader and writer of shared state. No unsupported cross-version inferences.
 CALCULATE page size from sysconf(_SC_PAGESIZE) or in-guest PAGE_SIZE, never use a made-up kernel address as an observed value.

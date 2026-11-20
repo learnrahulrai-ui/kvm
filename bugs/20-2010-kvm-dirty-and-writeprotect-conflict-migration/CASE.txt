@@ -3,21 +3,21 @@ PUBLIC ORIGIN YEAR: 2010 (pre-2015)
 EVIDENCE STATUS: REPRODUCED_UPSTREAM_2_6_36_BY_AUTHOR; fix SHA in KVM tree reported
 CAN TRY ON SECOND LAPTOP: ORIGINAL_REPRO_NEEDS_OLD_INTEL_NON_EPT / HISTORICAL_INTEL_SHADOW_MMU; AMD compatibility unproven
 LOCAL REPRODUCED: NO_REPRO_RUN
-ORIGINAL SOURCE: https://bugzilla.redhat.com/show_bug.cgi?id=647367
+ORIGINAL REPORT / PATCH (READ BODY NOT TITLE): https://bugzilla.redhat.com/show_bug.cgi?id=647367
 PATCH / REVIEW: https://bugzilla.redhat.com/show_bug.cgi?id=647367#c3
 PINNED VERSION: Linux 2.6.36 upstream affected, RHEL 6.0; reporter names KVM commit ae8894c00b560bde4cbbc2115f532df997e15d14, not found in torvalds/linux mirror (verify KVM-specific tree)
 END-USER FAILURE: KVM dirty/write-protect state permits old guest memory after live migration
-EARLIEST WRONG ASSUMPTION:
+CORE FAILURE, NOT AN ERROR-RETURN EXERCISE:
 Dirty logging and write-protection updates do not maintain the invariant that each page is either marked dirty for transfer or protected so any next write will be noticed. A page's post-copy changes escape the final migration bitmap.
 CALL / DATA / STATE PATH:
 guest network stress -> KVM write-protects guest memory -> competing modifications/bitmap tracking -> migration copies stale page -> destination sees old bytes -> guest/QEMU crashes
-ACTUAL REPRODUCTION OR SOURCE-BOUND PLAN:
+REPRODUCTION PROCEDURE AND REQUIRED RESOURCES:
 Original reporter: Intel NON-EPT system; RHEL6 guest with virtio and vhost-net; netperf host→guest while repeatedly migrating. Observed about 1/4 runs. Must disable hardware EPT to recreate exact mode; cannot claim AMD NPT reproduction from Intel report.
 FAILURE SIGNAL AND CONTROL:
 Destination emits 'guest moved index' / unexpected guest/QEMU crash, or memory checksum mismatch; valid state must be either dirty or protected.
 MANUAL INPUT AND QUESTION:
 CONSTRUCTED: page copied as 0x11; guest next writes 0x22 without dirty event. Identify destination expected byte and transferred byte, and which invariant could prevent mismatch.
-ASSIGNMENT MAPPING: 08-iitb-cs695-kvm-pa1, 18-umich-eecs482-pager, 11-unc-comp790-vmm
+EXACT UNIVERSITY ASSIGNMENTS INVOLVED: 08-iitb-cs695-kvm-pa1, 18-umich-eecs482-pager, 11-unc-comp790-vmm
 FIRST-PRINCIPLES REPRODUCTION CONTRACT
 Read the actual original patch code; identify the reader and writer of shared state. No unsupported cross-version inferences.
 CALCULATE page size from sysconf(_SC_PAGESIZE) or in-guest PAGE_SIZE, never use a made-up kernel address as an observed value.

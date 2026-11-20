@@ -3,21 +3,21 @@ PUBLIC ORIGIN YEAR: 2010 (pre-2015)
 EVIDENCE STATUS: REAL_FILE_TRANSFER_FAILURE_VERIFIED_RHEL_6_1
 CAN TRY ON SECOND LAPTOP: GOOD_WITH_OLD_QEMU_AND_GUEST / HISTORICAL_QEMU_VHOST_NET; software plus nested old kernel
 LOCAL REPRODUCED: NO_REPRO_RUN
-ORIGINAL SOURCE: https://bugzilla.redhat.com/show_bug.cgi?id=623552
+ORIGINAL REPORT / PATCH (READ BODY NOT TITLE): https://bugzilla.redhat.com/show_bug.cgi?id=623552
 PATCH / REVIEW: https://bugzilla.redhat.com/show_bug.cgi?id=623552#c16
 PINNED VERSION: RHEL6 host qemu-kvm-0.12.1.2-2.109 and kernel 2.6.32-62.el6; verified fixed in qemu-kvm-0.12.1.2-2.129.el6
 END-USER FAILURE: Live migration loses guest changes made by vhost-net after final dirty-page scan
-EARLIEST WRONG ASSUMPTION:
+CORE FAILURE, NOT AN ERROR-RETURN EXERCISE:
 CONFIRMED: vhost dirty bits were not transferred correctly during live migration, leaving guest data stale at the destination. A 2010 maintainer proposed that vhost stopped after QEMU's final dirty-page scan, but labeled that ordering as a suspicion, not a proven complete root cause. The RHEL6 fix's technical note establishes dirty-bit synchronization as the problem family.
 CALL / DATA / STATE PATH:
 SCP into guest -> vhost-net writes used rings -> QEMU last RAM dirty sync -> vhost device still operates -> late dirty changes not sent -> destination resumes with stale queue structures -> SCP fails
-ACTUAL REPRODUCTION OR SOURCE-BOUND PLAN:
+REPRODUCTION PROCEDURE AND REQUIRED RESOURCES:
 Reporter ran guest with -m 4G -smp 2, virtio-blk and virtio-net vhost=on; SCP a large qcow2 file from host to guest while live migration runs. For laptop cut test workload only after identifying that load still dirties the ring during the final transfer. Capture completed bytes and guest destination SHA256, then repeat with the fixed QEMU package.
 FAILURE SIGNAL AND CONTROL:
 Transfer aborts immediately after migration; fixed package was tested twice without recurrence (not proof of absolute reliability).
 MANUAL INPUT AND QUESTION:
 CONSTRUCTED: migration last scan at t=5 ms; vhost writes used_idx at t=6 ms; destination resumes at t=7 ms. Derive why an ACK without the updated index breaks queue progress.
-ASSIGNMENT MAPPING: 08-iitb-cs695-kvm-pa1, 09-iitb-cs695-libvirt-pa2, 07-gatech-6210-vm-coordinator, 20-cmu-15213-cache-lab
+EXACT UNIVERSITY ASSIGNMENTS INVOLVED: 08-iitb-cs695-kvm-pa1, 09-iitb-cs695-libvirt-pa2, 07-gatech-6210-vm-coordinator, 20-cmu-15213-cache-lab
 FIRST-PRINCIPLES REPRODUCTION CONTRACT
 Read the actual original patch code; identify the reader and writer of shared state. No unsupported cross-version inferences.
 CALCULATE page size from sysconf(_SC_PAGESIZE) or in-guest PAGE_SIZE, never use a made-up kernel address as an observed value.

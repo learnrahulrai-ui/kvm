@@ -3,21 +3,21 @@ PUBLIC ORIGIN YEAR: 2013 (pre-2015)
 EVIDENCE STATUS: UPSTREAM_COMMIT_8D76_AND_REPORTER_TEST_VERIFIED
 CAN TRY ON SECOND LAPTOP: INTEL_ONLY_OLD_KERNEL / INTEL_VMX_REQUIRED_NOT_AMD_SVM
 LOCAL REPRODUCED: NO_REPRO_RUN
-ORIGINAL SOURCE: https://lkml.iu.edu/1306.0/01022.html
+ORIGINAL REPORT / PATCH (READ BODY NOT TITLE): https://lkml.iu.edu/1306.0/01022.html
 PATCH / REVIEW: https://github.com/torvalds/linux/commit/8d76c49e9ffeee839bc0b7a3278a23f99101263e
 PINNED VERSION: Kernel before upstream commit 8d76c49 from May 2013; Intel VMX and legacy vm86/invalid guest state required
 END-USER FAILURE: KVM VMX invalid-state emulation fails to clear pending halt and later hangs guest
-EARLIEST WRONG ASSUMPTION:
+CORE FAILURE, NOT AN ERROR-RETURN EXERCISE:
 Invalid guest-state emulation loop never consumed halt_request. An unrelated later vm86 #GP emulated instruction could be misinterpreted as halted, and the original loop could use 100% host CPU.
 CALL / DATA / STATE PATH:
 handle_invalid_guest_state -> halt_request set and unhandled -> emulator keeps looping -> later vm86 #GP instruction -> stale halt_request causes kvm_emulate_halt on wrong operation -> guest hang
-ACTUAL REPRODUCTION OR SOURCE-BOUND PLAN:
+REPRODUCTION PROCEDURE AND REQUIRED RESOURCES:
 Disposable Intel KVM host with kernel immediately before patch; run Linux guest capable of legacy vm86/invalid guest-state emulation and repeated HLT/exception transitions. Attach perf to KVM VMX handle_invalid_guest_state. Specific guest reproducer is not public in patch; do not claim ordinary AMD Ryzen reproduces.
 FAILURE SIGNAL AND CONTROL:
 100% CPU invalid-state loop and/or stale halted guest; patch processes halt_request in invalid-state emulation path.
 MANUAL INPUT AND QUESTION:
 CONSTRUCTED: halt_request=1 after event A, instruction B has no halt semantics. Compare consumed flag expected before B with actual old implementation flag and trace erroneous branch.
-ASSIGNMENT MAPPING: 11-unc-comp790-vmm, 10-iitb-2023-kvm-a3, 21-biswas-oslab-kvm
+EXACT UNIVERSITY ASSIGNMENTS INVOLVED: 11-unc-comp790-vmm, 10-iitb-2023-kvm-a3, 21-biswas-oslab-kvm
 FIRST-PRINCIPLES REPRODUCTION CONTRACT
 Read the actual original patch code; identify the reader and writer of shared state. No unsupported cross-version inferences.
 CALCULATE page size from sysconf(_SC_PAGESIZE) or in-guest PAGE_SIZE, never use a made-up kernel address as an observed value.

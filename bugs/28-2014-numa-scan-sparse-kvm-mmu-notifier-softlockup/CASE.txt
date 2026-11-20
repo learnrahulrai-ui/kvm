@@ -3,22 +3,22 @@ PUBLIC ORIGIN YEAR: 2014 (pre-2015)
 EVIDENCE STATUS: LKML_2014_PATCH_SERIES_ORIGINAL_SOURCE_VERIFIED
 CAN TRY ON SECOND LAPTOP: HUGE_VM_ONLY / PUBLISHED_VM_GT_2_TIB_MEMORY; NOT_LAPTOP_EXACT_REPRO
 LOCAL REPRODUCED: NO_REPRO_RUN
-ORIGINAL SOURCE: https://lkml.iu.edu/hypermail/linux/kernel/1402.2/01745.html
+ORIGINAL REPORT / PATCH (READ BODY NOT TITLE): https://lkml.iu.edu/hypermail/linux/kernel/1402.2/01745.html
 SECONDARY INDEPENDENT DEFINITION: https://www.kernel.org/doc/html/v6.10/mm/page_tables.html
 PATCH / REVIEW: https://lkml.iu.edu/hypermail/linux/kernel/1402.2/01745.html
 PINNED VERSION: 2014 Linux automatic NUMA balancing and KVM sparse large VM (~2 TiB), before three-part patch series
 END-USER FAILURE: Linux NUMA scan performs expensive KVM MMU invalidations over holes in huge guest memory
-EARLIEST WRONG ASSUMPTION:
+CORE FAILURE, NOT AN ERROR-RETURN EXERCISE:
 NUMA balancing walks huge sparse guest mappings and invokes mmu_notifier even where no page is present. KVM pays invalidation work proportional to virtual address span rather than resident pages, causing watchdog soft-lockup latency.
 CALL / DATA / STATE PATH:
 task_numa_work scans unpopulated VMA -> change_protection / mmu notifier over empty range -> KVM invalidation overhead -> latency/soft lockup; fix narrows invalidation to populated PMD and cond_resched
-ACTUAL REPRODUCTION OR SOURCE-BOUND PLAN:
+REPRODUCTION PROCEDURE AND REQUIRED RESOURCES:
 Reporter states warning occurs on very large (>2TiB) KVM VMs. Cannot reproduce exact memory scale on 14GiB machine. Study patch body, create a SMALL demonstrator measuring notifier calls over sparse mmap regions, and explicitly label it a mechanism demonstration, not a reproduction.
 FAILURE SIGNAL AND CONTROL:
 soft lockup on huge sparse VMs, notifier calls on unmapped ranges; patch moves call to 1GiB PMD and only begins where present page encountered.
 MANUAL INPUT AND QUESTION:
 PUBLISHED: >2 TiB sparse virtual mapping. CONSTRUCTED: 2 TiB / 1 GiB = 2048 PUD-size windows, whereas 2 TiB / 2 MiB = 1048576 individual PMD-size spans. The 2014 source calls a change_pmd_range() traversal a '1GB area'; do not confuse a PMD table's 1GiB overall coverage with one PMD entry's 2MiB coverage. Derive why notifying on unbacked spans costs CPU even when no pages exist.
-ASSIGNMENT MAPPING: 08-iitb-cs695-kvm-pa1, 19-uiuc-cs423-mp3, 15-mit-61810-mmap, 07-gatech-6210-vm-coordinator
+EXACT UNIVERSITY ASSIGNMENTS INVOLVED: 08-iitb-cs695-kvm-pa1, 19-uiuc-cs423-mp3, 15-mit-61810-mmap, 07-gatech-6210-vm-coordinator
 FIRST-PRINCIPLES REPRODUCTION CONTRACT
 Read the actual original patch code; identify the reader and writer of shared state. No unsupported cross-version inferences.
 CALCULATE page size from sysconf(_SC_PAGESIZE) or in-guest PAGE_SIZE, never use a made-up kernel address as an observed value.

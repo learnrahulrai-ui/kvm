@@ -3,21 +3,21 @@ PUBLIC ORIGIN YEAR: 2008 (pre-2015)
 EVIDENCE STATUS: PATCH_AND_UPSTREAM_COMMIT_VERIFIED; specific user repro not retained
 CAN TRY ON SECOND LAPTOP: HISTORICAL_REPRO_HARD / OLD_X86_SHADOW_MMU; x86_64 nested VM, avoid modern EPT/NPT
 LOCAL REPRODUCED: NO_REPRO_RUN
-ORIGINAL SOURCE: https://lkml.rescloud.iu.edu/hypermail/linux/kernel/0801.0/0114.html
+ORIGINAL REPORT / PATCH (READ BODY NOT TITLE): https://lkml.rescloud.iu.edu/hypermail/linux/kernel/0801.0/0114.html
 PATCH / REVIEW: https://git.zx2c4.com/linux-rng/commit/drivers/kvm?id=7819026eefee53eaaac3fdce1a2f157c7ea943fe
 PINNED VERSION: KVM as in late 2007 / early January 2008, before commit 7819026eefee53eaaac3fdce1a2f157c7ea943fe, isolated old guest hypervisor
 END-USER FAILURE: KVM SMP shadow table caches a guest PTE that a sibling has replaced
-EARLIEST WRONG ASSUMPTION:
+CORE FAILURE, NOT AN ERROR-RETURN EXERCISE:
 VCPU0 reads a guest PTE into a walk; VCPU1 changes the guest PTE before VCPU0 protects the backing page table. VCPU0 installs a shadow mapping based on stale contents; protection of the page-table page alone cannot retroactively validate the copied entry.
 CALL / DATA / STATE PATH:
 VCPU0 guest page fault -> walk guest PTE -> VCPU1 writes guest PTE -> kvm_mmu_get_page / rmap_write_protect -> VCPU0 fetch builds shadow mapping -> stale translation
-ACTUAL REPRODUCTION OR SOURCE-BOUND PLAN:
+REPRODUCTION PROCEDURE AND REQUIRED RESOURCES:
 No compact standalone reproducer in patch. Use historical KVM shadow paging with two guest vCPUs and programmatic page-table updates while second vCPU faults. Trap and compare current guest PTE and saved snapshot after protection. First prove prerequisites; historical kernel is unlikely to boot natively on modern laptop.
 FAILURE SIGNAL AND CONTROL:
 The bad shadow points to the old page although the guest PTE changed, or guest accesses misbehave; patch verifies the cached/current guest PTE contents before continuing.
 MANUAL INPUT AND QUESTION:
 CONSTRUCTED: first read of guest PTE maps frame 0x120; concurrent update maps frame 0x340. Identify which frame the final shadow must map, and when a previously read PTE becomes stale.
-ASSIGNMENT MAPPING: 08-iitb-cs695-kvm-pa1, 11-unc-comp790-vmm, 12-unc-2017-amd-svm, 14-mit-61810-cow
+EXACT UNIVERSITY ASSIGNMENTS INVOLVED: 08-iitb-cs695-kvm-pa1, 11-unc-comp790-vmm, 12-unc-2017-amd-svm, 14-mit-61810-cow
 FIRST-PRINCIPLES REPRODUCTION CONTRACT
 Read the actual original patch code; identify the reader and writer of shared state. No unsupported cross-version inferences.
 CALCULATE page size from sysconf(_SC_PAGESIZE) or in-guest PAGE_SIZE, never use a made-up kernel address as an observed value.

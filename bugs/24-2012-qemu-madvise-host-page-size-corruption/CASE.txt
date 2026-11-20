@@ -3,21 +3,21 @@ PUBLIC ORIGIN YEAR: 2012 (pre-2015)
 EVIDENCE STATUS: UPSTREAM_COMMIT_F1A2195_VERIFIED_WITH_CAUSAL_DIFF
 CAN TRY ON SECOND LAPTOP: NO_RYZEN_REPRO_HARDWARE / NEEDS_HOST_PAGE_GREATER_THAN_GUEST_PAGE_EG_PPC64_64K
 LOCAL REPRODUCED: NO_REPRO_RUN
-ORIGINAL SOURCE: https://github.com/qemu/qemu/commit/f1a2195ec327fd2b837a3539623ee431d133f03c
+ORIGINAL REPORT / PATCH (READ BODY NOT TITLE): https://github.com/qemu/qemu/commit/f1a2195ec327fd2b837a3539623ee431d133f03c
 PATCH / REVIEW: https://github.com/qemu/qemu/commit/f1a2195ec327fd2b837a3539623ee431d133f03c
 PINNED VERSION: Pre-December 2012 QEMU on 64 KiB host page size paired with 4 KiB guest target page; impossible as originally observed on ordinary 4 KiB x86 host
 END-USER FAILURE: QEMU zero-page optimization discards neighboring guest bytes if host page is larger
-EARLIEST WRONG ASSUMPTION:
+CORE FAILURE, NOT AN ERROR-RETURN EXERCISE:
 madvise(MADV_DONTNEED) acts on an entire HOST page, even when QEMU requests a shorter guest-target page; QEMU's one-page zero optimization discards adjacent guest data on migration target.
 CALL / DATA / STATE PATH:
 incoming migration zero guest 4K chunk -> ram_load sees zero -> qemu_madvise length=TARGET_PAGE_SIZE 4K -> host backing page 64K discarded -> adjacent guest subpages lose data
-ACTUAL REPRODUCTION OR SOURCE-BOUND PLAN:
+REPRODUCTION PROCEDURE AND REQUIRED RESOURCES:
 Requires different host and target page sizes, such as 64K POWER host backing for 4K guest target; use isolated historical POWER guest or emulated environment capable of reproducing host-page semantics. Correct size mismatch must be proven before attempting. Not a laptop Ryzen KVM reproducer.
 FAILURE SIGNAL AND CONTROL:
 Adjacent data corruption after incoming migration; patch suppresses madvise if getpagesize()>TARGET_PAGE_SIZE.
 MANUAL INPUT AND QUESTION:
 CONSTRUCTED: host page 65536B, target page 4096B, one discard covers 65536/4096=16 guest pages. How many neighboring pages can be destroyed by one bad hint?
-ASSIGNMENT MAPPING: 15-mit-61810-mmap, 16-mit-61810-superpages, 11-unc-comp790-vmm
+EXACT UNIVERSITY ASSIGNMENTS INVOLVED: 15-mit-61810-mmap, 16-mit-61810-superpages, 11-unc-comp790-vmm
 FIRST-PRINCIPLES REPRODUCTION CONTRACT
 Read the actual original patch code; identify the reader and writer of shared state. No unsupported cross-version inferences.
 CALCULATE page size from sysconf(_SC_PAGESIZE) or in-guest PAGE_SIZE, never use a made-up kernel address as an observed value.

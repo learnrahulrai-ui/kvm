@@ -3,21 +3,21 @@ PUBLIC ORIGIN YEAR: 2011 (pre-2015)
 EVIDENCE STATUS: ORIGINAL_SERIES_DESCRIBES_FAILURE_AND_ABORTED_ALTERNATIVE; no exact standalone repro
 CAN TRY ON SECOND LAPTOP: GOOD_SAFE_GUEST_EXPERIMENT / ANY_DISPOSABLE_VM_WITH_OLD_GUEST_WATCHDOG
 LOCAL REPRODUCED: NO_REPRO_RUN
-ORIGINAL SOURCE: https://lkml.iu.edu/1111.3/02146.html
+ORIGINAL REPORT / PATCH (READ BODY NOT TITLE): https://lkml.iu.edu/1111.3/02146.html
 PATCH / REVIEW: https://lkml.iu.edu/1111.3/02146.html
 PINNED VERSION: Linux circa 2011 KVM paravirtual clock and watchdog; later host-paused flag may be supported by guest
 END-USER FAILURE: Pausing a KVM guest creates a false soft-lockup diagnosis and breaks naive clock corrections
-EARLIEST WRONG ASSUMPTION:
+CORE FAILURE, NOT AN ERROR-RETURN EXERCISE:
 Host stops guest execution, so guest watchdog observes elapsed time without guest progress and incorrectly reports soft lockup. Alternative QEMU saving/restoring TSC per vCPU caused guest wall clock to lag by pause duration.
 CALL / DATA / STATE PATH:
 host pauses guest -> guest watchdog sees large interval without guest scheduler progress -> false lockup; QEMU resets clock to hide pause -> guest wall clock falls behind
-ACTUAL REPRODUCTION OR SOURCE-BOUND PLAN:
+REPRODUCTION PROCEDURE AND REQUIRED RESOURCES:
 Start disposable Linux guest with watchdog, pause QEMU via HMP stop or QMP stop for longer than watchdog threshold, then cont. Compare guest watchdog dmesg/time before/after and a guest with host-pause notification support; do not change host clocksource or use physical host reboot.
 FAILURE SIGNAL AND CONTROL:
 Guest reports false lockup after being externally paused; inappropriate time compensation produces delayed guest wall clock.
 MANUAL INPUT AND QUESTION:
 CONSTRUCTED: host stops guest for 45s while vCPU executes 0 guest instructions. Count guest CPU-progress time vs elapsed clock time. Decide which clock a guest watchdog should use for a CPU progress claim.
-ASSIGNMENT MAPPING: 10-iitb-2023-kvm-a3, 06-wisc-2019-mlfq, 19-uiuc-cs423-mp3
+EXACT UNIVERSITY ASSIGNMENTS INVOLVED: 10-iitb-2023-kvm-a3, 06-wisc-2019-mlfq, 19-uiuc-cs423-mp3
 FIRST-PRINCIPLES REPRODUCTION CONTRACT
 Read the actual original patch code; identify the reader and writer of shared state. No unsupported cross-version inferences.
 CALCULATE page size from sysconf(_SC_PAGESIZE) or in-guest PAGE_SIZE, never use a made-up kernel address as an observed value.
