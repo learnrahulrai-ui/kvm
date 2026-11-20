@@ -35,6 +35,17 @@ for dir in "$ROOT"/[0-9][0-9]-*; do
       errors=$((errors+1))
       sed -n '1,50p' .smoke.stderr >&2
     else smoke='PASS'; fi
+    if ! ./build/logic_drill --status >.logic.stdout 2>.logic.stderr; then
+      echo "$name: logic drill failed to execute" >&2
+      errors=$((errors+1))
+    else
+      checked="$(grep -c '^slot=' .logic.stdout || true)"
+      if [ "$checked" -ne 20 ]; then
+        echo "$name: expected 20 C logic tests, saw $checked" >&2
+        errors=$((errors+1))
+      fi
+      tail -n 1 .logic.stdout | sed "s/^/$name: /"
+    fi
     debug='YES'
     for exe in build/*; do
       [ -f "$exe" ] && [ -x "$exe" ] || continue

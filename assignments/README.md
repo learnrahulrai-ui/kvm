@@ -1,3 +1,16 @@
+STATUS AS OF 2026-11-20
+Each folder now has src/logic_drill.c (10 deliberately unfinished functions), FILL_BLANKS.txt (20 exact test vectors), and MCQ_PROOF.txt (five reasoning questions; ASCII topology only).
+  make                         compiles C with -O0 -g3
+  make status                  prints 20 case outcomes, initially BLANK
+  make check                   fails until all 20 cases match the expected numbers
+  make smoke                   verifies starter parsers, NOT assignment algorithms
+  bash bootstrap.sh            obtains official source only where available
+ALL 22 self-contained C drills are DIFFERENT from their upstream xv6/JOS/Pintos/KVM/libvirt integration. A compiled drill is not a completed university assignment.
+MIT 6.1810/2025 labs: official xv6-labs-2025 (g.csail.mit.edu), not base xv6-riscv, contains cow/mmap/pgtbl branches. This was corrected in three bootstrap scripts.
+Linux CS423 module: 19-uiuc-cs423-mp3/kernel_module builds a real read-only procfs scaffold. Do not load an unfinished module into a production host.
+No Cargo.toml or Rust package was present in the tracked files at this update. 'cargo test' is not a meaningful test for this C repository.
+See ERROR-AUDIT.md for corrected false inferences, and official README/CHALLENGES in each folder for scope.
+
 Independent assignment workspaces assembled 2026-11-20.
 The existing Waldspurger research files in the parent repository remain unchanged.
 
