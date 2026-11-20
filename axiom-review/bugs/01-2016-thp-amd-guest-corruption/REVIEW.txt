@@ -1,0 +1,54 @@
+SOURCE_COMMIT 32198a0ade443b1b6c037a3a52fbc472abab801e
+FOLDER bugs/01-2016-thp-amd-guest-corruption
+AXIOM 1: 0 denotes no counted objects.
+AXIOM 2: 1 denotes one object added to 0.
+RULE: each new symbol needs an earlier definition.
+RULE: each numerical result needs an earlier calculation.
+RULE: a compiler result is not a proof of the subject matter.
+METHOD: each original source line is copied with its original line number.
+METHOD: FIRST_USE and NUMBERS identify candidates requiring proof.
+LIMIT: this is a conservative rejection, not a complete human semantic review.
+FOLDER_RESULT REJECTED
+
+FILE bugs/01-2016-thp-amd-guest-corruption/CASE.txt
+GIT_BLOB d3552c7879f3f87e1f0cae7893f2924e545da0ad
+MODE 100644
+BYTES 2949
+SOURCE_LINES 31
+L00001 REJECTED TEXT="B01 | Guest memory and ext4 corruption with host THP enabled" FIRST_USE=["B01", "Guest", "memory", "host", "THP"] NUMBERS=["1"] GAP="first line is not a proved axiom from counting"
+L00002 REJECTED TEXT="PUBLIC ORIGIN YEAR: 2016" FIRST_USE=["PUBLIC", "ORIGIN", "YEAR"] NUMBERS=["2016"] GAP="no verified preceding-line derivation of this assertion"
+L00003 REJECTED TEXT="EVIDENCE STATUS: CONFIRMED_REPORT_FIXED_RELEASE_CAUSAL_COMMIT_NOT_ESTABLISHED" FIRST_USE=["EVIDENCE", "STATUS", "CONFIRMED_REPORT_FIXED_RELEASE_CAUSAL_COMMIT_NOT_ESTABLISHED"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00004 REJECTED TEXT="CAN TRY ON SECOND LAPTOP: HISTORICAL_VM_ONLY" FIRST_USE=["CAN", "TRY", "ON", "SECOND", "LAPTOP", "HISTORICAL_VM_ONLY"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00005 REJECTED TEXT="LOCAL REPRODUCED: NO_REPRO_RUN" FIRST_USE=["LOCAL", "REPRODUCED", "NO_REPRO_RUN"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00006 REJECTED TEXT="CORE FAILURE, NOT AN ERROR-RETURN EXERCISE:" FIRST_USE=["CORE", "FAILURE", "NOT", "AN", "ERROR", "RETURN", "EXERCISE"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00007 REJECTED TEXT="Reporter observed a host THP-dependent guest data-integrity failure, but report does not identify the exact failing KVM function. A correlation and package fix do not prove a single page-table race." FIRST_USE=["guest", "data", "KVM", "function", "page", "race"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00008 REJECTED TEXT="OBSERVED OPERATION THAT MATTERS:" FIRST_USE=["OBSERVED", "OPERATION", "THAT", "MATTERS"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00009 REJECTED TEXT="Debian Linux 4.5.1 AMD Phenom II X6 host, KVM guests, disk-intensive aide --update repeated, THP enabled; negative control THP disabled. Debian closed report after 4.5.4-1." FIRST_USE=["AMD", "II", "X6", "disk"] NUMBERS=["4.5", "1", "4"] GAP="no verified preceding-line derivation of this assertion"
+L00010 REJECTED TEXT="FUNCTION-TO-FUNCTION REASONING PATH:" FIRST_USE=["FUNCTION", "TO", "REASONING", "PATH"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00011 REJECTED TEXT="guest aide updates -> guest writes and reads -> host-backed pages -> host THP present -> guest segfault/journal abort/readonly remount; THP=never -> not observed in reporter's tests" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00012 REJECTED TEXT="ORIGINAL REPORT / PATCH (READ BODY NOT TITLE): https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=821225" FIRST_USE=["ORIGINAL", "REPORT", "PATCH", "READ", "BODY", "TITLE"] NUMBERS=["821225"] GAP="no verified preceding-line derivation of this assertion"
+L00013 REJECTED TEXT="FIX OR UNCERTAINTY: Debian linux 4.5.4-1 package marked fixed, precise culprit not independently confirmed" FIRST_USE=["FIX", "OR", "UNCERTAINTY"] NUMBERS=["4.5", "4", "1"] GAP="no verified preceding-line derivation of this assertion"
+L00014 REJECTED TEXT="REPRODUCTION PROCEDURE AND REQUIRED RESOURCES:" FIRST_USE=["REPRODUCTION", "PROCEDURE", "AND", "REQUIRED", "RESOURCES"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00015 REJECTED TEXT="Use an old 4.5.1 Linux host kernel in an isolated nested-virtualization lab, not as the laptop's running host kernel. Clone test disk, compare file checksums before and after aide --update and repeat with THP disabled. Must verify corresponding old SVM support." FIRST_USE=["kernel", "test", "SVM"] NUMBERS=["4.5", "1"] GAP="no verified preceding-line derivation of this assertion"
+L00016 REJECTED TEXT="MEANINGFUL SUCCESS/FAILURE SIGNAL:" FIRST_USE=["MEANINGFUL", "SUCCESS", "SIGNAL"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00017 REJECTED TEXT="guest filesystem journal aborts, segfaults, checksum mismatch; no result is implied on newer kernels" FIRST_USE=["filesystem"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00018 REJECTED TEXT="EXACT UNIVERSITY ASSIGNMENTS INVOLVED: 16-mit-61810-superpages; 14-mit-61810-cow; 08-iitb-cs695-kvm-pa1" FIRST_USE=["EXACT", "UNIVERSITY", "ASSIGNMENTS", "INVOLVED", "cow", "kvm"] NUMBERS=["16", "61810", "14", "08", "95"] GAP="no verified preceding-line derivation of this assertion"
+L00019 REJECTED TEXT="STUDENT-OWNED CORE LOGICAL PUZZLE:" FIRST_USE=["STUDENT", "OWNED", "LOGICAL", "PUZZLE"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00020 REJECTED TEXT="TRACE guest virtual -> guest physical -> host backing under huge mapping; FILL the first page identity that could change. Do not invent the missing upstream cause." FIRST_USE=["TRACE", "virtual", "physical", "mapping", "FILL"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00021 REJECTED TEXT="FIRST THINGS TO DO BY HAND:" FIRST_USE=["FIRST", "THINGS", "DO", "BY", "HAND"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00022 REJECTED TEXT="01. DRAW every transition from the initial user operation until the first invalid ownership/wait." FIRST_USE=["DRAW"] NUMBERS=["01"] GAP="no verified preceding-line derivation of this assertion"
+L00023 REJECTED TEXT="02. NAME the owner of every address, mapping, lock, frame, queue, and clock as it first appears." FIRST_USE=["NAME", "address", "lock"] NUMBERS=["02"] GAP="no verified preceding-line derivation of this assertion"
+L00024 REJECTED TEXT="03. TRACE the two interleaving actors; do not infer that a race exists if only one actor appears in source." FIRST_USE=["source"] NUMBERS=["03"] GAP="no verified preceding-line derivation of this assertion"
+L00025 REJECTED TEXT="04. MATCH an observed stack / register / event / missing counter to a source function." FIRST_USE=["MATCH", "event"] NUMBERS=["04"] GAP="no verified preceding-line derivation of this assertion"
+L00026 REJECTED TEXT="05. DEFINE a falsifier: switch off just the implicated mechanism or use the source's documented pre/post patch control." FIRST_USE=["DEFINE"] NUMBERS=["05"] GAP="no verified preceding-line derivation of this assertion"
+L00027 REJECTED TEXT="06. IF reproducer is missing, DO NOT invent one and declare this bug reproduced." FIRST_USE=["IF"] NUMBERS=["06"] GAP="no verified preceding-line derivation of this assertion"
+L00028 REJECTED TEXT="07. RUN compile with debug symbols for any self-authored C, but never treat compilation as proof of the bug." FIRST_USE=["RUN", "proof"] NUMBERS=["07"] GAP="no verified preceding-line derivation of this assertion"
+L00029 REJECTED TEXT="08. DO NOT use made-up kernel virtual addresses such as 0xFFFF888010000000 as if they were obtained from the current laptop." FIRST_USE=[] NUMBERS=["08", "0xFFFF888010000000"] GAP="no verified preceding-line derivation of this assertion"
+L00030 REJECTED TEXT="09. NEVER alter live host CPU clocksource, KSM, VFIO ownership, page tables, or available memory for these experiments. Use throwaway nested VM." FIRST_USE=["NEVER", "CPU", "KSM", "VFIO", "VM"] NUMBERS=["09"] GAP="no verified preceding-line derivation of this assertion"
+L00031 REJECTED TEXT="10. RECORD original kernel commit and actual hardware before comparing any failure." FIRST_USE=["RECORD", "hardware"] NUMBERS=["10"] GAP="no verified preceding-line derivation of this assertion"
+RESULT REJECTED: line-level axiomatic proof not established; flagged=31/31
+NEW THINGS INTRODUCED WITHOUT DERIVATION: ["AMD", "AN", "AND", "ASSIGNMENTS", "B01", "BODY", "BY", "CAN", "CONFIRMED_REPORT_FIXED_RELEASE_CAUSAL_COMMIT_NOT_ESTABLISHED", "CORE", "CPU", "DEFINE", "DO", "DRAW", "ERROR", "EVIDENCE", "EXACT", "EXERCISE", "FAILURE", "FILL", "FIRST", "FIX", "FUNCTION", "Guest", "HAND", "HISTORICAL_VM_ONLY", "IF", "II", "INVOLVED", "KSM", "KVM", "LAPTOP", "LOCAL", "LOGICAL", "MATCH", "MATTERS", "MEANINGFUL", "NAME", "NEVER", "NOT", "NO_REPRO_RUN", "OBSERVED", "ON", "OPERATION", "OR", "ORIGIN", "ORIGINAL", "OWNED", "PATCH", "PATH", "PROCEDURE", "PUBLIC", "PUZZLE", "READ", "REASONING", "RECORD", "REPORT", "REPRODUCED", "REPRODUCTION", "REQUIRED", "RESOURCES", "RETURN", "RUN", "SECOND", "SIGNAL", "STATUS", "STUDENT", "SUCCESS", "SVM", "THAT", "THINGS", "THP", "TITLE", "TO", "TRACE", "TRY", "UNCERTAINTY", "UNIVERSITY", "VFIO", "VM", "X6", "YEAR", "address", "cow", "data", "disk", "event", "filesystem", "function", "guest", "hardware", "host", "kernel", "kvm", "lock", "mapping", "memory", "page", "physical", "proof", "race", "source", "test", "virtual"]
+NUMBERS WITHOUT VERIFIED DERIVATION: ["01", "02", "03", "04", "05", "06", "07", "08", "09", "0xFFFF888010000000", "1", "10", "14", "16", "2016", "4", "4.5", "61810", "821225", "95"]
+LIMIT: first-use names are lexical candidates, not a complete semantic analysis.
+END_FILE
+

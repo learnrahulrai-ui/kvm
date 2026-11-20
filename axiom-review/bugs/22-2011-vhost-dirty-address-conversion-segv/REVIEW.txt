@@ -1,0 +1,62 @@
+SOURCE_COMMIT 32198a0ade443b1b6c037a3a52fbc472abab801e
+FOLDER bugs/22-2011-vhost-dirty-address-conversion-segv
+AXIOM 1: 0 denotes no counted objects.
+AXIOM 2: 1 denotes one object added to 0.
+RULE: each new symbol needs an earlier definition.
+RULE: each numerical result needs an earlier calculation.
+RULE: a compiler result is not a proof of the subject matter.
+METHOD: each original source line is copied with its original line number.
+METHOD: FIRST_USE and NUMBERS identify candidates requiring proof.
+LIMIT: this is a conservative rejection, not a complete human semantic review.
+FOLDER_RESULT REJECTED
+
+FILE bugs/22-2011-vhost-dirty-address-conversion-segv/CASE.txt
+GIT_BLOB c124744eccf8170d1146f42cac09c06e4dcb7745
+MODE 100644
+BYTES 3564
+SOURCE_LINES 39
+L00001 REJECTED TEXT="B22 | Wrong address conversion in vhost migration dirty tracking segfaults QEMU" FIRST_USE=["B22", "address", "migration", "QEMU"] NUMBERS=["2"] GAP="first line is not a proved axiom from counting"
+L00002 REJECTED TEXT="PUBLIC ORIGIN YEAR: 2011 (pre-2015)" FIRST_USE=["PUBLIC", "ORIGIN", "YEAR"] NUMBERS=["2011", "2015"] GAP="no verified preceding-line derivation of this assertion"
+L00003 REJECTED TEXT="EVIDENCE STATUS: RHEL_BUG_REPRODUCED_PATCHED_VERIFIED_WITH_GDB" FIRST_USE=["EVIDENCE", "STATUS", "RHEL_BUG_REPRODUCED_PATCHED_VERIFIED_WITH_GDB"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00004 REJECTED TEXT="CAN TRY ON SECOND LAPTOP: ORIGINAL_GDB_RECIPE_OLD_DISTRO / HISTORICAL_RHEL_6_1_QEMU_BINARY" FIRST_USE=["CAN", "TRY", "ON", "SECOND", "LAPTOP", "ORIGINAL_GDB_RECIPE_OLD_DISTRO", "HISTORICAL_RHEL_6_1_QEMU_BINARY"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00005 REJECTED TEXT="LOCAL REPRODUCED: NO_REPRO_RUN" FIRST_USE=["LOCAL", "REPRODUCED", "NO_REPRO_RUN"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00006 REJECTED TEXT="ORIGINAL REPORT / PATCH (READ BODY NOT TITLE): https://bugzilla.redhat.com/show_bug.cgi?id=684076" FIRST_USE=["ORIGINAL", "REPORT", "PATCH", "READ", "BODY", "NOT", "TITLE", "show_bug"] NUMBERS=["684076"] GAP="no verified preceding-line derivation of this assertion"
+L00007 REJECTED TEXT="PATCH / REVIEW: https://bugzilla.redhat.com/show_bug.cgi?id=684076#c25" FIRST_USE=["REVIEW"] NUMBERS=["684076", "5"] GAP="no verified preceding-line derivation of this assertion"
+L00008 REJECTED TEXT="PINNED VERSION: qemu-kvm-0.12.1.2 around pre-2.151.el6; fixed package 0.12.1.2-2.151.el6" FIRST_USE=["PINNED", "VERSION", "qemu", "kvm"] NUMBERS=["0.12", "1.2", "2.151"] GAP="no verified preceding-line derivation of this assertion"
+L00009 REJECTED TEXT="END-USER FAILURE: Wrong address conversion in vhost migration dirty tracking segfaults QEMU" FIRST_USE=["END", "USER", "FAILURE"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00010 REJECTED TEXT="CORE FAILURE, NOT AN ERROR-RETURN EXERCISE:" FIRST_USE=["CORE", "AN", "ERROR", "RETURN", "EXERCISE"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00011 REJECTED TEXT="vhost_client_sync_dirty_bitmap converts a dirty range from a vhost-registered memory region into QEMU guest address space incorrectly. Mapping the wrong range can index beyond valid dirty bitmap memory." FIRST_USE=["vhost_client_sync_dirty_bitmap", "memory", "guest", "Mapping", "bitmap"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00012 REJECTED TEXT="CALL / DATA / STATE PATH:" FIRST_USE=["CALL", "DATA", "STATE", "PATH"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00013 REJECTED TEXT="migration snapshot -> vhost_client_sync_dirty_bitmap -> cpu_physical_memory_set_dirty with wrong range -> cpu_physical_memory_get_dirty -> QEMU SIGSEGV" FIRST_USE=["cpu_physical_memory_set_dirty", "cpu_physical_memory_get_dirty", "SIGSEGV"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00014 REJECTED TEXT="REPRODUCTION PROCEDURE AND REQUIRED RESOURCES:" FIRST_USE=["REPRODUCTION", "PROCEDURE", "AND", "REQUIRED", "RESOURCES"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00015 REJECTED TEXT="Use two disposable old QEMU VMs, live migrate with vhost=on. Original report shows a GDB call stack in cpu_physical_memory_set_dirty (cpu-all.h:909) and vhost_client_sync_dirty_bitmap (hw/vhost.c:71); verify region bounds/offsets at those frames. QEMU builds from 2011 require older toolchains; modern QEMU does not prove this legacy failure." FIRST_USE=["GDB", "cpu"] NUMBERS=["909", "71", "2011"] GAP="no verified preceding-line derivation of this assertion"
+L00016 REJECTED TEXT="FAILURE SIGNAL AND CONTROL:" FIRST_USE=["SIGNAL", "CONTROL"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00017 REJECTED TEXT="Source QEMU SIGSEGV or migration lasting >600s in reporter's initial cases; updated package tests passed." FIRST_USE=["Source"] NUMBERS=["600"] GAP="no verified preceding-line derivation of this assertion"
+L00018 REJECTED TEXT="MANUAL INPUT AND QUESTION:" FIRST_USE=["MANUAL", "INPUT", "QUESTION"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00019 REJECTED TEXT="CONSTRUCTED: vhost registered base=0x4000, offset=0x2000, guest backing base=0xA000. Derive which base must be added when emitting guest dirty bits; do not conflate QEMU VA and GPA." FIRST_USE=["CONSTRUCTED", "VA", "GPA"] NUMBERS=["0x4000", "0x2000", "0xA000"] GAP="no verified preceding-line derivation of this assertion"
+L00020 REJECTED TEXT="EXACT UNIVERSITY ASSIGNMENTS INVOLVED: 08-iitb-cs695-kvm-pa1, 09-iitb-cs695-libvirt-pa2, 20-cmu-15213-cache-lab" FIRST_USE=["EXACT", "UNIVERSITY", "ASSIGNMENTS", "INVOLVED", "cache"] NUMBERS=["08", "95", "09", "20", "15213"] GAP="no verified preceding-line derivation of this assertion"
+L00021 REJECTED TEXT="FIRST-PRINCIPLES REPRODUCTION CONTRACT" FIRST_USE=["FIRST", "PRINCIPLES", "CONTRACT"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00022 REJECTED TEXT="Read the actual original patch code; identify the reader and writer of shared state. No unsupported cross-version inferences." FIRST_USE=["state"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00023 REJECTED TEXT="CALCULATE page size from sysconf(_SC_PAGESIZE) or in-guest PAGE_SIZE, never use a made-up kernel address as an observed value." FIRST_USE=["CALCULATE", "page", "_SC_PAGESIZE", "PAGE_SIZE", "kernel", "value"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00024 REJECTED TEXT="Use -O0 -g3 for standalone userspace, but retain kernel's required build optimization plus -g for old in-kernel tests." FIRST_USE=["O0"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00025 REJECTED TEXT="Configure disposable VM, snapshot image, serial console, host watchdog and external process timeout." FIRST_USE=["VM", "host", "process"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00026 REJECTED TEXT="Capture: host kernel sha + QEMU git sha + guest kernel version + CPU virtualization flags + exact commands + guest logs + host trace + before-and-after test." FIRST_USE=["CPU", "test"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00027 REJECTED TEXT="Write only mechanism-specific changes. Never alter the expected test result after observing failure." FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00028 NO_CLAIM TEXT="" FIRST_USE=[] NUMBERS=[] GAP="empty line"
+L00029 REJECTED TEXT="STUDENT-OWNED TEN LOGIC TASKS; DO NOT SUBSTITUTE BUILD SUCCESS FOR CORRECTNESS:" FIRST_USE=["STUDENT", "OWNED", "TEN", "LOGIC", "TASKS", "DO", "SUBSTITUTE", "BUILD", "SUCCESS", "FOR", "CORRECTNESS"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00030 REJECTED TEXT="01. FILL exact root function and first call from historical source revision." FIRST_USE=["FILL", "function", "source"] NUMBERS=["01"] GAP="no verified preceding-line derivation of this assertion"
+L00031 REJECTED TEXT="02. DRAW the first state read and its owner before any other actor acts." FIRST_USE=["DRAW"] NUMBERS=["02"] GAP="no verified preceding-line derivation of this assertion"
+L00032 REJECTED TEXT="03. TRACE the competing state writer or failing service; identify when it runs." FIRST_USE=["TRACE"] NUMBERS=["03"] GAP="no verified preceding-line derivation of this assertion"
+L00033 REJECTED TEXT="04. CALCULATE expected and observed state using the supplied concrete input." FIRST_USE=[] NUMBERS=["04"] GAP="no verified preceding-line derivation of this assertion"
+L00034 REJECTED TEXT="05. IDENTIFY earliest state after which both actors' assumptions cannot hold." FIRST_USE=["IDENTIFY"] NUMBERS=["05"] GAP="no verified preceding-line derivation of this assertion"
+L00035 REJECTED TEXT="06. RECREATE one genuine source-level breakpoint or tracepoint from original code." FIRST_USE=["RECREATE"] NUMBERS=["06"] GAP="no verified preceding-line derivation of this assertion"
+L00036 REJECTED TEXT="07. RECORD what user observed and its link to the internal state mismatch." FIRST_USE=["RECORD"] NUMBERS=["07"] GAP="no verified preceding-line derivation of this assertion"
+L00037 REJECTED TEXT="08. DERIVE a negative control by disabling exactly the triggering mechanism." FIRST_USE=["DERIVE"] NUMBERS=["08"] GAP="no verified preceding-line derivation of this assertion"
+L00038 REJECTED TEXT="09. MEASURE before and after the historical patch; preserve all other conditions." FIRST_USE=["MEASURE"] NUMBERS=["09"] GAP="no verified preceding-line derivation of this assertion"
+L00039 REJECTED TEXT="10. EXPLAIN why the patch's correction does not prove other VM configurations are fixed." FIRST_USE=["EXPLAIN"] NUMBERS=["10"] GAP="no verified preceding-line derivation of this assertion"
+RESULT REJECTED: line-level axiomatic proof not established; flagged=38/39
+NEW THINGS INTRODUCED WITHOUT DERIVATION: ["AN", "AND", "ASSIGNMENTS", "B22", "BODY", "BUILD", "CALCULATE", "CALL", "CAN", "CONSTRUCTED", "CONTRACT", "CONTROL", "CORE", "CORRECTNESS", "CPU", "DATA", "DERIVE", "DO", "DRAW", "END", "ERROR", "EVIDENCE", "EXACT", "EXERCISE", "EXPLAIN", "FAILURE", "FILL", "FIRST", "FOR", "GDB", "GPA", "HISTORICAL_RHEL_6_1_QEMU_BINARY", "IDENTIFY", "INPUT", "INVOLVED", "LAPTOP", "LOCAL", "LOGIC", "MANUAL", "MEASURE", "Mapping", "NOT", "NO_REPRO_RUN", "O0", "ON", "ORIGIN", "ORIGINAL", "ORIGINAL_GDB_RECIPE_OLD_DISTRO", "OWNED", "PAGE_SIZE", "PATCH", "PATH", "PINNED", "PRINCIPLES", "PROCEDURE", "PUBLIC", "QEMU", "QUESTION", "READ", "RECORD", "RECREATE", "REPORT", "REPRODUCED", "REPRODUCTION", "REQUIRED", "RESOURCES", "RETURN", "REVIEW", "RHEL_BUG_REPRODUCED_PATCHED_VERIFIED_WITH_GDB", "SECOND", "SIGNAL", "SIGSEGV", "STATE", "STATUS", "STUDENT", "SUBSTITUTE", "SUCCESS", "Source", "TASKS", "TEN", "TITLE", "TRACE", "TRY", "UNIVERSITY", "USER", "VA", "VERSION", "VM", "YEAR", "_SC_PAGESIZE", "address", "bitmap", "cache", "cpu", "cpu_physical_memory_get_dirty", "cpu_physical_memory_set_dirty", "function", "guest", "host", "kernel", "kvm", "memory", "migration", "page", "process", "qemu", "show_bug", "source", "state", "test", "value", "vhost_client_sync_dirty_bitmap"]
+NUMBERS WITHOUT VERIFIED DERIVATION: ["0.12", "01", "02", "03", "04", "05", "06", "07", "08", "09", "0x2000", "0x4000", "0xA000", "1.2", "10", "15213", "2", "2.151", "20", "2011", "2015", "5", "600", "684076", "71", "909", "95"]
+LIMIT: first-use names are lexical candidates, not a complete semantic analysis.
+END_FILE
+

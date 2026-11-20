@@ -1,0 +1,54 @@
+SOURCE_COMMIT 32198a0ade443b1b6c037a3a52fbc472abab801e
+FOLDER bugs/03-2020-nested-tsc-migration-guest-hang
+AXIOM 1: 0 denotes no counted objects.
+AXIOM 2: 1 denotes one object added to 0.
+RULE: each new symbol needs an earlier definition.
+RULE: each numerical result needs an earlier calculation.
+RULE: a compiler result is not a proof of the subject matter.
+METHOD: each original source line is copied with its original line number.
+METHOD: FIRST_USE and NUMBERS identify candidates requiring proof.
+LIMIT: this is a conservative rejection, not a complete human semantic review.
+FOLDER_RESULT REJECTED
+
+FILE bugs/03-2020-nested-tsc-migration-guest-hang/CASE.txt
+GIT_BLOB 587d7b3ea1e9973a3220c7c8e8e75d9aeba82e8d
+MODE 100644
+BYTES 2818
+SOURCE_LINES 31
+L00001 REJECTED TEXT="B03 | Nested guest hangs after migration restores L2 TSC as L1 TSC" FIRST_USE=["B03", "guest", "migration", "L2", "TSC", "L1"] NUMBERS=["3"] GAP="first line is not a proved axiom from counting"
+L00002 REJECTED TEXT="PUBLIC ORIGIN YEAR: 2020" FIRST_USE=["PUBLIC", "ORIGIN", "YEAR"] NUMBERS=["2020"] GAP="no verified preceding-line derivation of this assertion"
+L00003 REJECTED TEXT="EVIDENCE STATUS: CONFIRMED_PATCH_TESTED_AUTHOR" FIRST_USE=["EVIDENCE", "STATUS", "CONFIRMED_PATCH_TESTED_AUTHOR"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00004 REJECTED TEXT="CAN TRY ON SECOND LAPTOP: MODERATE_NESTED_AMD" FIRST_USE=["CAN", "TRY", "ON", "SECOND", "LAPTOP", "MODERATE_NESTED_AMD"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00005 REJECTED TEXT="LOCAL REPRODUCED: NO_REPRO_RUN" FIRST_USE=["LOCAL", "REPRODUCED", "NO_REPRO_RUN"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00006 REJECTED TEXT="CORE FAILURE, NOT AN ERROR-RETURN EXERCISE:" FIRST_USE=["CORE", "FAILURE", "NOT", "AN", "ERROR", "RETURN", "EXERCISE"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00007 REJECTED TEXT="MSR_IA32_TSC read for host migration returned host+L1+L2 offsets, while host write restored value as L1 time; jump backward broke APIC deadline progress, especially on AMD SVM." FIRST_USE=["MSR_IA32_TSC", "host", "value", "APIC", "AMD", "SVM"] NUMBERS=["2"] GAP="no verified preceding-line derivation of this assertion"
+L00008 REJECTED TEXT="OBSERVED OPERATION THAT MATTERS:" FIRST_USE=["OBSERVED", "OPERATION", "THAT", "MATTERS"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00009 REJECTED TEXT="Host Linux revision before 2020 fix; nested KVM L1 and running L2; migrate L1 by savevm stream or file and restore while L2 running." FIRST_USE=["Host", "KVM"] NUMBERS=["2020"] GAP="no verified preceding-line derivation of this assertion"
+L00010 REJECTED TEXT="FUNCTION-TO-FUNCTION REASONING PATH:" FIRST_USE=["FUNCTION", "TO", "REASONING", "PATH"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00011 REJECTED TEXT="L2 executing -> QEMU reads MSR_IA32_TSC -> receives L2-relative value -> migration save -> L1 restore interprets value as L1 clock -> backward jump -> APIC deadline never fires -> L2 hangs" FIRST_USE=["QEMU"] NUMBERS=["2"] GAP="no verified preceding-line derivation of this assertion"
+L00012 REJECTED TEXT="ORIGINAL REPORT / PATCH (READ BODY NOT TITLE): https://lkml.iu.edu/2009.2/06466.html" FIRST_USE=["ORIGINAL", "REPORT", "PATCH", "READ", "BODY", "TITLE"] NUMBERS=["2009.2", "06466"] GAP="no verified preceding-line derivation of this assertion"
+L00013 REJECTED TEXT="FIX OR UNCERTAINTY: 2020 KVM host_initiated MSR handling returns L1-relative TSC for host-initiated read" FIRST_USE=["FIX", "OR", "UNCERTAINTY", "host_initiated", "MSR"] NUMBERS=["2020"] GAP="no verified preceding-line derivation of this assertion"
+L00014 REJECTED TEXT="REPRODUCTION PROCEDURE AND REQUIRED RESOURCES:" FIRST_USE=["REPRODUCTION", "PROCEDURE", "AND", "REQUIRED", "RESOURCES"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00015 REJECTED TEXT="Use an isolated L0 VM with older kernel and nested SVM exposed; L1 KVM guest executes tight L2 loop while L1 migration stream saved/loaded. Compare clock monotonicity and timer expiry after restore. Requires real nested virtualization support." FIRST_USE=["L0", "VM", "kernel"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00016 REJECTED TEXT="MEANINGFUL SUCCESS/FAILURE SIGNAL:" FIRST_USE=["MEANINGFUL", "SUCCESS", "SIGNAL"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00017 REJECTED TEXT="L2 timer stalls or hangs pre-fix; fix makes host read reflect L1 rather than L2 time" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00018 REJECTED TEXT="EXACT UNIVERSITY ASSIGNMENTS INVOLVED: 12-unc-2017-amd-svm; 13-ut-cs360v-jos-hypervisor; 11-unc-comp790-vmm; 10-iitb-2023-kvm-a3" FIRST_USE=["EXACT", "UNIVERSITY", "ASSIGNMENTS", "INVOLVED", "hypervisor", "kvm"] NUMBERS=["12", "2017", "13", "60", "11", "90", "10", "2023"] GAP="no verified preceding-line derivation of this assertion"
+L00019 REJECTED TEXT="STUDENT-OWNED CORE LOGICAL PUZZLE:" FIRST_USE=["STUDENT", "OWNED", "LOGICAL", "PUZZLE"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00020 REJECTED TEXT="CALCULATE which TSC offset should be stored when L2 runs; identify the read/write context mismatch. Do not assume every MSR has TSC behavior." FIRST_USE=["CALCULATE"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00021 REJECTED TEXT="FIRST THINGS TO DO BY HAND:" FIRST_USE=["FIRST", "THINGS", "DO", "BY", "HAND"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00022 REJECTED TEXT="01. DRAW every transition from the initial user operation until the first invalid ownership/wait." FIRST_USE=["DRAW"] NUMBERS=["01"] GAP="no verified preceding-line derivation of this assertion"
+L00023 REJECTED TEXT="02. NAME the owner of every address, mapping, lock, frame, queue, and clock as it first appears." FIRST_USE=["NAME", "address", "mapping", "lock"] NUMBERS=["02"] GAP="no verified preceding-line derivation of this assertion"
+L00024 REJECTED TEXT="03. TRACE the two interleaving actors; do not infer that a race exists if only one actor appears in source." FIRST_USE=["TRACE", "race", "source"] NUMBERS=["03"] GAP="no verified preceding-line derivation of this assertion"
+L00025 REJECTED TEXT="04. MATCH an observed stack / register / event / missing counter to a source function." FIRST_USE=["MATCH", "event", "function"] NUMBERS=["04"] GAP="no verified preceding-line derivation of this assertion"
+L00026 REJECTED TEXT="05. DEFINE a falsifier: switch off just the implicated mechanism or use the source's documented pre/post patch control." FIRST_USE=["DEFINE"] NUMBERS=["05"] GAP="no verified preceding-line derivation of this assertion"
+L00027 REJECTED TEXT="06. IF reproducer is missing, DO NOT invent one and declare this bug reproduced." FIRST_USE=["IF"] NUMBERS=["06"] GAP="no verified preceding-line derivation of this assertion"
+L00028 REJECTED TEXT="07. RUN compile with debug symbols for any self-authored C, but never treat compilation as proof of the bug." FIRST_USE=["RUN", "proof"] NUMBERS=["07"] GAP="no verified preceding-line derivation of this assertion"
+L00029 REJECTED TEXT="08. DO NOT use made-up kernel virtual addresses such as 0xFFFF888010000000 as if they were obtained from the current laptop." FIRST_USE=["virtual"] NUMBERS=["08", "0xFFFF888010000000"] GAP="no verified preceding-line derivation of this assertion"
+L00030 REJECTED TEXT="09. NEVER alter live host CPU clocksource, KSM, VFIO ownership, page tables, or available memory for these experiments. Use throwaway nested VM." FIRST_USE=["NEVER", "CPU", "KSM", "VFIO", "page", "memory"] NUMBERS=["09"] GAP="no verified preceding-line derivation of this assertion"
+L00031 REJECTED TEXT="10. RECORD original kernel commit and actual hardware before comparing any failure." FIRST_USE=["RECORD", "hardware"] NUMBERS=["10"] GAP="no verified preceding-line derivation of this assertion"
+RESULT REJECTED: line-level axiomatic proof not established; flagged=31/31
+NEW THINGS INTRODUCED WITHOUT DERIVATION: ["AMD", "AN", "AND", "APIC", "ASSIGNMENTS", "B03", "BODY", "BY", "CALCULATE", "CAN", "CONFIRMED_PATCH_TESTED_AUTHOR", "CORE", "CPU", "DEFINE", "DO", "DRAW", "ERROR", "EVIDENCE", "EXACT", "EXERCISE", "FAILURE", "FIRST", "FIX", "FUNCTION", "HAND", "Host", "IF", "INVOLVED", "KSM", "KVM", "L0", "L1", "L2", "LAPTOP", "LOCAL", "LOGICAL", "MATCH", "MATTERS", "MEANINGFUL", "MODERATE_NESTED_AMD", "MSR", "MSR_IA32_TSC", "NAME", "NEVER", "NOT", "NO_REPRO_RUN", "OBSERVED", "ON", "OPERATION", "OR", "ORIGIN", "ORIGINAL", "OWNED", "PATCH", "PATH", "PROCEDURE", "PUBLIC", "PUZZLE", "QEMU", "READ", "REASONING", "RECORD", "REPORT", "REPRODUCED", "REPRODUCTION", "REQUIRED", "RESOURCES", "RETURN", "RUN", "SECOND", "SIGNAL", "STATUS", "STUDENT", "SUCCESS", "SVM", "THAT", "THINGS", "TITLE", "TO", "TRACE", "TRY", "TSC", "UNCERTAINTY", "UNIVERSITY", "VFIO", "VM", "YEAR", "address", "event", "function", "guest", "hardware", "host", "host_initiated", "hypervisor", "kernel", "kvm", "lock", "mapping", "memory", "migration", "page", "proof", "race", "source", "value", "virtual"]
+NUMBERS WITHOUT VERIFIED DERIVATION: ["01", "02", "03", "04", "05", "06", "06466", "07", "08", "09", "0xFFFF888010000000", "10", "11", "12", "13", "2", "2009.2", "2017", "2020", "2023", "3", "60", "90"]
+LIMIT: first-use names are lexical candidates, not a complete semantic analysis.
+END_FILE
+

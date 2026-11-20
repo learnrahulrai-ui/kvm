@@ -1,0 +1,244 @@
+SOURCE_COMMIT 32198a0ade443b1b6c037a3a52fbc472abab801e
+FOLDER .github
+AXIOM 1: 0 denotes no counted objects.
+AXIOM 2: 1 denotes one object added to 0.
+RULE: each new symbol needs an earlier definition.
+RULE: each numerical result needs an earlier calculation.
+RULE: a compiler result is not a proof of the subject matter.
+METHOD: each original source line is copied with its original line number.
+METHOD: FIRST_USE and NUMBERS identify candidates requiring proof.
+LIMIT: this is a conservative rejection, not a complete human semantic review.
+FOLDER_RESULT REJECTED
+
+FILE .github/workflows/assignment-debug-build.yml
+GIT_BLOB a4423e6b3434d51ea0fc769354417aa1c396551b
+MODE 100644
+BYTES 1075
+SOURCE_LINES 35
+L00001 REJECTED TEXT="name: Assignment scaffold debug build" FIRST_USE=["name", "Assignment", "scaffold", "debug", "build"] NUMBERS=[] GAP="first line is not a proved axiom from counting"
+L00002 REJECTED TEXT="on:" FIRST_USE=["on"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00003 REJECTED TEXT="  push:" FIRST_USE=["push"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00004 REJECTED TEXT="    paths:" FIRST_USE=["paths"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00005 REJECTED TEXT="      - \"assignments/**\"" FIRST_USE=["assignments"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00006 REJECTED TEXT="      - \".github/workflows/assignment-debug-build.yml\"" FIRST_USE=["github", "workflows", "assignment", "yml"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00007 REJECTED TEXT="  workflow_dispatch:" FIRST_USE=["workflow_dispatch"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00008 REJECTED TEXT="jobs:" FIRST_USE=["jobs"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00009 REJECTED TEXT="  compile-all:" FIRST_USE=["compile", "all"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00010 REJECTED TEXT="    runs-on: ubuntu-24.04" FIRST_USE=["runs", "ubuntu"] NUMBERS=["24.04"] GAP="no verified preceding-line derivation of code/API semantics"
+L00011 REJECTED TEXT="    strategy:" FIRST_USE=["strategy"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00012 REJECTED TEXT="      fail-fast: false" FIRST_USE=["fail", "fast", "false"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00013 REJECTED TEXT="      matrix:" FIRST_USE=["matrix"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00014 REJECTED TEXT="        compiler: [gcc, clang]" FIRST_USE=["compiler", "gcc", "clang"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00015 REJECTED TEXT="    steps:" FIRST_USE=["steps"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00016 REJECTED TEXT="      - uses: actions/checkout@v4" FIRST_USE=["uses", "actions", "checkout", "v4"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00017 REJECTED TEXT="      - name: Install compiler dependencies" FIRST_USE=["Install", "dependencies"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00018 REJECTED TEXT="        run: |" FIRST_USE=["run"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00019 REJECTED TEXT="          sudo apt-get update -qq" FIRST_USE=["sudo", "apt", "get", "update", "qq"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00020 REJECTED TEXT="          sudo apt-get install -y libvirt-dev pkg-config binutils time" FIRST_USE=["install", "y", "libvirt", "dev", "pkg", "config", "binutils", "time"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00021 REJECTED TEXT="      - name: Compile and smoke-test all 22 scaffolds with debug symbols" FIRST_USE=["Compile", "and", "smoke", "test", "scaffolds", "with", "symbols"] NUMBERS=["22"] GAP="no verified preceding-line derivation of code/API semantics"
+L00022 REJECTED TEXT="        env:" FIRST_USE=["env"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00023 REJECTED TEXT="          CC: ${{ matrix.compiler }}" FIRST_USE=["CC"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00024 REJECTED TEXT="        run: |" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00025 REJECTED TEXT="          bash assignments/check_all_debug.sh | tee \"/tmp/${CC}-build.txt\"" FIRST_USE=["bash", "check_all_debug", "sh", "tee", "tmp", "txt"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00026 REJECTED TEXT="      - name: Upload compile measurements" FIRST_USE=["Upload", "measurements"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00027 REJECTED TEXT="        if: always()" FIRST_USE=["if", "always"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00028 REJECTED TEXT="        uses: actions/upload-artifact@v4" FIRST_USE=["upload", "artifact"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00029 REJECTED TEXT="        with:" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00030 REJECTED TEXT="          name: \"scaffolds-${{ matrix.compiler }}\"" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00031 REJECTED TEXT="          path: |" FIRST_USE=["path"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00032 REJECTED TEXT="            /tmp/${{ matrix.compiler }}-build.txt" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00033 REJECTED TEXT="            assignments/**/.compile.stderr" FIRST_USE=["stderr"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00034 REJECTED TEXT="            assignments/**/.smoke.stdout" FIRST_USE=["stdout"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00035 REJECTED TEXT="            assignments/**/.smoke.stderr" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+RESULT REJECTED: line-level axiomatic proof not established; flagged=35/35
+NEW THINGS INTRODUCED WITHOUT DERIVATION: ["Assignment", "CC", "Compile", "Install", "Upload", "actions", "all", "always", "and", "apt", "artifact", "assignment", "assignments", "bash", "binutils", "build", "check_all_debug", "checkout", "clang", "compile", "compiler", "config", "debug", "dependencies", "dev", "env", "fail", "false", "fast", "gcc", "get", "github", "if", "install", "jobs", "libvirt", "matrix", "measurements", "name", "on", "path", "paths", "pkg", "push", "qq", "run", "runs", "scaffold", "scaffolds", "sh", "smoke", "stderr", "stdout", "steps", "strategy", "sudo", "symbols", "tee", "test", "time", "tmp", "txt", "ubuntu", "update", "upload", "uses", "v4", "with", "workflow_dispatch", "workflows", "y", "yml"]
+NUMBERS WITHOUT VERIFIED DERIVATION: ["22", "24.04"]
+LIMIT: first-use names are lexical candidates, not a complete semantic analysis.
+END_FILE
+
+FILE .github/workflows/bug-catalog.yml
+GIT_BLOB 334d5eb6ac12fd697b44bcd8d90c1944844d82e1
+MODE 100644
+BYTES 2231
+SOURCE_LINES 51
+L00001 REJECTED TEXT="name: Bug research catalog and read-only KVM probe" FIRST_USE=["name", "Bug", "research", "catalog", "and", "read", "only", "KVM", "probe"] NUMBERS=[] GAP="first line is not a proved axiom from counting"
+L00002 REJECTED TEXT="on:" FIRST_USE=["on"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00003 REJECTED TEXT="  push:" FIRST_USE=["push"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00004 REJECTED TEXT="    paths:" FIRST_USE=["paths"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00005 REJECTED TEXT="      - 'bugs/**'" FIRST_USE=["bugs"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00006 REJECTED TEXT="      - '.github/workflows/bug-catalog.yml'" FIRST_USE=["github", "workflows", "bug", "yml"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00007 REJECTED TEXT="  workflow_dispatch:" FIRST_USE=["workflow_dispatch"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00008 REJECTED TEXT="jobs:" FIRST_USE=["jobs"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00009 REJECTED TEXT="  verify:" FIRST_USE=["verify"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00010 REJECTED TEXT="    runs-on: ubuntu-24.04" FIRST_USE=["runs", "ubuntu"] NUMBERS=["24.04"] GAP="no verified preceding-line derivation of code/API semantics"
+L00011 REJECTED TEXT="    strategy:" FIRST_USE=["strategy"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00012 REJECTED TEXT="      fail-fast: false" FIRST_USE=["fail", "fast", "false"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00013 REJECTED TEXT="      matrix:" FIRST_USE=["matrix"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00014 REJECTED TEXT="        compiler: [gcc, clang]" FIRST_USE=["compiler", "gcc", "clang"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00015 REJECTED TEXT="    steps:" FIRST_USE=["steps"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00016 REJECTED TEXT="      - uses: actions/checkout@v4" FIRST_USE=["uses", "actions", "checkout", "v4"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00017 REJECTED TEXT="      - name: Install readelf and make" FIRST_USE=["Install", "readelf", "make"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00018 REJECTED TEXT="        run: sudo apt-get install -y binutils make" FIRST_USE=["run", "sudo", "apt", "get", "install", "y", "binutils"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00019 REJECTED TEXT="      - name: Compile and execute read-only capability probe" FIRST_USE=["Compile", "execute", "capability"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00020 REJECTED TEXT="        env:" FIRST_USE=["env"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00021 REJECTED TEXT="          CC: ${{ matrix.compiler }}" FIRST_USE=["CC"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00022 REJECTED TEXT="        run: |" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00023 REJECTED TEXT="          make -C bugs CC=\"$CC\" CFLAGS='-std=c11 -O0 -g3 -Wall -Wextra -Werror -Wpedantic'" FIRST_USE=["C", "CFLAGS", "std", "c11", "O0", "g3", "Wall", "Wextra", "Werror", "Wpedantic"] NUMBERS=["1"] GAP="no verified preceding-line derivation of code/API semantics"
+L00024 REJECTED TEXT="          readelf -S bugs/build/host_preflight | grep '.debug_info'" FIRST_USE=["S", "build", "host_preflight", "grep", "debug_info"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00025 REJECTED TEXT="          ./bugs/build/host_preflight" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00026 REJECTED TEXT="      - name: Check every bug source and all 22 university links" FIRST_USE=["Check", "every", "source", "all", "university", "links"] NUMBERS=["22"] GAP="no verified preceding-line derivation of code/API semantics"
+L00027 REJECTED TEXT="        run: |" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00028 REJECTED TEXT="          python3 - <<'PY'" FIRST_USE=["python3", "PY"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00029 REJECTED TEXT="          from pathlib import Path" FIRST_USE=["from", "pathlib", "import", "Path"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00030 REJECTED TEXT="          import re" FIRST_USE=["re"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00031 REJECTED TEXT="          cases = sorted(Path('bugs').glob('[0-9][0-9]-*/CASE.txt'))" FIRST_USE=["cases", "sorted", "glob", "CASE", "txt"] NUMBERS=["0", "9"] GAP="no verified preceding-line derivation of code/API semantics"
+L00032 REJECTED TEXT="          assert len(cases) == 28, len(cases)" FIRST_USE=["assert", "len"] NUMBERS=["28"] GAP="no verified preceding-line derivation of code/API semantics"
+L00033 REJECTED TEXT="          expected = set()" FIRST_USE=["expected", "set"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00034 REJECTED TEXT="          for i, p in enumerate(cases, 1):" FIRST_USE=["for", "i", "p", "in", "enumerate"] NUMBERS=["1"] GAP="no verified preceding-line derivation of code/API semantics"
+L00035 REJECTED TEXT="              src = p.read_text()" FIRST_USE=["src", "read_text"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00036 REJECTED TEXT="              assert src.startswith('B%02d |' % i), p" FIRST_USE=["startswith", "B"] NUMBERS=["02"] GAP="no verified preceding-line derivation of code/API semantics"
+L00037 REJECTED TEXT="              for field in ['EVIDENCE STATUS:', 'CORE FAILURE, NOT AN ERROR-RETURN EXERCISE:', 'ORIGINAL REPORT / PATCH', 'REPRODUCTION PROCEDURE', 'LOCAL REPRODUCED: NO_REPRO_RUN', 'EXACT UNIVERSITY ASSIGNMENTS INVOLVED:']:" FIRST_USE=["field", "EVIDENCE", "STATUS", "CORE", "FAILURE", "NOT", "AN", "ERROR", "RETURN", "EXERCISE", "ORIGINAL", "REPORT", "PATCH", "REPRODUCTION", "PROCEDURE", "LOCAL", "REPRODUCED", "NO_REPRO_RUN", "EXACT", "UNIVERSITY", "ASSIGNMENTS", "INVOLVED"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00038 REJECTED TEXT="                  assert field in src, (p, field)" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00039 REJECTED TEXT="              assert 'https://' in src" FIRST_USE=["https"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00040 REJECTED TEXT="              expected.add('B%02d' % i)" FIRST_USE=["add"] NUMBERS=["02"] GAP="no verified preceding-line derivation of code/API semantics"
+L00041 REJECTED TEXT="          maps = Path('bugs/ASSIGNMENT-MAP.txt').read_text().splitlines()" FIRST_USE=["maps", "ASSIGNMENT", "MAP", "splitlines"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00042 REJECTED TEXT="          course_folders = sorted(p.name for p in Path('assignments').glob('[0-9][0-9]-*') if p.is_dir())" FIRST_USE=["course_folders", "assignments", "if", "is_dir"] NUMBERS=["0", "9"] GAP="no verified preceding-line derivation of code/API semantics"
+L00043 REJECTED TEXT="          for course in course_folders:" FIRST_USE=["course"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00044 REJECTED TEXT="              assert any(line.startswith(course + ' |') for line in maps), course" FIRST_USE=["any", "line"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00045 REJECTED TEXT="          assert len(course_folders) == 22, len(course_folders)" FIRST_USE=[] NUMBERS=["22"] GAP="no verified preceding-line derivation of code/API semantics"
+L00046 REJECTED TEXT="          for line in maps:" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00047 REJECTED TEXT="              if ' | DIRECT=' in line:" FIRST_USE=["DIRECT"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00048 REJECTED TEXT="                  references = set(re.findall(r'B\\d\\d', line))" FIRST_USE=["references", "findall", "r", "d"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00049 REJECTED TEXT="                  assert references <= expected, (line, references - expected)" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00050 REJECTED TEXT="          print('CATALOG VERIFIED: 28 source-anchored cases, 22 course mappings, no claims of local reproduction')" FIRST_USE=["print", "CATALOG", "VERIFIED", "anchored", "mappings", "no", "claims", "of", "local", "reproduction"] NUMBERS=["28", "22"] GAP="no verified preceding-line derivation of code/API semantics"
+L00051 REJECTED TEXT="          PY" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+RESULT REJECTED: line-level axiomatic proof not established; flagged=51/51
+NEW THINGS INTRODUCED WITHOUT DERIVATION: ["AN", "ASSIGNMENT", "ASSIGNMENTS", "B", "Bug", "C", "CASE", "CATALOG", "CC", "CFLAGS", "CORE", "Check", "Compile", "DIRECT", "ERROR", "EVIDENCE", "EXACT", "EXERCISE", "FAILURE", "INVOLVED", "Install", "KVM", "LOCAL", "MAP", "NOT", "NO_REPRO_RUN", "O0", "ORIGINAL", "PATCH", "PROCEDURE", "PY", "Path", "REPORT", "REPRODUCED", "REPRODUCTION", "RETURN", "S", "STATUS", "UNIVERSITY", "VERIFIED", "Wall", "Werror", "Wextra", "Wpedantic", "actions", "add", "all", "anchored", "and", "any", "apt", "assert", "assignments", "binutils", "bug", "bugs", "build", "c11", "capability", "cases", "catalog", "checkout", "claims", "clang", "compiler", "course", "course_folders", "d", "debug_info", "enumerate", "env", "every", "execute", "expected", "fail", "false", "fast", "field", "findall", "for", "from", "g3", "gcc", "get", "github", "glob", "grep", "host_preflight", "https", "i", "if", "import", "in", "install", "is_dir", "jobs", "len", "line", "links", "local", "make", "mappings", "maps", "matrix", "name", "no", "of", "on", "only", "p", "pathlib", "paths", "print", "probe", "push", "python3", "r", "re", "read", "read_text", "readelf", "references", "reproduction", "research", "run", "runs", "set", "sorted", "source", "splitlines", "src", "startswith", "std", "steps", "strategy", "sudo", "txt", "ubuntu", "university", "uses", "v4", "verify", "workflow_dispatch", "workflows", "y", "yml"]
+NUMBERS WITHOUT VERIFIED DERIVATION: ["0", "02", "1", "22", "24.04", "28", "9"]
+LIMIT: first-use names are lexical candidates, not a complete semantic analysis.
+END_FILE
+
+FILE .github/workflows/render-assignments.yml
+GIT_BLOB cbdbcf77fd4ef40a6b9f52512c29ddd929d65785
+MODE 100644
+BYTES 3652
+SOURCE_LINES 75
+L00001 REJECTED TEXT="name: Render assignment diagrams" FIRST_USE=["name", "Render", "assignment", "diagrams"] NUMBERS=[] GAP="first line is not a proved axiom from counting"
+L00002 REJECTED TEXT="on:" FIRST_USE=["on"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00003 REJECTED TEXT="  workflow_dispatch:" FIRST_USE=["workflow_dispatch"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00004 REJECTED TEXT="  push:" FIRST_USE=["push"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00005 REJECTED TEXT="    paths:" FIRST_USE=["paths"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00006 REJECTED TEXT="      - 'assignments/*/visuals/*.svg'" FIRST_USE=["assignments", "visuals", "svg"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00007 REJECTED TEXT="      - '.github/workflows/render-assignments.yml'" FIRST_USE=["github", "workflows", "render", "yml"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00008 REJECTED TEXT="permissions:" FIRST_USE=["permissions"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00009 REJECTED TEXT="  contents: write" FIRST_USE=["contents", "write"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00010 REJECTED TEXT="jobs:" FIRST_USE=["jobs"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00011 REJECTED TEXT="  render:" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00012 REJECTED TEXT="    runs-on: ubuntu-24.04" FIRST_USE=["runs", "ubuntu"] NUMBERS=["24.04"] GAP="no verified preceding-line derivation of code/API semantics"
+L00013 REJECTED TEXT="    steps:" FIRST_USE=["steps"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00014 REJECTED TEXT="      - uses: actions/checkout@v4" FIRST_USE=["uses", "actions", "checkout", "v4"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00015 REJECTED TEXT="      - name: Install rasterizer and image checks" FIRST_USE=["Install", "rasterizer", "and", "image", "checks"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00016 REJECTED TEXT="        run: |" FIRST_USE=["run"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00017 REJECTED TEXT="          sudo apt-get update -qq" FIRST_USE=["sudo", "apt", "get", "update", "qq"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00018 REJECTED TEXT="          sudo apt-get install -y librsvg2-bin python3-pil" FIRST_USE=["install", "y", "librsvg2", "bin", "python3", "pil"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00019 REJECTED TEXT="      - name: Validate and rasterize all assignment diagrams" FIRST_USE=["Validate", "rasterize", "all"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00020 REJECTED TEXT="        run: |" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00021 REJECTED TEXT="          python3 - <<'PY'" FIRST_USE=["PY"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00022 REJECTED TEXT="          from pathlib import Path" FIRST_USE=["from", "pathlib", "import", "Path"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00023 REJECTED TEXT="          import subprocess, xml.etree.ElementTree as ET" FIRST_USE=["subprocess", "xml", "etree", "ElementTree", "as", "ET"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00024 REJECTED TEXT="          from PIL import Image" FIRST_USE=["PIL", "Image"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00025 REJECTED TEXT="          import json" FIRST_USE=["json"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00026 REJECTED TEXT="          folders=sorted(Path('assignments').glob('[0-9][0-9]-*/visuals'))" FIRST_USE=["folders", "sorted", "glob"] NUMBERS=["0", "9"] GAP="no verified preceding-line derivation of code/API semantics"
+L00027 REJECTED TEXT="          expected=['01-cause.svg','02-data.svg','03-correction.svg','04-trap.svg']" FIRST_USE=["expected", "cause", "data", "correction", "trap"] NUMBERS=["01", "02", "03", "04"] GAP="no verified preceding-line derivation of code/API semantics"
+L00028 REJECTED TEXT="          if len(folders)!=22: raise SystemExit(f'Expected 22 folders, got {len(folders)}')" FIRST_USE=["if", "len", "raise", "SystemExit", "f", "Expected", "got"] NUMBERS=["22"] GAP="no verified preceding-line derivation of code/API semantics"
+L00029 REJECTED TEXT="          for folder in folders:" FIRST_USE=["for", "folder", "in"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00030 REJECTED TEXT="              actual=sorted(p.name for p in folder.glob('*.svg'))" FIRST_USE=["actual", "p"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00031 REJECTED TEXT="              if actual!=expected: raise SystemExit(f'{folder}: expected {expected}, got {actual}')" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00032 REJECTED TEXT="              pngs=[]" FIRST_USE=["pngs"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00033 REJECTED TEXT="              for name in expected:" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00034 REJECTED TEXT="                  source=folder/name" FIRST_USE=["source"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00035 REJECTED TEXT="                  svg=ET.parse(source).getroot()" FIRST_USE=["parse", "getroot"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00036 REJECTED TEXT="                  if not svg.tag.endswith('svg'):" FIRST_USE=["not", "tag", "endswith"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00037 REJECTED TEXT="                      raise SystemExit(f'{source}: invalid SVG root')" FIRST_USE=["invalid", "SVG", "root"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00038 REJECTED TEXT="                  texts=[x.text or '' for x in svg.iter() if x.tag.endswith('text')]" FIRST_USE=["texts", "x", "text", "or", "iter"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00039 REJECTED TEXT="                  if not texts or len(texts)>12:" FIRST_USE=[] NUMBERS=["12"] GAP="no verified preceding-line derivation of code/API semantics"
+L00040 REJECTED TEXT="                      raise SystemExit(f'{source}: unexpected label count {texts}')" FIRST_USE=["unexpected", "label", "count"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00041 REJECTED TEXT="                  if any(any(ch.isdigit() for ch in text) for text in texts):" FIRST_USE=["any", "ch", "isdigit"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00042 REJECTED TEXT="                      raise SystemExit(f'{source}: digits inside diagrams')" FIRST_USE=["digits", "inside"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00043 REJECTED TEXT="                  out=folder/(source.stem+'.png')" FIRST_USE=["out", "stem", "png"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00044 REJECTED TEXT="                  subprocess.run(['rsvg-convert','-w','1500','-h','920','-o',str(out),str(source)],check=True)" FIRST_USE=["rsvg", "convert", "w", "h", "o", "str", "check", "True"] NUMBERS=["1500", "920"] GAP="no verified preceding-line derivation of code/API semantics"
+L00045 REJECTED TEXT="                  with Image.open(out) as im:" FIRST_USE=["with", "open", "im"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00046 REJECTED TEXT="                      if im.size!=(1500,920): raise SystemExit(f'{out}: dimensions={im.size}')" FIRST_USE=["size", "dimensions"] NUMBERS=["1500", "920"] GAP="no verified preceding-line derivation of code/API semantics"
+L00047 REJECTED TEXT="                      if len(im.resize((100,61)).convert('RGB').getcolors(10000) or [])<15:" FIRST_USE=["resize", "RGB", "getcolors"] NUMBERS=["100", "61", "10000", "15"] GAP="no verified preceding-line derivation of code/API semantics"
+L00048 REJECTED TEXT="                          raise SystemExit(f'{out}: missing color variation')" FIRST_USE=["missing", "color", "variation"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00049 REJECTED TEXT="                      pngs.append(im.copy().convert('RGB'))" FIRST_USE=["append", "copy"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00050 REJECTED TEXT="              contact=Image.new('RGB',(1500,920),'#f8f4ed')" FIRST_USE=["contact", "new", "f8f4ed"] NUMBERS=["1500", "920"] GAP="no verified preceding-line derivation of code/API semantics"
+L00051 REJECTED TEXT="              for i,im in enumerate(pngs):" FIRST_USE=["i", "enumerate"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00052 REJECTED TEXT="                  x=(i%2)*750;y=(i//2)*460" FIRST_USE=[] NUMBERS=["2", "750", "460"] GAP="no verified preceding-line derivation of code/API semantics"
+L00053 REJECTED TEXT="                  contact.paste(im.resize((744,454),Image.Resampling.LANCZOS),(x+3,y+3))" FIRST_USE=["paste", "Resampling", "LANCZOS"] NUMBERS=["744", "454", "3"] GAP="no verified preceding-line derivation of code/API semantics"
+L00054 REJECTED TEXT="              contact.save(folder/'contact.png',optimize=True)" FIRST_USE=["save", "optimize"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00055 REJECTED TEXT="          print(json.dumps({'folders':len(folders),'individual_pngs':len(folders)*4,'contact_sheets':len(folders)}))" FIRST_USE=["print", "dumps", "individual_pngs", "contact_sheets"] NUMBERS=["4"] GAP="no verified preceding-line derivation of code/API semantics"
+L00056 REJECTED TEXT="          PY" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00057 REJECTED TEXT="      - name: Package downloadable visuals" FIRST_USE=["Package", "downloadable"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00058 REJECTED TEXT="        run: |" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00059 REJECTED TEXT="          zip -q -r /tmp/kvm-88-visuals.zip assignments -i 'assignments/*/visuals/*.png' 'assignments/*/visuals/*.svg' 'assignments/*/VISUAL_GUIDE.txt' 'assignments/VISUAL_GALLERY.html'" FIRST_USE=["zip", "q", "r", "tmp", "kvm", "VISUAL_GUIDE", "txt", "VISUAL_GALLERY", "html"] NUMBERS=["88"] GAP="no verified preceding-line derivation of code/API semantics"
+L00060 REJECTED TEXT="          ls -lh /tmp/kvm-88-visuals.zip" FIRST_USE=["ls", "lh"] NUMBERS=["88"] GAP="no verified preceding-line derivation of code/API semantics"
+L00061 REJECTED TEXT="      - uses: actions/upload-artifact@v4" FIRST_USE=["upload", "artifact"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00062 REJECTED TEXT="        with:" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00063 REJECTED TEXT="          name: kvm-88-diagrams-and-contact-sheets" FIRST_USE=["sheets"] NUMBERS=["88"] GAP="no verified preceding-line derivation of code/API semantics"
+L00064 REJECTED TEXT="          path: /tmp/kvm-88-visuals.zip" FIRST_USE=["path"] NUMBERS=["88"] GAP="no verified preceding-line derivation of code/API semantics"
+L00065 REJECTED TEXT="          compression-level: 0" FIRST_USE=["compression", "level"] NUMBERS=["0"] GAP="no verified preceding-line derivation of code/API semantics"
+L00066 REJECTED TEXT="      - name: Commit PNG assets to source tree" FIRST_USE=["Commit", "PNG", "assets", "to", "tree"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00067 REJECTED TEXT="        continue-on-error: true" FIRST_USE=["continue", "error", "true"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00068 REJECTED TEXT="        run: |" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00069 REJECTED TEXT="          git config user.name 'github-actions[bot]'" FIRST_USE=["git", "config", "user", "bot"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00070 REJECTED TEXT="          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'" FIRST_USE=["email", "users", "noreply", "com"] NUMBERS=["41898282"] GAP="no verified preceding-line derivation of code/API semantics"
+L00071 REJECTED TEXT="          git add 'assignments/*/visuals/*.png'" FIRST_USE=["add"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00072 REJECTED TEXT="          git commit -m 'visuals: rasterize 88 causal sketches and 22 contact sheets'" FIRST_USE=["commit", "m", "causal", "sketches"] NUMBERS=["88", "22"] GAP="no verified preceding-line derivation of code/API semantics"
+L00073 REJECTED TEXT="          git fetch origin main" FIRST_USE=["fetch", "origin", "main"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00074 REJECTED TEXT="          git rebase origin/main" FIRST_USE=["rebase"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00075 REJECTED TEXT="          git push" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+RESULT REJECTED: line-level axiomatic proof not established; flagged=75/75
+NEW THINGS INTRODUCED WITHOUT DERIVATION: ["Commit", "ET", "ElementTree", "Expected", "Image", "Install", "LANCZOS", "PIL", "PNG", "PY", "Package", "Path", "RGB", "Render", "Resampling", "SVG", "SystemExit", "True", "VISUAL_GALLERY", "VISUAL_GUIDE", "Validate", "actions", "actual", "add", "all", "and", "any", "append", "apt", "artifact", "as", "assets", "assignment", "assignments", "bin", "bot", "causal", "cause", "ch", "check", "checkout", "checks", "color", "com", "commit", "compression", "config", "contact", "contact_sheets", "contents", "continue", "convert", "copy", "correction", "count", "data", "diagrams", "digits", "dimensions", "downloadable", "dumps", "email", "endswith", "enumerate", "error", "etree", "expected", "f", "f8f4ed", "fetch", "folder", "folders", "for", "from", "get", "getcolors", "getroot", "git", "github", "glob", "got", "h", "html", "i", "if", "im", "image", "import", "in", "individual_pngs", "inside", "install", "invalid", "isdigit", "iter", "jobs", "json", "kvm", "label", "len", "level", "lh", "librsvg2", "ls", "m", "main", "missing", "name", "new", "noreply", "not", "o", "on", "open", "optimize", "or", "origin", "out", "p", "parse", "paste", "path", "pathlib", "paths", "permissions", "pil", "png", "pngs", "print", "push", "python3", "q", "qq", "r", "raise", "rasterize", "rasterizer", "rebase", "render", "resize", "root", "rsvg", "run", "runs", "save", "sheets", "size", "sketches", "sorted", "source", "stem", "steps", "str", "subprocess", "sudo", "svg", "tag", "text", "texts", "tmp", "to", "trap", "tree", "true", "txt", "ubuntu", "unexpected", "update", "upload", "user", "users", "uses", "v4", "variation", "visuals", "w", "with", "workflow_dispatch", "workflows", "write", "x", "xml", "y", "yml", "zip"]
+NUMBERS WITHOUT VERIFIED DERIVATION: ["0", "01", "02", "03", "04", "100", "10000", "12", "15", "1500", "2", "22", "24.04", "3", "4", "41898282", "454", "460", "61", "744", "750", "88", "9", "920"]
+LIMIT: first-use names are lexical candidates, not a complete semantic analysis.
+END_FILE
+
+FILE .github/workflows/waldspurger-lab.yml
+GIT_BLOB 2244a572e20dfdbaa43e08dec3eec5677f4ad750
+MODE 100644
+BYTES 827
+SOURCE_LINES 27
+L00001 REJECTED TEXT="name: Waldspurger lab C debug build" FIRST_USE=["name", "Waldspurger", "lab", "C", "debug", "build"] NUMBERS=[] GAP="first line is not a proved axiom from counting"
+L00002 REJECTED TEXT="on:" FIRST_USE=["on"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00003 REJECTED TEXT="  push:" FIRST_USE=["push"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00004 REJECTED TEXT="    paths:" FIRST_USE=["paths"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00005 REJECTED TEXT="      - 'waldspurger-lab/**'" FIRST_USE=["waldspurger"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00006 REJECTED TEXT="      - '.github/workflows/waldspurger-lab.yml'" FIRST_USE=["github", "workflows", "yml"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00007 REJECTED TEXT="  workflow_dispatch:" FIRST_USE=["workflow_dispatch"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00008 REJECTED TEXT="jobs:" FIRST_USE=["jobs"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00009 REJECTED TEXT="  build-test:" FIRST_USE=["test"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00010 REJECTED TEXT="    runs-on: ubuntu-24.04" FIRST_USE=["runs", "ubuntu"] NUMBERS=["24.04"] GAP="no verified preceding-line derivation of code/API semantics"
+L00011 REJECTED TEXT="    strategy:" FIRST_USE=["strategy"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00012 REJECTED TEXT="      fail-fast: false" FIRST_USE=["fail", "fast", "false"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00013 REJECTED TEXT="      matrix:" FIRST_USE=["matrix"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00014 REJECTED TEXT="        compiler: [gcc, clang]" FIRST_USE=["compiler", "gcc", "clang"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00015 REJECTED TEXT="    steps:" FIRST_USE=["steps"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00016 REJECTED TEXT="      - uses: actions/checkout@v4" FIRST_USE=["uses", "actions", "checkout", "v4"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00017 REJECTED TEXT="      - name: Build and run paper baselines" FIRST_USE=["Build", "and", "run", "paper", "baselines"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00018 REJECTED TEXT="        env:" FIRST_USE=["env"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00019 REJECTED TEXT="          CC: ${{ matrix.compiler }}" FIRST_USE=["CC"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00020 REJECTED TEXT="        run: |" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00021 REJECTED TEXT="          cd waldspurger-lab" FIRST_USE=["cd"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00022 REJECTED TEXT="          make clean" FIRST_USE=["make", "clean"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00023 REJECTED TEXT="          make CC=\"$CC\" CFLAGS='-std=c11 -O0 -g3 -Wall -Wextra -Werror -Wpedantic' check" FIRST_USE=["CFLAGS", "std", "c11", "O0", "g3", "Wall", "Wextra", "Werror", "Wpedantic", "check"] NUMBERS=["1"] GAP="no verified preceding-line derivation of code/API semantics"
+L00024 REJECTED TEXT="          for binary in build/idle_tax build/scheduler build/mrc build/ksm_demo; do" FIRST_USE=["for", "binary", "in", "idle_tax", "scheduler", "mrc", "ksm_demo", "do"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00025 REJECTED TEXT="            readelf -S \"$binary\" | grep -q '.debug_info'" FIRST_USE=["readelf", "S", "grep", "q", "debug_info"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00026 REJECTED TEXT="          done" FIRST_USE=["done"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00027 REJECTED TEXT="          echo \"verified=$CC 4 debug binaries; baseline tests PASS; KVM experiments NOT run\"" FIRST_USE=["echo", "verified", "binaries", "baseline", "tests", "PASS", "KVM", "experiments", "NOT"] NUMBERS=["4"] GAP="no verified preceding-line derivation of code/API semantics"
+RESULT REJECTED: line-level axiomatic proof not established; flagged=27/27
+NEW THINGS INTRODUCED WITHOUT DERIVATION: ["Build", "C", "CC", "CFLAGS", "KVM", "NOT", "O0", "PASS", "S", "Waldspurger", "Wall", "Werror", "Wextra", "Wpedantic", "actions", "and", "baseline", "baselines", "binaries", "binary", "build", "c11", "cd", "check", "checkout", "clang", "clean", "compiler", "debug", "debug_info", "do", "done", "echo", "env", "experiments", "fail", "false", "fast", "for", "g3", "gcc", "github", "grep", "idle_tax", "in", "jobs", "ksm_demo", "lab", "make", "matrix", "mrc", "name", "on", "paper", "paths", "push", "q", "readelf", "run", "runs", "scheduler", "std", "steps", "strategy", "test", "tests", "ubuntu", "uses", "v4", "verified", "waldspurger", "workflow_dispatch", "workflows", "yml"]
+NUMBERS WITHOUT VERIFIED DERIVATION: ["1", "24.04", "4"]
+LIMIT: first-use names are lexical candidates, not a complete semantic analysis.
+END_FILE
+

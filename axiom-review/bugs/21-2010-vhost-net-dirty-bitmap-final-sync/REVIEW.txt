@@ -1,0 +1,62 @@
+SOURCE_COMMIT 32198a0ade443b1b6c037a3a52fbc472abab801e
+FOLDER bugs/21-2010-vhost-net-dirty-bitmap-final-sync
+AXIOM 1: 0 denotes no counted objects.
+AXIOM 2: 1 denotes one object added to 0.
+RULE: each new symbol needs an earlier definition.
+RULE: each numerical result needs an earlier calculation.
+RULE: a compiler result is not a proof of the subject matter.
+METHOD: each original source line is copied with its original line number.
+METHOD: FIRST_USE and NUMBERS identify candidates requiring proof.
+LIMIT: this is a conservative rejection, not a complete human semantic review.
+FOLDER_RESULT REJECTED
+
+FILE bugs/21-2010-vhost-net-dirty-bitmap-final-sync/CASE.txt
+GIT_BLOB ed7b8d3d0d47ed1688ee9a302255e16b728bf817
+MODE 100644
+BYTES 3915
+SOURCE_LINES 39
+L00001 REJECTED TEXT="B21 | Live migration loses guest changes made by vhost-net after final dirty-page scan" FIRST_USE=["B21", "migration", "guest", "page"] NUMBERS=["1"] GAP="first line is not a proved axiom from counting"
+L00002 REJECTED TEXT="PUBLIC ORIGIN YEAR: 2010 (pre-2015)" FIRST_USE=["PUBLIC", "ORIGIN", "YEAR"] NUMBERS=["2010", "2015"] GAP="no verified preceding-line derivation of this assertion"
+L00003 REJECTED TEXT="EVIDENCE STATUS: REAL_FILE_TRANSFER_FAILURE_VERIFIED_RHEL_6_1" FIRST_USE=["EVIDENCE", "STATUS", "REAL_FILE_TRANSFER_FAILURE_VERIFIED_RHEL_6_1"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00004 REJECTED TEXT="CAN TRY ON SECOND LAPTOP: GOOD_WITH_OLD_QEMU_AND_GUEST / HISTORICAL_QEMU_VHOST_NET; software plus nested old kernel" FIRST_USE=["CAN", "TRY", "ON", "SECOND", "LAPTOP", "GOOD_WITH_OLD_QEMU_AND_GUEST", "HISTORICAL_QEMU_VHOST_NET", "software", "kernel"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00005 REJECTED TEXT="LOCAL REPRODUCED: NO_REPRO_RUN" FIRST_USE=["LOCAL", "REPRODUCED", "NO_REPRO_RUN"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00006 REJECTED TEXT="ORIGINAL REPORT / PATCH (READ BODY NOT TITLE): https://bugzilla.redhat.com/show_bug.cgi?id=623552" FIRST_USE=["ORIGINAL", "REPORT", "PATCH", "READ", "BODY", "NOT", "TITLE", "show_bug"] NUMBERS=["623552"] GAP="no verified preceding-line derivation of this assertion"
+L00007 REJECTED TEXT="PATCH / REVIEW: https://bugzilla.redhat.com/show_bug.cgi?id=623552#c16" FIRST_USE=["REVIEW"] NUMBERS=["623552", "6"] GAP="no verified preceding-line derivation of this assertion"
+L00008 REJECTED TEXT="PINNED VERSION: RHEL6 host qemu-kvm-0.12.1.2-2.109 and kernel 2.6.32-62.el6; verified fixed in qemu-kvm-0.12.1.2-2.129.el6" FIRST_USE=["PINNED", "VERSION", "RHEL6", "host", "qemu", "kvm"] NUMBERS=["0.12", "1.2", "2.109", "2.6", "32", "62", "2.129"] GAP="no verified preceding-line derivation of this assertion"
+L00009 REJECTED TEXT="END-USER FAILURE: Live migration loses guest changes made by vhost-net after final dirty-page scan" FIRST_USE=["END", "USER", "FAILURE"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00010 REJECTED TEXT="CORE FAILURE, NOT AN ERROR-RETURN EXERCISE:" FIRST_USE=["CORE", "AN", "ERROR", "RETURN", "EXERCISE"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00011 REJECTED TEXT="CONFIRMED: vhost dirty bits were not transferred correctly during live migration, leaving guest data stale at the destination. A 2010 maintainer proposed that vhost stopped after QEMU's final dirty-page scan, but labeled that ordering as a suspicion, not a proven complete root cause. The RHEL6 fix's technical note establishes dirty-bit synchronization as the problem family." FIRST_USE=["CONFIRMED", "data", "QEMU"] NUMBERS=["2010"] GAP="no verified preceding-line derivation of this assertion"
+L00012 REJECTED TEXT="CALL / DATA / STATE PATH:" FIRST_USE=["CALL", "DATA", "STATE", "PATH"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00013 REJECTED TEXT="SCP into guest -> vhost-net writes used rings -> QEMU last RAM dirty sync -> vhost device still operates -> late dirty changes not sent -> destination resumes with stale queue structures -> SCP fails" FIRST_USE=["SCP", "RAM", "device"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00014 REJECTED TEXT="REPRODUCTION PROCEDURE AND REQUIRED RESOURCES:" FIRST_USE=["REPRODUCTION", "PROCEDURE", "AND", "REQUIRED", "RESOURCES"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00015 REJECTED TEXT="Reporter ran guest with -m 4G -smp 2, virtio-blk and virtio-net vhost=on; SCP a large qcow2 file from host to guest while live migration runs. For laptop cut test workload only after identifying that load still dirties the ring during the final transfer. Capture completed bytes and guest destination SHA256, then repeat with the fixed QEMU package." FIRST_USE=["test", "ring", "bytes", "SHA256"] NUMBERS=["4", "2", "56"] GAP="no verified preceding-line derivation of this assertion"
+L00016 REJECTED TEXT="FAILURE SIGNAL AND CONTROL:" FIRST_USE=["SIGNAL", "CONTROL"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00017 REJECTED TEXT="Transfer aborts immediately after migration; fixed package was tested twice without recurrence (not proof of absolute reliability)." FIRST_USE=["proof"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00018 REJECTED TEXT="MANUAL INPUT AND QUESTION:" FIRST_USE=["MANUAL", "INPUT", "QUESTION"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00019 REJECTED TEXT="CONSTRUCTED: migration last scan at t=5 ms; vhost writes used_idx at t=6 ms; destination resumes at t=7 ms. Derive why an ACK without the updated index breaks queue progress." FIRST_USE=["CONSTRUCTED", "used_idx", "ACK"] NUMBERS=["5", "6", "7"] GAP="no verified preceding-line derivation of this assertion"
+L00020 REJECTED TEXT="EXACT UNIVERSITY ASSIGNMENTS INVOLVED: 08-iitb-cs695-kvm-pa1, 09-iitb-cs695-libvirt-pa2, 07-gatech-6210-vm-coordinator, 20-cmu-15213-cache-lab" FIRST_USE=["EXACT", "UNIVERSITY", "ASSIGNMENTS", "INVOLVED", "vm", "cache"] NUMBERS=["08", "95", "09", "07", "6210", "20", "15213"] GAP="no verified preceding-line derivation of this assertion"
+L00021 REJECTED TEXT="FIRST-PRINCIPLES REPRODUCTION CONTRACT" FIRST_USE=["FIRST", "PRINCIPLES", "CONTRACT"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00022 REJECTED TEXT="Read the actual original patch code; identify the reader and writer of shared state. No unsupported cross-version inferences." FIRST_USE=["state"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00023 REJECTED TEXT="CALCULATE page size from sysconf(_SC_PAGESIZE) or in-guest PAGE_SIZE, never use a made-up kernel address as an observed value." FIRST_USE=["CALCULATE", "_SC_PAGESIZE", "PAGE_SIZE", "address", "value"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00024 REJECTED TEXT="Use -O0 -g3 for standalone userspace, but retain kernel's required build optimization plus -g for old in-kernel tests." FIRST_USE=["O0"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00025 REJECTED TEXT="Configure disposable VM, snapshot image, serial console, host watchdog and external process timeout." FIRST_USE=["VM", "process"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00026 REJECTED TEXT="Capture: host kernel sha + QEMU git sha + guest kernel version + CPU virtualization flags + exact commands + guest logs + host trace + before-and-after test." FIRST_USE=["CPU"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00027 REJECTED TEXT="Write only mechanism-specific changes. Never alter the expected test result after observing failure." FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00028 NO_CLAIM TEXT="" FIRST_USE=[] NUMBERS=[] GAP="empty line"
+L00029 REJECTED TEXT="STUDENT-OWNED TEN LOGIC TASKS; DO NOT SUBSTITUTE BUILD SUCCESS FOR CORRECTNESS:" FIRST_USE=["STUDENT", "OWNED", "TEN", "LOGIC", "TASKS", "DO", "SUBSTITUTE", "BUILD", "SUCCESS", "FOR", "CORRECTNESS"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00030 REJECTED TEXT="01. FILL exact root function and first call from historical source revision." FIRST_USE=["FILL", "function", "source"] NUMBERS=["01"] GAP="no verified preceding-line derivation of this assertion"
+L00031 REJECTED TEXT="02. DRAW the first state read and its owner before any other actor acts." FIRST_USE=["DRAW"] NUMBERS=["02"] GAP="no verified preceding-line derivation of this assertion"
+L00032 REJECTED TEXT="03. TRACE the competing state writer or failing service; identify when it runs." FIRST_USE=["TRACE"] NUMBERS=["03"] GAP="no verified preceding-line derivation of this assertion"
+L00033 REJECTED TEXT="04. CALCULATE expected and observed state using the supplied concrete input." FIRST_USE=[] NUMBERS=["04"] GAP="no verified preceding-line derivation of this assertion"
+L00034 REJECTED TEXT="05. IDENTIFY earliest state after which both actors' assumptions cannot hold." FIRST_USE=["IDENTIFY"] NUMBERS=["05"] GAP="no verified preceding-line derivation of this assertion"
+L00035 REJECTED TEXT="06. RECREATE one genuine source-level breakpoint or tracepoint from original code." FIRST_USE=["RECREATE"] NUMBERS=["06"] GAP="no verified preceding-line derivation of this assertion"
+L00036 REJECTED TEXT="07. RECORD what user observed and its link to the internal state mismatch." FIRST_USE=["RECORD"] NUMBERS=["07"] GAP="no verified preceding-line derivation of this assertion"
+L00037 REJECTED TEXT="08. DERIVE a negative control by disabling exactly the triggering mechanism." FIRST_USE=["DERIVE"] NUMBERS=["08"] GAP="no verified preceding-line derivation of this assertion"
+L00038 REJECTED TEXT="09. MEASURE before and after the historical patch; preserve all other conditions." FIRST_USE=["MEASURE"] NUMBERS=["09"] GAP="no verified preceding-line derivation of this assertion"
+L00039 REJECTED TEXT="10. EXPLAIN why the patch's correction does not prove other VM configurations are fixed." FIRST_USE=["EXPLAIN"] NUMBERS=["10"] GAP="no verified preceding-line derivation of this assertion"
+RESULT REJECTED: line-level axiomatic proof not established; flagged=38/39
+NEW THINGS INTRODUCED WITHOUT DERIVATION: ["ACK", "AN", "AND", "ASSIGNMENTS", "B21", "BODY", "BUILD", "CALCULATE", "CALL", "CAN", "CONFIRMED", "CONSTRUCTED", "CONTRACT", "CONTROL", "CORE", "CORRECTNESS", "CPU", "DATA", "DERIVE", "DO", "DRAW", "END", "ERROR", "EVIDENCE", "EXACT", "EXERCISE", "EXPLAIN", "FAILURE", "FILL", "FIRST", "FOR", "GOOD_WITH_OLD_QEMU_AND_GUEST", "HISTORICAL_QEMU_VHOST_NET", "IDENTIFY", "INPUT", "INVOLVED", "LAPTOP", "LOCAL", "LOGIC", "MANUAL", "MEASURE", "NOT", "NO_REPRO_RUN", "O0", "ON", "ORIGIN", "ORIGINAL", "OWNED", "PAGE_SIZE", "PATCH", "PATH", "PINNED", "PRINCIPLES", "PROCEDURE", "PUBLIC", "QEMU", "QUESTION", "RAM", "READ", "REAL_FILE_TRANSFER_FAILURE_VERIFIED_RHEL_6_1", "RECORD", "RECREATE", "REPORT", "REPRODUCED", "REPRODUCTION", "REQUIRED", "RESOURCES", "RETURN", "REVIEW", "RHEL6", "SCP", "SECOND", "SHA256", "SIGNAL", "STATE", "STATUS", "STUDENT", "SUBSTITUTE", "SUCCESS", "TASKS", "TEN", "TITLE", "TRACE", "TRY", "UNIVERSITY", "USER", "VERSION", "VM", "YEAR", "_SC_PAGESIZE", "address", "bytes", "cache", "data", "device", "function", "guest", "host", "kernel", "kvm", "migration", "page", "process", "proof", "qemu", "ring", "show_bug", "software", "source", "state", "test", "used_idx", "value", "vm"]
+NUMBERS WITHOUT VERIFIED DERIVATION: ["0.12", "01", "02", "03", "04", "05", "06", "07", "08", "09", "1", "1.2", "10", "15213", "2", "2.109", "2.129", "2.6", "20", "2010", "2015", "32", "4", "5", "56", "6", "62", "6210", "623552", "7", "95"]
+LIMIT: first-use names are lexical candidates, not a complete semantic analysis.
+END_FILE
+

@@ -1,0 +1,677 @@
+SOURCE_COMMIT 32198a0ade443b1b6c037a3a52fbc472abab801e
+FOLDER assignments/20-cmu-15213-cache-lab
+AXIOM 1: 0 denotes no counted objects.
+AXIOM 2: 1 denotes one object added to 0.
+RULE: each new symbol needs an earlier definition.
+RULE: each numerical result needs an earlier calculation.
+RULE: a compiler result is not a proof of the subject matter.
+METHOD: each original source line is copied with its original line number.
+METHOD: FIRST_USE and NUMBERS identify candidates requiring proof.
+LIMIT: this is a conservative rejection, not a complete human semantic review.
+FOLDER_RESULT REJECTED
+
+FILE assignments/20-cmu-15213-cache-lab/CHALLENGES.md
+GIT_BLOB c9486bf7af8f537fb64aa84c84b7903131c1ee5d
+MODE 100644
+BYTES 1466
+SOURCE_LINES 17
+L00001 REJECTED TEXT="Ten deliberately unsolved core decision points for CMU 15-213 Fall 2012 Cache Lab Part A." FIRST_USE=["CMU", "Cache"] NUMBERS=["15", "213", "2012"] GAP="first line is not a proved axiom from counting"
+L00002 REJECTED TEXT="These are implementation contracts, not program solutions. Resolve each in the real target codebase." FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00003 REJECTED TEXT="TODO 01: parse_trace_line \u2014 input state \u2192 exact condition \u2192 output state \u2192 regression test" FIRST_USE=["TODO", "parse_trace_line", "state", "test"] NUMBERS=["01"] GAP="no verified preceding-line derivation of this assertion"
+L00004 REJECTED TEXT="TODO 02: ignore_instruction_fetch \u2014 input state \u2192 exact condition \u2192 output state \u2192 regression test" FIRST_USE=["ignore_instruction_fetch"] NUMBERS=["02"] GAP="no verified preceding-line derivation of this assertion"
+L00005 REJECTED TEXT="TODO 03: count_modify_as_two \u2014 input state \u2192 exact condition \u2192 output state \u2192 regression test" FIRST_USE=["count_modify_as_two"] NUMBERS=["03"] GAP="no verified preceding-line derivation of this assertion"
+L00006 REJECTED TEXT="TODO 04: decode_cache_set \u2014 input state \u2192 exact condition \u2192 output state \u2192 regression test" FIRST_USE=["decode_cache_set"] NUMBERS=["04"] GAP="no verified preceding-line derivation of this assertion"
+L00007 REJECTED TEXT="TODO 05: decode_cache_tag \u2014 input state \u2192 exact condition \u2192 output state \u2192 regression test" FIRST_USE=["decode_cache_tag"] NUMBERS=["05"] GAP="no verified preceding-line derivation of this assertion"
+L00008 REJECTED TEXT="TODO 06: detect_hit \u2014 input state \u2192 exact condition \u2192 output state \u2192 regression test" FIRST_USE=["detect_hit"] NUMBERS=["06"] GAP="no verified preceding-line derivation of this assertion"
+L00009 REJECTED TEXT="TODO 07: detect_miss \u2014 input state \u2192 exact condition \u2192 output state \u2192 regression test" FIRST_USE=["detect_miss"] NUMBERS=["07"] GAP="no verified preceding-line derivation of this assertion"
+L00010 REJECTED TEXT="TODO 08: choose_lru_victim \u2014 input state \u2192 exact condition \u2192 output state \u2192 regression test" FIRST_USE=["choose_lru_victim"] NUMBERS=["08"] GAP="no verified preceding-line derivation of this assertion"
+L00011 REJECTED TEXT="TODO 09: count_eviction \u2014 input state \u2192 exact condition \u2192 output state \u2192 regression test" FIRST_USE=["count_eviction"] NUMBERS=["09"] GAP="no verified preceding-line derivation of this assertion"
+L00012 REJECTED TEXT="TODO 10: format_reference_counters \u2014 input state \u2192 exact condition \u2192 output state \u2192 regression test" FIRST_USE=["format_reference_counters"] NUMBERS=["10"] GAP="no verified preceding-line derivation of this assertion"
+L00013 NO_CLAIM TEXT="" FIRST_USE=[] NUMBERS=[] GAP="empty line"
+L00014 REJECTED TEXT="Independent numeric fixture is three permutations of 4,5,3." FIRST_USE=[] NUMBERS=["4", "5", "3"] GAP="no verified preceding-line derivation of this assertion"
+L00015 REJECTED TEXT="Each column sums to 12. All three rows together sum to 36." FIRST_USE=[] NUMBERS=["12", "36"] GAP="no verified preceding-line derivation of this assertion"
+L00016 REJECTED TEXT="Observe the state transitions in the real kernel/VM before claiming a result." FIRST_USE=["kernel", "VM"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00017 REJECTED TEXT="Question: When does the local observation cease to prove the global invariant?" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+RESULT REJECTED: line-level axiomatic proof not established; flagged=16/17
+NEW THINGS INTRODUCED WITHOUT DERIVATION: ["CMU", "Cache", "TODO", "VM", "choose_lru_victim", "count_eviction", "count_modify_as_two", "decode_cache_set", "decode_cache_tag", "detect_hit", "detect_miss", "format_reference_counters", "ignore_instruction_fetch", "kernel", "parse_trace_line", "state", "test"]
+NUMBERS WITHOUT VERIFIED DERIVATION: ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "12", "15", "2012", "213", "3", "36", "4", "5"]
+LIMIT: first-use names are lexical candidates, not a complete semantic analysis.
+END_FILE
+
+FILE assignments/20-cmu-15213-cache-lab/FILL_BLANKS.txt
+GIT_BLOB 3f1fc6bd5c48389310e6b5205c1accf68e8ae4c5
+MODE 100644
+BYTES 4895
+SOURCE_LINES 30
+L00001 REJECTED TEXT="Assignment: 20-cmu-15213-cache-lab" FIRST_USE=["cache"] NUMBERS=["20", "15213"] GAP="first line is not a proved axiom from counting"
+L00002 REJECTED TEXT="Executable student code: src/logic_drill.c" FIRST_USE=["logic_drill"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00003 REJECTED TEXT="Target university code: run bash bootstrap.sh, inspect upstream/starter, then port only verified results to the kernel source tree." FIRST_USE=["kernel", "source"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00004 REJECTED TEXT="The six input positions have DIFFERENT meanings for each blank. These are constructed observations, not actual host state. The test name and its named input contract govern the interpretation." FIRST_USE=["DIFFERENT", "host", "state", "test"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00005 REJECTED TEXT="All tests have exact expected values written as literals in src/logic_drill.c." FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00006 REJECTED TEXT="INT64_MIN = unimplemented. Do not replace it with a guessed constant." FIRST_USE=["INT64_MIN"] NUMBERS=["4"] GAP="no verified preceding-line derivation of this assertion"
+L00007 REJECTED TEXT="make status \u2192 displays 20 BLANK cases before work. make check \u2192 fails until all cases pass." FIRST_USE=["BLANK"] NUMBERS=["20"] GAP="no verified preceding-line derivation of this assertion"
+L00008 REJECTED TEXT="A successful build proves syntax and linking. It proves no KVM guest ran, no scheduler got installed, and no memory was reclaimed." FIRST_USE=["KVM", "guest", "scheduler", "memory"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00009 REJECTED TEXT="Source of technical requirements: README.md original university link, CHALLENGES.md local ten tasks, and upstream/starter if available." FIRST_USE=["Source", "README", "CHALLENGES"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00010 REJECTED TEXT="An operation here isolates an input-to-output rule. It is NOT the complete course project. Port into the actual xv6/JOS/Pintos/KVM/libvirt implementation and use original course tests." FIRST_USE=["NOT", "JOS"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00011 NO_CLAIM TEXT="" FIRST_USE=[] NUMBERS=[] GAP="empty line"
+L00012 REJECTED TEXT="01. FILL blank_01_decode_block_base; DERIVE state transition from CHALLENGES.md; OPERANDS [address, alignment_bytes, unused, unused]; INPUT 4660,4096,0,0,0,0; EXPECT 4096; SECOND INPUT 8192,4096,0,0,0,0; EXPECT 8192; RUN make check; INSPECT gdb 'break blank_01_decode_block_base'." FIRST_USE=["FILL", "blank_01_decode_block_base", "DERIVE", "OPERANDS", "address", "alignment_bytes", "INPUT", "EXPECT", "SECOND", "RUN", "INSPECT"] NUMBERS=["01", "1", "4660", "4096", "0", "8192"] GAP="no verified preceding-line derivation of this assertion"
+L00013 REJECTED TEXT="02. FILL blank_02_test_line_valid; DERIVE state transition from CHALLENGES.md; OPERANDS [flags, queried_bit, unused, unused]; INPUT 19,16,0,0,0,0; EXPECT 1; SECOND INPUT 3,16,0,0,0,0; EXPECT 0; RUN make check; INSPECT gdb 'break blank_02_test_line_valid'." FIRST_USE=["blank_02_test_line_valid", "queried_bit"] NUMBERS=["02", "2", "19", "16", "0", "1", "3"] GAP="no verified preceding-line derivation of this assertion"
+L00014 REJECTED TEXT="03. FILL blank_03_pick_oldest_lru_line; DERIVE state transition from CHALLENGES.md; OPERANDS [first_candidate, second_candidate, third_candidate, unused]; INPUT 11,3,7,0,0,0; EXPECT 1; SECOND INPUT 4,8,2,0,0,0; EXPECT 2; RUN make check; INSPECT gdb 'break blank_03_pick_oldest_lru_line'." FIRST_USE=["blank_03_pick_oldest_lru_line", "first_candidate", "second_candidate", "third_candidate"] NUMBERS=["03", "3", "11", "7", "0", "1", "4", "8", "2"] GAP="no verified preceding-line derivation of this assertion"
+L00015 REJECTED TEXT="04. FILL blank_04_advance_access_timestamp; DERIVE state transition from CHALLENGES.md; OPERANDS [prior_tick_count, elapsed_tick_count, unused, unused]; INPUT 100,7,0,0,0,0; EXPECT 107; SECOND INPUT 2,10,0,0,0,0; EXPECT 12; RUN make check; INSPECT gdb 'break blank_04_advance_access_timestamp'." FIRST_USE=["blank_04_advance_access_timestamp", "prior_tick_count", "elapsed_tick_count"] NUMBERS=["04", "4", "100", "7", "0", "107", "2", "10", "12"] GAP="no verified preceding-line derivation of this assertion"
+L00016 REJECTED TEXT="05. FILL blank_05_check_memory_access_in_range; DERIVE state transition from CHALLENGES.md; OPERANDS [candidate_address, allowed_start, allowed_end_exclusive, unused]; INPUT 4096,4096,12288,0,0,0; EXPECT 1; SECOND INPUT 16384,4096,12288,0,0,0; EXPECT 0; RUN make check; INSPECT gdb 'break blank_05_check_memory_access_in_range'." FIRST_USE=["blank_05_check_memory_access_in_range", "candidate_address", "allowed_start", "allowed_end_exclusive"] NUMBERS=["05", "5", "4096", "12288", "0", "1", "16384"] GAP="no verified preceding-line derivation of this assertion"
+L00017 REJECTED TEXT="06. FILL blank_06_count_spanned_cache_lines; DERIVE state transition from CHALLENGES.md; OPERANDS [byte_count, page_bytes, unused, unused]; INPUT 4097,4096,0,0,0,0; EXPECT 2; SECOND INPUT 8192,4096,0,0,0,0; EXPECT 2; RUN make check; INSPECT gdb 'break blank_06_count_spanned_cache_lines'." FIRST_USE=["blank_06_count_spanned_cache_lines", "byte_count", "page_bytes"] NUMBERS=["06", "6", "4097", "4096", "0", "2", "8192"] GAP="no verified preceding-line derivation of this assertion"
+L00018 REJECTED TEXT="07. FILL blank_07_count_total_cache_lines; DERIVE state transition from CHALLENGES.md; OPERANDS [number_of_sets, ways_per_set, unused, unused, unused, unused]; INPUT 64,4,0,0,0,0; EXPECT 256; SECOND INPUT 16,8,0,0,0,0; EXPECT 128; RUN make check; INSPECT gdb 'break blank_07_count_total_cache_lines'." FIRST_USE=["blank_07_count_total_cache_lines", "number_of_sets", "ways_per_set"] NUMBERS=["07", "7", "64", "4", "0", "256", "16", "8", "128"] GAP="no verified preceding-line derivation of this assertion"
+L00019 REJECTED TEXT="08. FILL blank_08_copy_cache_tag; DERIVE state transition from CHALLENGES.md; OPERANDS [source_value, unused, unused, unused]; INPUT 47,0,0,0,0,0; EXPECT 47; SECOND INPUT 300,0,0,0,0,0; EXPECT 300; RUN make check; INSPECT gdb 'break blank_08_copy_cache_tag'." FIRST_USE=["blank_08_copy_cache_tag", "source_value"] NUMBERS=["08", "8", "47", "0", "300"] GAP="no verified preceding-line derivation of this assertion"
+L00020 REJECTED TEXT="09. FILL blank_09_limit_way_index; DERIVE state transition from CHALLENGES.md; OPERANDS [first_candidate, second_candidate, unused, unused]; INPUT 3,8,0,0,0,0; EXPECT 3; SECOND INPUT 12,7,0,0,0,0; EXPECT 7; RUN make check; INSPECT gdb 'break blank_09_limit_way_index'." FIRST_USE=["blank_09_limit_way_index"] NUMBERS=["09", "9", "3", "8", "0", "12", "7"] GAP="no verified preceding-line derivation of this assertion"
+L00021 REJECTED TEXT="10. FILL blank_10_measure_reuse_age_delta; DERIVE state transition from CHALLENGES.md; OPERANDS [current_counter, prior_counter, unused, unused]; INPUT 150,100,0,0,0,0; EXPECT 50; SECOND INPUT 180,120,0,0,0,0; EXPECT 60; RUN make check; INSPECT gdb 'break blank_10_measure_reuse_age_delta'." FIRST_USE=["blank_10_measure_reuse_age_delta", "current_counter", "prior_counter"] NUMBERS=["10", "0", "150", "100", "50", "180", "120", "60"] GAP="no verified preceding-line derivation of this assertion"
+L00022 NO_CLAIM TEXT="" FIRST_USE=[] NUMBERS=[] GAP="empty line"
+L00023 REJECTED TEXT="INVARIANT: a cache hit requires a valid line and a matching tag in the selected set" FIRST_USE=["INVARIANT"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00024 REJECTED TEXT="TRACE: CALL -> six input values -> function entry -> expected output -> actual output -> first violated state." FIRST_USE=["TRACE", "CALL", "function"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00025 REJECTED TEXT="F1. Compiler passed \u2192 user logic inferred correct \u2192 WRONG; the skeleton returns INT64_MIN." FIRST_USE=["F1", "WRONG"] NUMBERS=["4"] GAP="no verified preceding-line derivation of this assertion"
+L00026 REJECTED TEXT="F2. User pointer / guest address mistaken for machine page \u2192 WRONG; only validate mapping with the real kernel translation API." FIRST_USE=["F2", "pointer", "page", "mapping", "API"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00027 REJECTED TEXT="F3. Constructed input recorded as this laptop's observed data \u2192 WRONG; measure separately using its running kernel." FIRST_USE=["F3", "data"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00028 REJECTED TEXT="F4. Simulator PASS treated as a passing university grading test \u2192 WRONG; run original course test suite in the original environment." FIRST_USE=["F4", "PASS"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00029 REJECTED TEXT="UNDEFINED PREMISSES: explain each term using the official assignment and relevant source before altering the function." FIRST_USE=["UNDEFINED", "PREMISSES"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00030 REJECTED TEXT="NEW THINGS INTRODUCED WITHOUT DERIVATION: audit each line in the final implementation; any unknown source constant requires a source citation." FIRST_USE=["NEW", "THINGS", "INTRODUCED", "WITHOUT", "DERIVATION"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+RESULT REJECTED: line-level axiomatic proof not established; flagged=28/30
+NEW THINGS INTRODUCED WITHOUT DERIVATION: ["API", "BLANK", "CALL", "CHALLENGES", "DERIVATION", "DERIVE", "DIFFERENT", "EXPECT", "F1", "F2", "F3", "F4", "FILL", "INPUT", "INSPECT", "INT64_MIN", "INTRODUCED", "INVARIANT", "JOS", "KVM", "NEW", "NOT", "OPERANDS", "PASS", "PREMISSES", "README", "RUN", "SECOND", "Source", "THINGS", "TRACE", "UNDEFINED", "WITHOUT", "WRONG", "address", "alignment_bytes", "allowed_end_exclusive", "allowed_start", "blank_01_decode_block_base", "blank_02_test_line_valid", "blank_03_pick_oldest_lru_line", "blank_04_advance_access_timestamp", "blank_05_check_memory_access_in_range", "blank_06_count_spanned_cache_lines", "blank_07_count_total_cache_lines", "blank_08_copy_cache_tag", "blank_09_limit_way_index", "blank_10_measure_reuse_age_delta", "byte_count", "cache", "candidate_address", "current_counter", "data", "elapsed_tick_count", "first_candidate", "function", "guest", "host", "kernel", "logic_drill", "mapping", "memory", "number_of_sets", "page", "page_bytes", "pointer", "prior_counter", "prior_tick_count", "queried_bit", "scheduler", "second_candidate", "source", "source_value", "state", "test", "third_candidate", "ways_per_set"]
+NUMBERS WITHOUT VERIFIED DERIVATION: ["0", "01", "02", "03", "04", "05", "06", "07", "08", "09", "1", "10", "100", "107", "11", "12", "120", "12288", "128", "150", "15213", "16", "16384", "180", "19", "2", "20", "256", "3", "300", "4", "4096", "4097", "4660", "47", "5", "50", "6", "60", "64", "7", "8", "8192", "9"]
+LIMIT: first-use names are lexical candidates, not a complete semantic analysis.
+END_FILE
+
+FILE assignments/20-cmu-15213-cache-lab/MCQ_PROOF.txt
+GIT_BLOB 88cd85197276ac89256eaffb53a2f25bfe3a8b12
+MODE 100644
+BYTES 3189
+SOURCE_LINES 70
+L00001 REJECTED TEXT="20-cmu-15213-cache-lab" FIRST_USE=["cache"] NUMBERS=["20", "15213"] GAP="first line is not a proved axiom from counting"
+L00002 REJECTED TEXT="Read the source handout before filling these blanks. These are constructed interviewer checks, not leaked university tests." FIRST_USE=["source"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00003 NO_CLAIM TEXT="" FIRST_USE=[] NUMBERS=[] GAP="empty line"
+L00004 REJECTED TEXT="QUALITATIVE impossibility: Which transition is forbidden by the governing invariant? INVARIANT: a cache hit requires a valid line and a matching tag in the selected set" FIRST_USE=["QUALITATIVE", "INVARIANT"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00005 REJECTED TEXT="A) The invariant holds after every accepted state change." FIRST_USE=["state"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00006 REJECTED TEXT="B) A boundary passes without checking the invariant." FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00007 REJECTED TEXT="C) Success of a caller implies a correct callee." FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00008 REJECTED TEXT="D) One observable state proves all concurrent states." FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00009 NO_CLAIM TEXT="" FIRST_USE=[] NUMBERS=[] GAP="empty line"
+L00010 REJECTED TEXT="       /--------/|" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00011 REJECTED TEXT="      /        / |" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00012 REJECTED TEXT="     +--------+  |        \u2192       +--------+" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00013 REJECTED TEXT="     |        |  +----------------|        |" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00014 REJECTED TEXT="     |        | /                 |        |" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00015 REJECTED TEXT="     +--------+/                  +--------+" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00016 NO_CLAIM TEXT="" FIRST_USE=[] NUMBERS=[] GAP="empty line"
+L00017 REJECTED TEXT="QUALITATIVE cause: Which dependency must be checked before granting an operation? INVARIANT: a cache hit requires a valid line and a matching tag in the selected set" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00018 REJECTED TEXT="A) The ownership or validity condition that permits the transition." FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00019 REJECTED TEXT="B) A later output that appears well formed." FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00020 REJECTED TEXT="C) An unrelated previous task's result." FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00021 REJECTED TEXT="D) The mere presence of executable code." FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00022 NO_CLAIM TEXT="" FIRST_USE=[] NUMBERS=[] GAP="empty line"
+L00023 REJECTED TEXT="       /--------/|" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00024 REJECTED TEXT="      /        / |" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00025 REJECTED TEXT="     +--------+  |        \u2192       +--------+" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00026 REJECTED TEXT="     |        |  +----------------|        |" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00027 REJECTED TEXT="     |        | /                 |        |" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00028 REJECTED TEXT="     +--------+/                  +--------+" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00029 NO_CLAIM TEXT="" FIRST_USE=[] NUMBERS=[] GAP="empty line"
+L00030 REJECTED TEXT="QUALITATIVE trap: Which reasoning trap wrongly extends local evidence? INVARIANT: a cache hit requires a valid line and a matching tag in the selected set" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00031 REJECTED TEXT="A) A local result is promoted to a global guarantee." FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00032 REJECTED TEXT="B) A stated state is tested against a contract." FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00033 REJECTED TEXT="C) A source is checked against a version." FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00034 REJECTED TEXT="D) An error return is examined before reuse." FIRST_USE=["return"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00035 NO_CLAIM TEXT="" FIRST_USE=[] NUMBERS=[] GAP="empty line"
+L00036 REJECTED TEXT="       /--------/|" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00037 REJECTED TEXT="      /        / |" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00038 REJECTED TEXT="     +--------+  |        \u2192       +--------+" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00039 REJECTED TEXT="     |        |  +----------------|        |" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00040 REJECTED TEXT="     |        | /                 |        |" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00041 REJECTED TEXT="     +--------+/                  +--------+" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00042 NO_CLAIM TEXT="" FIRST_USE=[] NUMBERS=[] GAP="empty line"
+L00043 REJECTED TEXT="EXECUTION trace: INPUT 4660,4096,0,0,0,0 \u2192 output ____ ; select the source contract that makes the output necessary, not an implementation guess." FIRST_USE=["EXECUTION", "INPUT", "____"] NUMBERS=["4660", "4096", "0"] GAP="no verified preceding-line derivation of this assertion"
+L00044 REJECTED TEXT="A) Verified input-to-state transition" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00045 REJECTED TEXT="B) Illicit reversal of the observed output" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00046 REJECTED TEXT="C) An output with no ownership check" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00047 REJECTED TEXT="D) Unrelated cache or CPU statistics" FIRST_USE=["CPU"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00048 NO_CLAIM TEXT="" FIRST_USE=[] NUMBERS=[] GAP="empty line"
+L00049 REJECTED TEXT="       /--------/|" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00050 REJECTED TEXT="      /        / |" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00051 REJECTED TEXT="     +--------+  |        \u2192       +--------+" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00052 REJECTED TEXT="     |        |  +----------------|        |" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00053 REJECTED TEXT="     |        | /                 |        |" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00054 REJECTED TEXT="     +--------+/                  +--------+" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00055 NO_CLAIM TEXT="" FIRST_USE=[] NUMBERS=[] GAP="empty line"
+L00056 REJECTED TEXT="EXECUTION boundary: INPUT 2,10,0,0,0,0 \u2192 output ____ ; select the source contract that makes the output necessary, not an implementation guess." FIRST_USE=[] NUMBERS=["2", "10", "0"] GAP="no verified preceding-line derivation of this assertion"
+L00057 REJECTED TEXT="A) Verified input-to-state transition" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00058 REJECTED TEXT="B) Illicit reversal of the observed output" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00059 REJECTED TEXT="C) An output with no ownership check" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00060 REJECTED TEXT="D) Unrelated cache or CPU statistics" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00061 NO_CLAIM TEXT="" FIRST_USE=[] NUMBERS=[] GAP="empty line"
+L00062 REJECTED TEXT="       /--------/|" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00063 REJECTED TEXT="      /        / |" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00064 REJECTED TEXT="     +--------+  |        \u2192       +--------+" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00065 REJECTED TEXT="     |        |  +----------------|        |" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00066 REJECTED TEXT="     |        | /                 |        |" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00067 REJECTED TEXT="     +--------+/                  +--------+" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00068 NO_CLAIM TEXT="" FIRST_USE=[] NUMBERS=[] GAP="empty line"
+L00069 REJECTED TEXT="Five causal arrows above are ASCII study diagrams, NOT photo-grade 3D doodles; do not treat them as requested rendered image assets." FIRST_USE=["ASCII", "NOT"] NUMBERS=["3"] GAP="no verified preceding-line derivation of this assertion"
+L00070 REJECTED TEXT="No answer key. Full execution truth is in the student-completed functions and the original university tests." FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+RESULT REJECTED: line-level axiomatic proof not established; flagged=59/70
+NEW THINGS INTRODUCED WITHOUT DERIVATION: ["ASCII", "CPU", "EXECUTION", "INPUT", "INVARIANT", "NOT", "QUALITATIVE", "____", "cache", "return", "source", "state"]
+NUMBERS WITHOUT VERIFIED DERIVATION: ["0", "10", "15213", "2", "20", "3", "4096", "4660"]
+LIMIT: first-use names are lexical candidates, not a complete semantic analysis.
+END_FILE
+
+FILE assignments/20-cmu-15213-cache-lab/Makefile
+GIT_BLOB ced33ad0d625e16af72e8cf4d3071320839d2c32
+MODE 100644
+BYTES 764
+SOURCE_LINES 27
+L00001 REJECTED TEXT="CC ?= cc" FIRST_USE=["CC", "cc"] NUMBERS=[] GAP="first line is not a proved axiom from counting"
+L00002 REJECTED TEXT="CFLAGS ?= -std=c11 -O0 -g3 -Wall -Wextra -Werror -Wpedantic" FIRST_USE=["CFLAGS", "std", "c11", "O0", "g3", "Wall", "Wextra", "Werror", "Wpedantic"] NUMBERS=["1"] GAP="no verified preceding-line derivation of code/API semantics"
+L00003 REJECTED TEXT=".PHONY: all smoke puzzle clean status check drill trace" FIRST_USE=["PHONY", "all", "smoke", "puzzle", "clean", "status", "check", "drill", "trace"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00004 REJECTED TEXT="all: build/fixture_reader build/logic_drill build/trace_reader" FIRST_USE=["build", "fixture_reader", "logic_drill", "trace_reader"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00005 REJECTED TEXT="build/fixture_reader: src/fixture_reader.c" FIRST_USE=["src", "c"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00006 REJECTED TEXT="\t@mkdir -p build" FIRST_USE=["mkdir", "p"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00007 REJECTED TEXT="\t$(CC) $(CFLAGS) $< -o $@" FIRST_USE=["o"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00008 REJECTED TEXT="build/logic_drill: src/logic_drill.c" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00009 REJECTED TEXT="\t@mkdir -p build" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00010 REJECTED TEXT="\t$(CC) $(CFLAGS) $< -o $@" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00011 REJECTED TEXT="build/trace_reader: src/trace_reader.c" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00012 REJECTED TEXT="\t@mkdir -p build" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00013 REJECTED TEXT="\t$(CC) $(CFLAGS) $< -o $@" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00014 REJECTED TEXT="trace: all" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00015 REJECTED TEXT="\t./build/trace_reader cases/sample.trace" FIRST_USE=["cases", "sample"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00016 REJECTED TEXT="smoke: all" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00017 REJECTED TEXT="\t./build/fixture_reader cases/observations.csv" FIRST_USE=["observations", "csv"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00018 REJECTED TEXT="\t./build/trace_reader cases/sample.trace" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00019 REJECTED TEXT="status: all" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00020 REJECTED TEXT="\t./build/logic_drill --status" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00021 REJECTED TEXT="check: all" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00022 REJECTED TEXT="\t./build/logic_drill" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00023 REJECTED TEXT="drill: status" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00024 REJECTED TEXT="puzzle: all" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00025 REJECTED TEXT="\t./build/fixture_reader --puzzle cases/observations.csv" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00026 REJECTED TEXT="clean:" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00027 REJECTED TEXT="\trm -rf build" FIRST_USE=["rm", "rf"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+RESULT REJECTED: line-level axiomatic proof not established; flagged=27/27
+NEW THINGS INTRODUCED WITHOUT DERIVATION: ["CC", "CFLAGS", "O0", "PHONY", "Wall", "Werror", "Wextra", "Wpedantic", "all", "build", "c", "c11", "cases", "cc", "check", "clean", "csv", "drill", "fixture_reader", "g3", "logic_drill", "mkdir", "o", "observations", "p", "puzzle", "rf", "rm", "sample", "smoke", "src", "status", "std", "trace", "trace_reader"]
+NUMBERS WITHOUT VERIFIED DERIVATION: ["1"]
+LIMIT: first-use names are lexical candidates, not a complete semantic analysis.
+END_FILE
+
+FILE assignments/20-cmu-15213-cache-lab/README.md
+GIT_BLOB 50bfbc217b65175b1f89a8e2716e39326362a9c6
+MODE 100644
+BYTES 1286
+SOURCE_LINES 24
+L00001 REJECTED TEXT="CMU 15-213 Fall 2012 Cache Lab Part A" FIRST_USE=["CMU", "Cache"] NUMBERS=["15", "213", "2012"] GAP="first line is not a proved axiom from counting"
+L00002 REJECTED TEXT="Original assignment: https://csapp.cs.cmu.edu/2e/cachelab.pdf" FIRST_USE=[] NUMBERS=["2"] GAP="no verified preceding-line derivation of this assertion"
+L00003 REJECTED TEXT="Evidence: official 10-page PDF inspected including p3 reference example" FIRST_USE=["page", "PDF", "reference"] NUMBERS=["10"] GAP="no verified preceding-line derivation of this assertion"
+L00004 REJECTED TEXT="Goal: trace driven set-associative LRU cache simulator, exact hits/misses/evictions" FIRST_USE=["LRU", "cache"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00005 REJECTED TEXT="Important limitation: Official csim-ref program and course handout are not redistributed. Later SHARDS exploration is self-assigned, not CMU's syllabus." FIRST_USE=["SHARDS"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00006 NO_CLAIM TEXT="" FIRST_USE=[] NUMBERS=[] GAP="empty line"
+L00007 REJECTED TEXT="First run (works without VM):" FIRST_USE=["VM"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00008 REJECTED TEXT="  make smoke" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00009 REJECTED TEXT="  # parses 3 independent numeric observations; each column sum = 12" FIRST_USE=[] NUMBERS=["3", "12"] GAP="no verified preceding-line derivation of this assertion"
+L00010 REJECTED TEXT="  make puzzle" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00011 REJECTED TEXT="  # exits 77, because your 10 logical functions/decisions are not implemented." FIRST_USE=[] NUMBERS=["77", "10"] GAP="no verified preceding-line derivation of this assertion"
+L00012 REJECTED TEXT="Then:" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00013 REJECTED TEXT="  bash bootstrap.sh" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00014 REJECTED TEXT="  # downloads allowed original source/handout into the ignored upstream/ directory" FIRST_USE=["source"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00015 REJECTED TEXT="Target source paths to inspect:" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00016 REJECTED TEXT="  kernel module or host C program, course tests, syscall boundary" FIRST_USE=["kernel", "host", "syscall"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00017 NO_CLAIM TEXT="" FIRST_USE=[] NUMBERS=[] GAP="empty line"
+L00018 REJECTED TEXT="Core logical work belongs to student, not this package." FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00019 REJECTED TEXT="  CHALLENGES.md lists all 10 decisions." FIRST_USE=["CHALLENGES"] NUMBERS=["10"] GAP="no verified preceding-line derivation of this assertion"
+L00020 REJECTED TEXT="  src/fixture_reader.c contains genuine strict CSV read/overflow checking," FIRST_USE=["fixture_reader", "CSV"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00021 REJECTED TEXT="  not an implementation of the university assignment." FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00022 REJECTED TEXT="  Existing test harnesses and external starter branches remain upstream." FIRST_USE=["test"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00023 REJECTED TEXT="No hosted code, CI/CD, VM provisioning, or cloud operations are necessary to test the local fixture." FIRST_USE=["CI", "CD"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00024 REJECTED TEXT="Do NOT treat successful smoke test as a real target kernel pass." FIRST_USE=["NOT"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+RESULT REJECTED: line-level axiomatic proof not established; flagged=22/24
+NEW THINGS INTRODUCED WITHOUT DERIVATION: ["CD", "CHALLENGES", "CI", "CMU", "CSV", "Cache", "LRU", "NOT", "PDF", "SHARDS", "VM", "cache", "fixture_reader", "host", "kernel", "page", "reference", "source", "syscall", "test"]
+NUMBERS WITHOUT VERIFIED DERIVATION: ["10", "12", "15", "2", "2012", "213", "3", "77"]
+LIMIT: first-use names are lexical candidates, not a complete semantic analysis.
+END_FILE
+
+FILE assignments/20-cmu-15213-cache-lab/TRACE-READER.md
+GIT_BLOB f30cc7797f16ce681eae3173ed32266b72a4ac9c
+MODE 100644
+BYTES 578
+SOURCE_LINES 6
+L00001 REJECTED TEXT="Actual trace format parser in src/trace_reader.c (not an LRU simulator)." FIRST_USE=["trace_reader", "LRU"] NUMBERS=[] GAP="first line is not a proved axiom from counting"
+L00002 REJECTED TEXT="For the eight example records, I=1 is ignored, data records=7, effective data references=9." FIRST_USE=["data"] NUMBERS=["1", "7", "9"] GAP="no verified preceding-line derivation of this assertion"
+L00003 REJECTED TEXT="The two M records represent four references (read followed by write)." FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00004 REJECTED TEXT="Hard part reserved: set lookup and eviction must produce hits=4, misses=5, evictions=3 for this trace when -s 4 -E 1 -b 4, matching the original CMU PDF example (the instruction fetch was added only for the parser smoke)." FIRST_USE=["CMU", "PDF"] NUMBERS=["4", "5", "3", "1"] GAP="no verified preceding-line derivation of this assertion"
+L00005 REJECTED TEXT="Run make trace to check input parsing, not LRU correctness." FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00006 REJECTED TEXT="Verified strict C compilation and output on a Linux sandbox." FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+RESULT REJECTED: line-level axiomatic proof not established; flagged=6/6
+NEW THINGS INTRODUCED WITHOUT DERIVATION: ["CMU", "LRU", "PDF", "data", "trace_reader"]
+NUMBERS WITHOUT VERIFIED DERIVATION: ["1", "3", "4", "5", "7", "9"]
+LIMIT: first-use names are lexical candidates, not a complete semantic analysis.
+END_FILE
+
+FILE assignments/20-cmu-15213-cache-lab/VISUAL_GUIDE.txt
+GIT_BLOB 25cff521c2c2d6620f7d4ea623f4f4d978622a08
+MODE 100644
+BYTES 1182
+SOURCE_LINES 14
+L00001 REJECTED TEXT="Cache trace simulator" FIRST_USE=["Cache"] NUMBERS=[] GAP="first line is not a proved axiom from counting"
+L00002 REJECTED TEXT="GOAL: Map addresses to sets and count hits, misses and eviction using per-set recency." FIRST_USE=["GOAL"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00003 REJECTED TEXT="CAUSE: trace address -> set lookup -> tag match -> LRU" FIRST_USE=["CAUSE", "address", "LRU"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00004 REJECTED TEXT="DATA: cache.set | line.valid | line.tag | line.age" FIRST_USE=["DATA", "cache"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00005 REJECTED TEXT="CORRECTION: access sample -> reuse broken -> block sampling -> reuse preserved" FIRST_USE=["CORRECTION", "block"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00006 REJECTED TEXT="INTERVIEWER TRAP: one hot block -> sample misses -> curve bias -> wrong capacity" FIRST_USE=["INTERVIEWER", "TRAP"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00007 REJECTED TEXT="MANUAL CALCULATION: For 64 sets and 4 ways, capacity is 256 cache lines; 16-byte blocks give 4096 data bytes excluding metadata." FIRST_USE=["MANUAL", "CALCULATION", "data", "bytes"] NUMBERS=["64", "4", "256", "16", "4096"] GAP="no verified preceding-line derivation of this assertion"
+L00008 REJECTED TEXT="EVIDENCE STATUS: No exact Cache Lab implementation bug verified; SHARDS 2015 is original sampling method, not a bug." FIRST_USE=["EVIDENCE", "STATUS", "SHARDS"] NUMBERS=["2015"] GAP="no verified preceding-line derivation of this assertion"
+L00009 REJECTED TEXT="PRIMARY/RELEVANT SOURCE: https://www.usenix.org/system/files/conference/fast15/fast15-paper-waldspurger.pdf" FIRST_USE=["PRIMARY", "RELEVANT", "SOURCE"] NUMBERS=["5"] GAP="no verified preceding-line derivation of this assertion"
+L00010 NO_CLAIM TEXT="" FIRST_USE=[] NUMBERS=[] GAP="empty line"
+L00011 REJECTED TEXT="Four separate, colorful, three-dimensional vector drawings live in visuals/." FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00012 REJECTED TEXT="Image 01: cause chain. Image 02: vertically stacked data fields. Image 03: invalid/valid relationship comparison. Image 04: counterexample/trap." FIRST_USE=[] NUMBERS=["01", "02", "03", "04"] GAP="no verified preceding-line derivation of this assertion"
+L00013 REJECTED TEXT="The drawings express concept-level relationships, not tested implementation source. They contain no assignment answer or bug-fix patch." FIRST_USE=["source"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00014 REJECTED TEXT="Do not describe a related Linux or QEMU bug as an observed failure in the xv6/JOS/Pintos lab." FIRST_USE=["QEMU", "JOS"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+RESULT REJECTED: line-level axiomatic proof not established; flagged=13/14
+NEW THINGS INTRODUCED WITHOUT DERIVATION: ["CALCULATION", "CAUSE", "CORRECTION", "Cache", "DATA", "EVIDENCE", "GOAL", "INTERVIEWER", "JOS", "LRU", "MANUAL", "PRIMARY", "QEMU", "RELEVANT", "SHARDS", "SOURCE", "STATUS", "TRAP", "address", "block", "bytes", "cache", "data", "source"]
+NUMBERS WITHOUT VERIFIED DERIVATION: ["01", "02", "03", "04", "16", "2015", "256", "4", "4096", "5", "64"]
+LIMIT: first-use names are lexical candidates, not a complete semantic analysis.
+END_FILE
+
+FILE assignments/20-cmu-15213-cache-lab/bootstrap.sh
+GIT_BLOB d1af04efafabdaafbe0c2e761aa6cc627d664aa6
+MODE 100755
+BYTES 243
+SOURCE_LINES 6
+L00001 REJECTED TEXT="#!/usr/bin/env bash" FIRST_USE=["usr", "bin", "env", "bash"] NUMBERS=[] GAP="first line is not a proved axiom from counting"
+L00002 REJECTED TEXT="set -euo pipefail" FIRST_USE=["set", "euo", "pipefail"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00003 REJECTED TEXT="cd \"$(dirname \"$0\")\"" FIRST_USE=["cd", "dirname"] NUMBERS=["0"] GAP="no verified preceding-line derivation of code/API semantics"
+L00004 REJECTED TEXT="mkdir -p upstream" FIRST_USE=["mkdir", "p", "upstream"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00005 REJECTED TEXT="curl -fL --retry 2 'https://csapp.cs.cmu.edu/2e/cachelab.pdf' -o upstream/assignment.pdf" FIRST_USE=["curl", "fL", "retry", "https", "csapp", "cs", "cmu", "edu", "cachelab", "pdf", "o", "assignment"] NUMBERS=["2"] GAP="no verified preceding-line derivation of code/API semantics"
+L00006 REJECTED TEXT="echo 'Source collection complete. No student implementation has been added.'" FIRST_USE=["echo", "Source", "collection", "complete", "No", "student", "implementation", "has", "been", "added"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+RESULT REJECTED: line-level axiomatic proof not established; flagged=6/6
+NEW THINGS INTRODUCED WITHOUT DERIVATION: ["No", "Source", "added", "assignment", "bash", "been", "bin", "cachelab", "cd", "cmu", "collection", "complete", "cs", "csapp", "curl", "dirname", "echo", "edu", "env", "euo", "fL", "has", "https", "implementation", "mkdir", "o", "p", "pdf", "pipefail", "retry", "set", "student", "upstream", "usr"]
+NUMBERS WITHOUT VERIFIED DERIVATION: ["0", "2"]
+LIMIT: first-use names are lexical candidates, not a complete semantic analysis.
+END_FILE
+
+FILE assignments/20-cmu-15213-cache-lab/cases/observations.csv
+GIT_BLOB 3c2bbc3d49b118d460af8360c521885c6be1ca05
+MODE 100644
+BYTES 83
+SOURCE_LINES 4
+L00001 REJECTED TEXT="# first,second,third; original numeric fixture (not course data)" FIRST_USE=["data"] NUMBERS=[] GAP="first line is not a proved axiom from counting"
+L00002 REJECTED TEXT="4,5,3" FIRST_USE=[] NUMBERS=["4", "5", "3"] GAP="no verified preceding-line derivation of this assertion"
+L00003 REJECTED TEXT="5,3,4" FIRST_USE=[] NUMBERS=["5", "3", "4"] GAP="no verified preceding-line derivation of this assertion"
+L00004 REJECTED TEXT="3,4,5" FIRST_USE=[] NUMBERS=["3", "4", "5"] GAP="no verified preceding-line derivation of this assertion"
+RESULT REJECTED: line-level axiomatic proof not established; flagged=4/4
+NEW THINGS INTRODUCED WITHOUT DERIVATION: ["data"]
+NUMBERS WITHOUT VERIFIED DERIVATION: ["3", "4", "5"]
+LIMIT: first-use names are lexical candidates, not a complete semantic analysis.
+END_FILE
+
+FILE assignments/20-cmu-15213-cache-lab/cases/sample.trace
+GIT_BLOB c610a5bbddf5c9064fe1d543903269c2f2a36ded
+MODE 100644
+BYTES 70
+SOURCE_LINES 8
+L00001 REJECTED TEXT=" I 400000,1" FIRST_USE=[] NUMBERS=["400000", "1"] GAP="first line is not a proved axiom from counting"
+L00002 REJECTED TEXT=" L 10,1" FIRST_USE=[] NUMBERS=["10", "1"] GAP="no verified preceding-line derivation of this assertion"
+L00003 REJECTED TEXT=" M 20,1" FIRST_USE=[] NUMBERS=["20", "1"] GAP="no verified preceding-line derivation of this assertion"
+L00004 REJECTED TEXT=" L 22,1" FIRST_USE=[] NUMBERS=["22", "1"] GAP="no verified preceding-line derivation of this assertion"
+L00005 REJECTED TEXT=" S 18,1" FIRST_USE=[] NUMBERS=["18", "1"] GAP="no verified preceding-line derivation of this assertion"
+L00006 REJECTED TEXT=" L 110,1" FIRST_USE=[] NUMBERS=["110", "1"] GAP="no verified preceding-line derivation of this assertion"
+L00007 REJECTED TEXT=" L 210,1" FIRST_USE=[] NUMBERS=["210", "1"] GAP="no verified preceding-line derivation of this assertion"
+L00008 REJECTED TEXT=" M 12,1" FIRST_USE=[] NUMBERS=["12", "1"] GAP="no verified preceding-line derivation of this assertion"
+RESULT REJECTED: line-level axiomatic proof not established; flagged=8/8
+NEW THINGS INTRODUCED WITHOUT DERIVATION: []
+NUMBERS WITHOUT VERIFIED DERIVATION: ["1", "10", "110", "12", "18", "20", "210", "22", "400000"]
+LIMIT: first-use names are lexical candidates, not a complete semantic analysis.
+END_FILE
+
+FILE assignments/20-cmu-15213-cache-lab/src/fixture_reader.c
+GIT_BLOB 11e4d7b7f7553f71e55afc7f35a28e857fb12f02
+MODE 100644
+BYTES 2117
+SOURCE_LINES 45
+L00001 REJECTED TEXT="/* Independent setup harness. NOT a solved university assignment." FIRST_USE=["Independent", "setup", "harness", "NOT", "a", "solved", "university", "assignment"] NUMBERS=[] GAP="first line is not a proved axiom from counting"
+L00002 REJECTED TEXT=" * Reads observed numeric triples and computes their totals." FIRST_USE=["Reads", "observed", "numeric", "triples", "and", "computes", "their", "totals"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00003 REJECTED TEXT=" * --puzzle deliberately reports INCOMPLETE until you implement the ten" FIRST_USE=["puzzle", "deliberately", "reports", "INCOMPLETE", "until", "you", "implement", "the", "ten"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00004 REJECTED TEXT=" * assignment-specific hooks, whose names are in CHALLENGES.md." FIRST_USE=["specific", "hooks", "whose", "names", "are", "in", "CHALLENGES", "md"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00005 REJECTED TEXT=" */" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00006 REJECTED TEXT="#define _POSIX_C_SOURCE 200809L" FIRST_USE=["define", "_POSIX_C_SOURCE"] NUMBERS=["200809"] GAP="no verified preceding-line derivation of code/API semantics"
+L00007 REJECTED TEXT="#include <errno.h>" FIRST_USE=["include", "errno", "h"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00008 REJECTED TEXT="#include <inttypes.h>" FIRST_USE=["inttypes"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00009 REJECTED TEXT="#include <stdint.h>" FIRST_USE=["stdint"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00010 REJECTED TEXT="#include <stdio.h>" FIRST_USE=["stdio"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00011 REJECTED TEXT="#include <stdlib.h>" FIRST_USE=["stdlib"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00012 REJECTED TEXT="#include <string.h>" FIRST_USE=["string"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00013 REJECTED TEXT="struct observation { uint64_t first, second, third; };" FIRST_USE=["struct", "observation", "uint64_t", "first", "second", "third"] NUMBERS=["4"] GAP="no verified preceding-line derivation of code/API semantics"
+L00014 REJECTED TEXT="static int read_one(const char *line, struct observation *o) {" FIRST_USE=["static", "int", "read_one", "const", "char", "line", "o"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00015 REJECTED TEXT="    char tail = 0;" FIRST_USE=["tail"] NUMBERS=["0"] GAP="no verified preceding-line derivation of code/API semantics"
+L00016 REJECTED TEXT="    if (sscanf(line, \"%\" SCNu64 \",%\" SCNu64 \",%\" SCNu64 \" %c\"," FIRST_USE=["if", "sscanf", "SCNu64", "c"] NUMBERS=["4"] GAP="no verified preceding-line derivation of code/API semantics"
+L00017 REJECTED TEXT="               &o->first, &o->second, &o->third, &tail) != 3) return -1;" FIRST_USE=["return"] NUMBERS=["3", "1"] GAP="no verified preceding-line derivation of code/API semantics"
+L00018 REJECTED TEXT="    return 0;" FIRST_USE=[] NUMBERS=["0"] GAP="no verified preceding-line derivation of code/API semantics"
+L00019 STRUCTURE TEXT="}" FIRST_USE=[] NUMBERS=[] GAP="punctuation only; prior declarations still need proof"
+L00020 REJECTED TEXT="int main(int argc, char **argv) {" FIRST_USE=["main", "argc", "argv"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00021 REJECTED TEXT="    int puzzle = (argc == 3 && strcmp(argv[1], \"--puzzle\") == 0);" FIRST_USE=["strcmp"] NUMBERS=["3", "1", "0"] GAP="no verified preceding-line derivation of code/API semantics"
+L00022 REJECTED TEXT="    const char *path = puzzle ? argv[2] : (argc == 2 ? argv[1] : NULL);" FIRST_USE=["path", "NULL"] NUMBERS=["2", "1"] GAP="no verified preceding-line derivation of code/API semantics"
+L00023 REJECTED TEXT="    if (!path) { fputs(\"usage: fixture_reader [--puzzle] observations.csv\\n\", stderr); return 2; }" FIRST_USE=["fputs", "usage", "fixture_reader", "observations", "csv", "n", "stderr"] NUMBERS=["2"] GAP="no verified preceding-line derivation of code/API semantics"
+L00024 REJECTED TEXT="    FILE *f = fopen(path, \"r\");" FIRST_USE=["FILE", "f", "fopen", "r"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00025 REJECTED TEXT="    if (!f) { perror(\"fopen\"); return 2; }" FIRST_USE=["perror"] NUMBERS=["2"] GAP="no verified preceding-line derivation of code/API semantics"
+L00026 REJECTED TEXT="    char *line = NULL; size_t cap = 0; ssize_t n = 0;" FIRST_USE=["size_t", "cap", "ssize_t"] NUMBERS=["0"] GAP="no verified preceding-line derivation of code/API semantics"
+L00027 REJECTED TEXT="    uint64_t count = 0, sum_first = 0, sum_second = 0, sum_third = 0;" FIRST_USE=["count", "sum_first", "sum_second", "sum_third"] NUMBERS=["4", "0"] GAP="no verified preceding-line derivation of code/API semantics"
+L00028 REJECTED TEXT="    while ((n = getline(&line, &cap, f)) >= 0) {" FIRST_USE=["while", "getline"] NUMBERS=["0"] GAP="no verified preceding-line derivation of code/API semantics"
+L00029 REJECTED TEXT="        (void)n;" FIRST_USE=["void"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00030 REJECTED TEXT="        if (line[0] == '#' || line[0] == '\\n') continue;" FIRST_USE=["continue"] NUMBERS=["0"] GAP="no verified preceding-line derivation of code/API semantics"
+L00031 REJECTED TEXT="        struct observation o;" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00032 REJECTED TEXT="        if (read_one(line, &o) || UINT64_MAX - sum_first < o.first ||" FIRST_USE=["UINT64_MAX"] NUMBERS=["4"] GAP="no verified preceding-line derivation of code/API semantics"
+L00033 REJECTED TEXT="            UINT64_MAX - sum_second < o.second || UINT64_MAX - sum_third < o.third) {" FIRST_USE=[] NUMBERS=["4"] GAP="no verified preceding-line derivation of code/API semantics"
+L00034 REJECTED TEXT="            fprintf(stderr, \"invalid or overflowing record %\" PRIu64 \"\\n\", count + 1);" FIRST_USE=["fprintf", "invalid", "or", "overflowing", "record", "PRIu64"] NUMBERS=["4", "1"] GAP="no verified preceding-line derivation of code/API semantics"
+L00035 REJECTED TEXT="            free(line); fclose(f); return 2;" FIRST_USE=["free", "fclose"] NUMBERS=["2"] GAP="no verified preceding-line derivation of code/API semantics"
+L00036 STRUCTURE TEXT="        }" FIRST_USE=[] NUMBERS=[] GAP="punctuation only; prior declarations still need proof"
+L00037 REJECTED TEXT="        sum_first += o.first; sum_second += o.second; sum_third += o.third; ++count;" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00038 STRUCTURE TEXT="    }" FIRST_USE=[] NUMBERS=[] GAP="punctuation only; prior declarations still need proof"
+L00039 REJECTED TEXT="    if (ferror(f)) { perror(\"read\"); free(line); fclose(f); return 2; }" FIRST_USE=["ferror", "read"] NUMBERS=["2"] GAP="no verified preceding-line derivation of code/API semantics"
+L00040 REJECTED TEXT="    free(line); fclose(f);" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00041 REJECTED TEXT="    printf(\"records=%\" PRIu64 \" first=%\" PRIu64 \" second=%\" PRIu64 \" third=%\" PRIu64 \"\\n\"," FIRST_USE=["printf", "records"] NUMBERS=["4"] GAP="no verified preceding-line derivation of code/API semantics"
+L00042 REJECTED TEXT="           count, sum_first, sum_second, sum_third);" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00043 REJECTED TEXT="    if (puzzle) { fputs(\"INCOMPLETE: 10 kernel/VM/cache decision hooks are reserved for the student\\n\", stderr); return 77; }" FIRST_USE=["kernel", "VM", "cache", "decision", "reserved", "for", "student"] NUMBERS=["10", "77"] GAP="no verified preceding-line derivation of code/API semantics"
+L00044 REJECTED TEXT="    return count ? 0 : 2;" FIRST_USE=[] NUMBERS=["0", "2"] GAP="no verified preceding-line derivation of code/API semantics"
+L00045 STRUCTURE TEXT="}" FIRST_USE=[] NUMBERS=[] GAP="punctuation only; prior declarations still need proof"
+RESULT REJECTED: line-level axiomatic proof not established; flagged=41/45
+NEW THINGS INTRODUCED WITHOUT DERIVATION: ["CHALLENGES", "FILE", "INCOMPLETE", "Independent", "NOT", "NULL", "PRIu64", "Reads", "SCNu64", "UINT64_MAX", "VM", "_POSIX_C_SOURCE", "a", "and", "are", "argc", "argv", "assignment", "c", "cache", "cap", "char", "computes", "const", "continue", "count", "csv", "decision", "define", "deliberately", "errno", "f", "fclose", "ferror", "first", "fixture_reader", "fopen", "for", "fprintf", "fputs", "free", "getline", "h", "harness", "hooks", "if", "implement", "in", "include", "int", "inttypes", "invalid", "kernel", "line", "main", "md", "n", "names", "numeric", "o", "observation", "observations", "observed", "or", "overflowing", "path", "perror", "printf", "puzzle", "r", "read", "read_one", "record", "records", "reports", "reserved", "return", "second", "setup", "size_t", "solved", "specific", "sscanf", "ssize_t", "static", "stderr", "stdint", "stdio", "stdlib", "strcmp", "string", "struct", "student", "sum_first", "sum_second", "sum_third", "tail", "ten", "the", "their", "third", "totals", "triples", "uint64_t", "university", "until", "usage", "void", "while", "whose", "you"]
+NUMBERS WITHOUT VERIFIED DERIVATION: ["0", "1", "10", "2", "200809", "3", "4", "77"]
+LIMIT: first-use names are lexical candidates, not a complete semantic analysis.
+END_FILE
+
+FILE assignments/20-cmu-15213-cache-lab/src/logic_drill.c
+GIT_BLOB 2ddebab4c0d6eff64029c3b595ab84a2a5fcb5ec
+MODE 100644
+BYTES 4567
+SOURCE_LINES 138
+L00001 REJECTED TEXT="/* Assignment-specific causal worksheet. The original university kernel is in upstream/." FIRST_USE=["Assignment", "specific", "causal", "worksheet", "The", "original", "university", "kernel", "is", "in", "upstream"] NUMBERS=[] GAP="first line is not a proved axiom from counting"
+L00002 REJECTED TEXT=" * INT64_MIN represents an UNIMPLEMENTED student function, not a kernel failure." FIRST_USE=["INT64_MIN", "represents", "an", "UNIMPLEMENTED", "student", "function", "not", "a", "failure"] NUMBERS=["4"] GAP="no verified preceding-line derivation of code/API semantics"
+L00003 REJECTED TEXT=" * The twenty fixtures are CONSTRUCTED tests, never measured machine data." FIRST_USE=["twenty", "fixtures", "are", "CONSTRUCTED", "tests", "never", "measured", "machine", "data"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00004 REJECTED TEXT=" * Build: make all ; observe: make status ; prove completed work: make check" FIRST_USE=["Build", "make", "all", "observe", "status", "prove", "completed", "work", "check"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00005 REJECTED TEXT=" */" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00006 REJECTED TEXT="#define _POSIX_C_SOURCE 200809L" FIRST_USE=["define", "_POSIX_C_SOURCE"] NUMBERS=["200809"] GAP="no verified preceding-line derivation of code/API semantics"
+L00007 REJECTED TEXT="#include <inttypes.h>" FIRST_USE=["include", "inttypes", "h"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00008 REJECTED TEXT="#include <stdint.h>" FIRST_USE=["stdint"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00009 REJECTED TEXT="#include <stdio.h>" FIRST_USE=["stdio"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00010 REJECTED TEXT="#include <string.h>" FIRST_USE=["string"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00011 REJECTED TEXT="#include <limits.h>" FIRST_USE=["limits"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00012 REJECTED TEXT="struct state { int64_t value[6]; };" FIRST_USE=["struct", "state", "int64_t", "value"] NUMBERS=["4", "6"] GAP="no verified preceding-line derivation of code/API semantics"
+L00013 REJECTED TEXT="typedef int64_t (*operation)(const struct state *);" FIRST_USE=["typedef", "operation", "const"] NUMBERS=["4"] GAP="no verified preceding-line derivation of code/API semantics"
+L00014 REJECTED TEXT="static int64_t blank_01_decode_block_base(const struct state *s)" FIRST_USE=["static", "blank_01_decode_block_base", "s"] NUMBERS=["4", "1"] GAP="no verified preceding-line derivation of code/API semantics"
+L00015 STRUCTURE TEXT="{" FIRST_USE=[] NUMBERS=[] GAP="punctuation only; prior declarations still need proof"
+L00016 REJECTED TEXT="    (void)s;" FIRST_USE=["void"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00017 REJECTED TEXT="    /* FILL: decode_block_base. Do not alter the case data. */" FIRST_USE=["FILL", "decode_block_base", "Do", "alter", "the", "case"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00018 REJECTED TEXT="    return INT64_MIN;" FIRST_USE=["return"] NUMBERS=["4"] GAP="no verified preceding-line derivation of code/API semantics"
+L00019 STRUCTURE TEXT="}" FIRST_USE=[] NUMBERS=[] GAP="punctuation only; prior declarations still need proof"
+L00020 NO_CLAIM TEXT="" FIRST_USE=[] NUMBERS=[] GAP="empty line"
+L00021 REJECTED TEXT="static int64_t blank_02_test_line_valid(const struct state *s)" FIRST_USE=["blank_02_test_line_valid"] NUMBERS=["4", "2"] GAP="no verified preceding-line derivation of code/API semantics"
+L00022 STRUCTURE TEXT="{" FIRST_USE=[] NUMBERS=[] GAP="punctuation only; prior declarations still need proof"
+L00023 REJECTED TEXT="    (void)s;" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00024 REJECTED TEXT="    /* FILL: test_line_valid. Do not alter the case data. */" FIRST_USE=["test_line_valid"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00025 REJECTED TEXT="    return INT64_MIN;" FIRST_USE=[] NUMBERS=["4"] GAP="no verified preceding-line derivation of code/API semantics"
+L00026 STRUCTURE TEXT="}" FIRST_USE=[] NUMBERS=[] GAP="punctuation only; prior declarations still need proof"
+L00027 NO_CLAIM TEXT="" FIRST_USE=[] NUMBERS=[] GAP="empty line"
+L00028 REJECTED TEXT="static int64_t blank_03_pick_oldest_lru_line(const struct state *s)" FIRST_USE=["blank_03_pick_oldest_lru_line"] NUMBERS=["4", "3"] GAP="no verified preceding-line derivation of code/API semantics"
+L00029 STRUCTURE TEXT="{" FIRST_USE=[] NUMBERS=[] GAP="punctuation only; prior declarations still need proof"
+L00030 REJECTED TEXT="    (void)s;" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00031 REJECTED TEXT="    /* FILL: pick_oldest_lru_line. Do not alter the case data. */" FIRST_USE=["pick_oldest_lru_line"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00032 REJECTED TEXT="    return INT64_MIN;" FIRST_USE=[] NUMBERS=["4"] GAP="no verified preceding-line derivation of code/API semantics"
+L00033 STRUCTURE TEXT="}" FIRST_USE=[] NUMBERS=[] GAP="punctuation only; prior declarations still need proof"
+L00034 NO_CLAIM TEXT="" FIRST_USE=[] NUMBERS=[] GAP="empty line"
+L00035 REJECTED TEXT="static int64_t blank_04_advance_access_timestamp(const struct state *s)" FIRST_USE=["blank_04_advance_access_timestamp"] NUMBERS=["4"] GAP="no verified preceding-line derivation of code/API semantics"
+L00036 STRUCTURE TEXT="{" FIRST_USE=[] NUMBERS=[] GAP="punctuation only; prior declarations still need proof"
+L00037 REJECTED TEXT="    (void)s;" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00038 REJECTED TEXT="    /* FILL: advance_access_timestamp. Do not alter the case data. */" FIRST_USE=["advance_access_timestamp"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00039 REJECTED TEXT="    return INT64_MIN;" FIRST_USE=[] NUMBERS=["4"] GAP="no verified preceding-line derivation of code/API semantics"
+L00040 STRUCTURE TEXT="}" FIRST_USE=[] NUMBERS=[] GAP="punctuation only; prior declarations still need proof"
+L00041 NO_CLAIM TEXT="" FIRST_USE=[] NUMBERS=[] GAP="empty line"
+L00042 REJECTED TEXT="static int64_t blank_05_check_memory_access_in_range(const struct state *s)" FIRST_USE=["blank_05_check_memory_access_in_range"] NUMBERS=["4", "5"] GAP="no verified preceding-line derivation of code/API semantics"
+L00043 STRUCTURE TEXT="{" FIRST_USE=[] NUMBERS=[] GAP="punctuation only; prior declarations still need proof"
+L00044 REJECTED TEXT="    (void)s;" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00045 REJECTED TEXT="    /* FILL: check_memory_access_in_range. Do not alter the case data. */" FIRST_USE=["check_memory_access_in_range"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00046 REJECTED TEXT="    return INT64_MIN;" FIRST_USE=[] NUMBERS=["4"] GAP="no verified preceding-line derivation of code/API semantics"
+L00047 STRUCTURE TEXT="}" FIRST_USE=[] NUMBERS=[] GAP="punctuation only; prior declarations still need proof"
+L00048 NO_CLAIM TEXT="" FIRST_USE=[] NUMBERS=[] GAP="empty line"
+L00049 REJECTED TEXT="static int64_t blank_06_count_spanned_cache_lines(const struct state *s)" FIRST_USE=["blank_06_count_spanned_cache_lines"] NUMBERS=["4", "6"] GAP="no verified preceding-line derivation of code/API semantics"
+L00050 STRUCTURE TEXT="{" FIRST_USE=[] NUMBERS=[] GAP="punctuation only; prior declarations still need proof"
+L00051 REJECTED TEXT="    (void)s;" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00052 REJECTED TEXT="    /* FILL: count_spanned_cache_lines. Do not alter the case data. */" FIRST_USE=["count_spanned_cache_lines"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00053 REJECTED TEXT="    return INT64_MIN;" FIRST_USE=[] NUMBERS=["4"] GAP="no verified preceding-line derivation of code/API semantics"
+L00054 STRUCTURE TEXT="}" FIRST_USE=[] NUMBERS=[] GAP="punctuation only; prior declarations still need proof"
+L00055 NO_CLAIM TEXT="" FIRST_USE=[] NUMBERS=[] GAP="empty line"
+L00056 REJECTED TEXT="static int64_t blank_07_count_total_cache_lines(const struct state *s)" FIRST_USE=["blank_07_count_total_cache_lines"] NUMBERS=["4", "7"] GAP="no verified preceding-line derivation of code/API semantics"
+L00057 STRUCTURE TEXT="{" FIRST_USE=[] NUMBERS=[] GAP="punctuation only; prior declarations still need proof"
+L00058 REJECTED TEXT="    (void)s;" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00059 REJECTED TEXT="    /* FILL: count_total_cache_lines. Do not alter the case data. */" FIRST_USE=["count_total_cache_lines"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00060 REJECTED TEXT="    return INT64_MIN;" FIRST_USE=[] NUMBERS=["4"] GAP="no verified preceding-line derivation of code/API semantics"
+L00061 STRUCTURE TEXT="}" FIRST_USE=[] NUMBERS=[] GAP="punctuation only; prior declarations still need proof"
+L00062 NO_CLAIM TEXT="" FIRST_USE=[] NUMBERS=[] GAP="empty line"
+L00063 REJECTED TEXT="static int64_t blank_08_copy_cache_tag(const struct state *s)" FIRST_USE=["blank_08_copy_cache_tag"] NUMBERS=["4", "8"] GAP="no verified preceding-line derivation of code/API semantics"
+L00064 STRUCTURE TEXT="{" FIRST_USE=[] NUMBERS=[] GAP="punctuation only; prior declarations still need proof"
+L00065 REJECTED TEXT="    (void)s;" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00066 REJECTED TEXT="    /* FILL: copy_cache_tag. Do not alter the case data. */" FIRST_USE=["copy_cache_tag"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00067 REJECTED TEXT="    return INT64_MIN;" FIRST_USE=[] NUMBERS=["4"] GAP="no verified preceding-line derivation of code/API semantics"
+L00068 STRUCTURE TEXT="}" FIRST_USE=[] NUMBERS=[] GAP="punctuation only; prior declarations still need proof"
+L00069 NO_CLAIM TEXT="" FIRST_USE=[] NUMBERS=[] GAP="empty line"
+L00070 REJECTED TEXT="static int64_t blank_09_limit_way_index(const struct state *s)" FIRST_USE=["blank_09_limit_way_index"] NUMBERS=["4", "9"] GAP="no verified preceding-line derivation of code/API semantics"
+L00071 STRUCTURE TEXT="{" FIRST_USE=[] NUMBERS=[] GAP="punctuation only; prior declarations still need proof"
+L00072 REJECTED TEXT="    (void)s;" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00073 REJECTED TEXT="    /* FILL: limit_way_index. Do not alter the case data. */" FIRST_USE=["limit_way_index"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00074 REJECTED TEXT="    return INT64_MIN;" FIRST_USE=[] NUMBERS=["4"] GAP="no verified preceding-line derivation of code/API semantics"
+L00075 STRUCTURE TEXT="}" FIRST_USE=[] NUMBERS=[] GAP="punctuation only; prior declarations still need proof"
+L00076 NO_CLAIM TEXT="" FIRST_USE=[] NUMBERS=[] GAP="empty line"
+L00077 REJECTED TEXT="static int64_t blank_10_measure_reuse_age_delta(const struct state *s)" FIRST_USE=["blank_10_measure_reuse_age_delta"] NUMBERS=["4", "0"] GAP="no verified preceding-line derivation of code/API semantics"
+L00078 STRUCTURE TEXT="{" FIRST_USE=[] NUMBERS=[] GAP="punctuation only; prior declarations still need proof"
+L00079 REJECTED TEXT="    (void)s;" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00080 REJECTED TEXT="    /* FILL: measure_reuse_age_delta. Do not alter the case data. */" FIRST_USE=["measure_reuse_age_delta"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00081 REJECTED TEXT="    return INT64_MIN;" FIRST_USE=[] NUMBERS=["4"] GAP="no verified preceding-line derivation of code/API semantics"
+L00082 STRUCTURE TEXT="}" FIRST_USE=[] NUMBERS=[] GAP="punctuation only; prior declarations still need proof"
+L00083 NO_CLAIM TEXT="" FIRST_USE=[] NUMBERS=[] GAP="empty line"
+L00084 REJECTED TEXT="struct trial { unsigned slot; struct state input; int64_t expected; };" FIRST_USE=["trial", "unsigned", "slot", "input", "expected"] NUMBERS=["4"] GAP="no verified preceding-line derivation of code/API semantics"
+L00085 REJECTED TEXT="int main(int argc, char **argv)" FIRST_USE=["int", "main", "argc", "char", "argv"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00086 STRUCTURE TEXT="{" FIRST_USE=[] NUMBERS=[] GAP="punctuation only; prior declarations still need proof"
+L00087 REJECTED TEXT="    const operation op[10] = {" FIRST_USE=["op"] NUMBERS=["10"] GAP="no verified preceding-line derivation of code/API semantics"
+L00088 REJECTED TEXT="    blank_01_decode_block_base," FIRST_USE=[] NUMBERS=["1"] GAP="no verified preceding-line derivation of code/API semantics"
+L00089 REJECTED TEXT="    blank_02_test_line_valid," FIRST_USE=[] NUMBERS=["2"] GAP="no verified preceding-line derivation of code/API semantics"
+L00090 REJECTED TEXT="    blank_03_pick_oldest_lru_line," FIRST_USE=[] NUMBERS=["3"] GAP="no verified preceding-line derivation of code/API semantics"
+L00091 REJECTED TEXT="    blank_04_advance_access_timestamp," FIRST_USE=[] NUMBERS=["4"] GAP="no verified preceding-line derivation of code/API semantics"
+L00092 REJECTED TEXT="    blank_05_check_memory_access_in_range," FIRST_USE=[] NUMBERS=["5"] GAP="no verified preceding-line derivation of code/API semantics"
+L00093 REJECTED TEXT="    blank_06_count_spanned_cache_lines," FIRST_USE=[] NUMBERS=["6"] GAP="no verified preceding-line derivation of code/API semantics"
+L00094 REJECTED TEXT="    blank_07_count_total_cache_lines," FIRST_USE=[] NUMBERS=["7"] GAP="no verified preceding-line derivation of code/API semantics"
+L00095 REJECTED TEXT="    blank_08_copy_cache_tag," FIRST_USE=[] NUMBERS=["8"] GAP="no verified preceding-line derivation of code/API semantics"
+L00096 REJECTED TEXT="    blank_09_limit_way_index," FIRST_USE=[] NUMBERS=["9"] GAP="no verified preceding-line derivation of code/API semantics"
+L00097 REJECTED TEXT="    blank_10_measure_reuse_age_delta" FIRST_USE=[] NUMBERS=["0"] GAP="no verified preceding-line derivation of code/API semantics"
+L00098 STRUCTURE TEXT="    };" FIRST_USE=[] NUMBERS=[] GAP="punctuation only; prior declarations still need proof"
+L00099 REJECTED TEXT="    const struct trial samples[20] = {" FIRST_USE=["samples"] NUMBERS=["20"] GAP="no verified preceding-line derivation of code/API semantics"
+L00100 REJECTED TEXT="    {0, {{4660, 4096, 0, 0, 0, 0}}, 4096}," FIRST_USE=[] NUMBERS=["0", "4660", "4096"] GAP="no verified preceding-line derivation of code/API semantics"
+L00101 REJECTED TEXT="    {0, {{8192, 4096, 0, 0, 0, 0}}, 8192}," FIRST_USE=[] NUMBERS=["0", "8192", "4096"] GAP="no verified preceding-line derivation of code/API semantics"
+L00102 REJECTED TEXT="    {1, {{19, 16, 0, 0, 0, 0}}, 1}," FIRST_USE=[] NUMBERS=["1", "19", "16", "0"] GAP="no verified preceding-line derivation of code/API semantics"
+L00103 REJECTED TEXT="    {1, {{3, 16, 0, 0, 0, 0}}, 0}," FIRST_USE=[] NUMBERS=["1", "3", "16", "0"] GAP="no verified preceding-line derivation of code/API semantics"
+L00104 REJECTED TEXT="    {2, {{11, 3, 7, 0, 0, 0}}, 1}," FIRST_USE=[] NUMBERS=["2", "11", "3", "7", "0", "1"] GAP="no verified preceding-line derivation of code/API semantics"
+L00105 REJECTED TEXT="    {2, {{4, 8, 2, 0, 0, 0}}, 2}," FIRST_USE=[] NUMBERS=["2", "4", "8", "0"] GAP="no verified preceding-line derivation of code/API semantics"
+L00106 REJECTED TEXT="    {3, {{100, 7, 0, 0, 0, 0}}, 107}," FIRST_USE=[] NUMBERS=["3", "100", "7", "0", "107"] GAP="no verified preceding-line derivation of code/API semantics"
+L00107 REJECTED TEXT="    {3, {{2, 10, 0, 0, 0, 0}}, 12}," FIRST_USE=[] NUMBERS=["3", "2", "10", "0", "12"] GAP="no verified preceding-line derivation of code/API semantics"
+L00108 REJECTED TEXT="    {4, {{4096, 4096, 12288, 0, 0, 0}}, 1}," FIRST_USE=[] NUMBERS=["4", "4096", "12288", "0", "1"] GAP="no verified preceding-line derivation of code/API semantics"
+L00109 REJECTED TEXT="    {4, {{16384, 4096, 12288, 0, 0, 0}}, 0}," FIRST_USE=[] NUMBERS=["4", "16384", "4096", "12288", "0"] GAP="no verified preceding-line derivation of code/API semantics"
+L00110 REJECTED TEXT="    {5, {{4097, 4096, 0, 0, 0, 0}}, 2}," FIRST_USE=[] NUMBERS=["5", "4097", "4096", "0", "2"] GAP="no verified preceding-line derivation of code/API semantics"
+L00111 REJECTED TEXT="    {5, {{8192, 4096, 0, 0, 0, 0}}, 2}," FIRST_USE=[] NUMBERS=["5", "8192", "4096", "0", "2"] GAP="no verified preceding-line derivation of code/API semantics"
+L00112 REJECTED TEXT="    {6, {{64, 4, 0, 0, 0, 0}}, 256}," FIRST_USE=[] NUMBERS=["6", "64", "4", "0", "256"] GAP="no verified preceding-line derivation of code/API semantics"
+L00113 REJECTED TEXT="    {6, {{16, 8, 0, 0, 0, 0}}, 128}," FIRST_USE=[] NUMBERS=["6", "16", "8", "0", "128"] GAP="no verified preceding-line derivation of code/API semantics"
+L00114 REJECTED TEXT="    {7, {{47, 0, 0, 0, 0, 0}}, 47}," FIRST_USE=[] NUMBERS=["7", "47", "0"] GAP="no verified preceding-line derivation of code/API semantics"
+L00115 REJECTED TEXT="    {7, {{300, 0, 0, 0, 0, 0}}, 300}," FIRST_USE=[] NUMBERS=["7", "300", "0"] GAP="no verified preceding-line derivation of code/API semantics"
+L00116 REJECTED TEXT="    {8, {{3, 8, 0, 0, 0, 0}}, 3}," FIRST_USE=[] NUMBERS=["8", "3", "0"] GAP="no verified preceding-line derivation of code/API semantics"
+L00117 REJECTED TEXT="    {8, {{12, 7, 0, 0, 0, 0}}, 7}," FIRST_USE=[] NUMBERS=["8", "12", "7", "0"] GAP="no verified preceding-line derivation of code/API semantics"
+L00118 REJECTED TEXT="    {9, {{150, 100, 0, 0, 0, 0}}, 50}," FIRST_USE=[] NUMBERS=["9", "150", "100", "0", "50"] GAP="no verified preceding-line derivation of code/API semantics"
+L00119 REJECTED TEXT="    {9, {{180, 120, 0, 0, 0, 0}}, 60}," FIRST_USE=[] NUMBERS=["9", "180", "120", "0", "60"] GAP="no verified preceding-line derivation of code/API semantics"
+L00120 STRUCTURE TEXT="    };" FIRST_USE=[] NUMBERS=[] GAP="punctuation only; prior declarations still need proof"
+L00121 REJECTED TEXT="    unsigned pass = 0, blank = 0, fail = 0;" FIRST_USE=["pass", "blank", "fail"] NUMBERS=["0"] GAP="no verified preceding-line derivation of code/API semantics"
+L00122 REJECTED TEXT="    for (size_t i = 0; i < sizeof(samples)/sizeof(samples[0]); ++i) {" FIRST_USE=["for", "size_t", "i", "sizeof"] NUMBERS=["0"] GAP="no verified preceding-line derivation of code/API semantics"
+L00123 REJECTED TEXT="        const struct trial *p = &samples[i];" FIRST_USE=["p"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00124 REJECTED TEXT="        const int64_t actual = op[p->slot](&p->input);" FIRST_USE=["actual"] NUMBERS=["4"] GAP="no verified preceding-line derivation of code/API semantics"
+L00125 REJECTED TEXT="        const int missing = actual == INT64_MIN;" FIRST_USE=["missing"] NUMBERS=["4"] GAP="no verified preceding-line derivation of code/API semantics"
+L00126 REJECTED TEXT="        const int correct = !missing && actual == p->expected;" FIRST_USE=["correct"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00127 REJECTED TEXT="        if (missing) ++blank;" FIRST_USE=["if"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00128 REJECTED TEXT="        else if (correct) ++pass;" FIRST_USE=["else"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00129 REJECTED TEXT="        else ++fail;" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00130 REJECTED TEXT="        printf(\"slot=%02u input=[%\" PRId64 \",%\" PRId64 \",%\" PRId64 \",%\" PRId64 \",%\" PRId64 \",%\" PRId64 \"] actual=%\" PRId64 \" expected=%\" PRId64 \" %s\\n\"," FIRST_USE=["printf", "PRId64", "n"] NUMBERS=["02", "4"] GAP="no verified preceding-line derivation of code/API semantics"
+L00131 REJECTED TEXT="            p->slot + 1, p->input.value[0], p->input.value[1], p->input.value[2]," FIRST_USE=[] NUMBERS=["1", "0", "2"] GAP="no verified preceding-line derivation of code/API semantics"
+L00132 REJECTED TEXT="            p->input.value[3], p->input.value[4], p->input.value[5]," FIRST_USE=[] NUMBERS=["3", "4", "5"] GAP="no verified preceding-line derivation of code/API semantics"
+L00133 REJECTED TEXT="            actual, p->expected, missing ? \"BLANK\" : correct ? \"PASS\" : \"FAIL\");" FIRST_USE=["BLANK", "PASS", "FAIL"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00134 STRUCTURE TEXT="    }" FIRST_USE=[] NUMBERS=[] GAP="punctuation only; prior declarations still need proof"
+L00135 REJECTED TEXT="    printf(\"pass=%u blank=%u fail=%u\\n\", pass, blank, fail);" FIRST_USE=["u"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00136 REJECTED TEXT="    if (argc == 2 && strcmp(argv[1], \"--status\") == 0) return 0;" FIRST_USE=["strcmp"] NUMBERS=["2", "1", "0"] GAP="no verified preceding-line derivation of code/API semantics"
+L00137 REJECTED TEXT="    return (blank || fail) ? 1 : 0;" FIRST_USE=[] NUMBERS=["1", "0"] GAP="no verified preceding-line derivation of code/API semantics"
+L00138 STRUCTURE TEXT="}" FIRST_USE=[] NUMBERS=[] GAP="punctuation only; prior declarations still need proof"
+RESULT REJECTED: line-level axiomatic proof not established; flagged=103/138
+NEW THINGS INTRODUCED WITHOUT DERIVATION: ["Assignment", "BLANK", "Build", "CONSTRUCTED", "Do", "FAIL", "FILL", "INT64_MIN", "PASS", "PRId64", "The", "UNIMPLEMENTED", "_POSIX_C_SOURCE", "a", "actual", "advance_access_timestamp", "all", "alter", "an", "are", "argc", "argv", "blank", "blank_01_decode_block_base", "blank_02_test_line_valid", "blank_03_pick_oldest_lru_line", "blank_04_advance_access_timestamp", "blank_05_check_memory_access_in_range", "blank_06_count_spanned_cache_lines", "blank_07_count_total_cache_lines", "blank_08_copy_cache_tag", "blank_09_limit_way_index", "blank_10_measure_reuse_age_delta", "case", "causal", "char", "check", "check_memory_access_in_range", "completed", "const", "copy_cache_tag", "correct", "count_spanned_cache_lines", "count_total_cache_lines", "data", "decode_block_base", "define", "else", "expected", "fail", "failure", "fixtures", "for", "function", "h", "i", "if", "in", "include", "input", "int", "int64_t", "inttypes", "is", "kernel", "limit_way_index", "limits", "machine", "main", "make", "measure_reuse_age_delta", "measured", "missing", "n", "never", "not", "observe", "op", "operation", "original", "p", "pass", "pick_oldest_lru_line", "printf", "prove", "represents", "return", "s", "samples", "size_t", "sizeof", "slot", "specific", "state", "static", "status", "stdint", "stdio", "strcmp", "string", "struct", "student", "test_line_valid", "tests", "the", "trial", "twenty", "typedef", "u", "university", "unsigned", "upstream", "value", "void", "work", "worksheet"]
+NUMBERS WITHOUT VERIFIED DERIVATION: ["0", "02", "1", "10", "100", "107", "11", "12", "120", "12288", "128", "150", "16", "16384", "180", "19", "2", "20", "200809", "256", "3", "300", "4", "4096", "4097", "4660", "47", "5", "50", "6", "60", "64", "7", "8", "8192", "9"]
+LIMIT: first-use names are lexical candidates, not a complete semantic analysis.
+END_FILE
+
+FILE assignments/20-cmu-15213-cache-lab/src/trace_reader.c
+GIT_BLOB e967d8943b9a403ece9f71ecd768a26d072e48a7
+MODE 100644
+BYTES 1642
+SOURCE_LINES 35
+L00001 REJECTED TEXT="/* Valgrind lackey trace input parser; leaves LRU, hit/miss and eviction" FIRST_USE=["Valgrind", "lackey", "trace", "input", "parser", "leaves", "LRU", "hit", "miss", "and", "eviction"] NUMBERS=[] GAP="first line is not a proved axiom from counting"
+L00002 REJECTED TEXT=" * calculations for the student. Counts M as two data operations, ignores I." FIRST_USE=["calculations", "for", "the", "student", "Counts", "M", "as", "two", "data", "operations", "ignores", "I"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00003 REJECTED TEXT=" * Compiles under -std=c11 -Wall -Wextra -Werror -Wpedantic." FIRST_USE=["Compiles", "under", "std", "c11", "Wall", "Wextra", "Werror", "Wpedantic"] NUMBERS=["1"] GAP="no verified preceding-line derivation of code/API semantics"
+L00004 REJECTED TEXT=" */" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00005 REJECTED TEXT="#define _POSIX_C_SOURCE 200809L" FIRST_USE=["define", "_POSIX_C_SOURCE"] NUMBERS=["200809"] GAP="no verified preceding-line derivation of code/API semantics"
+L00006 REJECTED TEXT="#include <inttypes.h>" FIRST_USE=["include", "inttypes", "h"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00007 REJECTED TEXT="#include <stdint.h>" FIRST_USE=["stdint"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00008 REJECTED TEXT="#include <stdio.h>" FIRST_USE=["stdio"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00009 REJECTED TEXT="#include <stdlib.h>" FIRST_USE=["stdlib"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00010 REJECTED TEXT="#include <string.h>" FIRST_USE=["string"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00011 REJECTED TEXT="int main(int argc, char **argv) {" FIRST_USE=["int", "main", "argc", "char", "argv"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00012 REJECTED TEXT="    if (argc != 2) { fputs(\"usage: trace_reader tracefile\\n\", stderr); return 2; }" FIRST_USE=["if", "fputs", "usage", "trace_reader", "tracefile", "n", "stderr", "return"] NUMBERS=["2"] GAP="no verified preceding-line derivation of code/API semantics"
+L00013 REJECTED TEXT="    FILE *f = fopen(argv[1], \"r\");" FIRST_USE=["FILE", "f", "fopen", "r"] NUMBERS=["1"] GAP="no verified preceding-line derivation of code/API semantics"
+L00014 REJECTED TEXT="    if (!f) { perror(\"tracefile\"); return 2; }" FIRST_USE=["perror"] NUMBERS=["2"] GAP="no verified preceding-line derivation of code/API semantics"
+L00015 REJECTED TEXT="    char *line = NULL; size_t capacity = 0;" FIRST_USE=["line", "NULL", "size_t", "capacity"] NUMBERS=["0"] GAP="no verified preceding-line derivation of code/API semantics"
+L00016 REJECTED TEXT="    uint64_t instruction = 0, logical_accesses = 0, data_records = 0, bytes = 0;" FIRST_USE=["uint64_t", "instruction", "logical_accesses", "data_records", "bytes"] NUMBERS=["4", "0"] GAP="no verified preceding-line derivation of code/API semantics"
+L00017 REJECTED TEXT="    while (getline(&line, &capacity, f) >= 0) {" FIRST_USE=["while", "getline"] NUMBERS=["0"] GAP="no verified preceding-line derivation of code/API semantics"
+L00018 REJECTED TEXT="        char op = 0, extra = 0;" FIRST_USE=["op", "extra"] NUMBERS=["0"] GAP="no verified preceding-line derivation of code/API semantics"
+L00019 REJECTED TEXT="        unsigned long long address = 0;" FIRST_USE=["unsigned", "long", "address"] NUMBERS=["0"] GAP="no verified preceding-line derivation of code/API semantics"
+L00020 REJECTED TEXT="        unsigned length = 0;" FIRST_USE=["length"] NUMBERS=["0"] GAP="no verified preceding-line derivation of code/API semantics"
+L00021 REJECTED TEXT="        if (sscanf(line, \" %c %llx,%u %c\", &op, &address, &length, &extra) != 3 || length == 0) {" FIRST_USE=["sscanf", "c", "llx", "u"] NUMBERS=["3", "0"] GAP="no verified preceding-line derivation of code/API semantics"
+L00022 REJECTED TEXT="            fprintf(stderr, \"bad trace: %s\", line); free(line); fclose(f); return 2;" FIRST_USE=["fprintf", "bad", "s", "free", "fclose"] NUMBERS=["2"] GAP="no verified preceding-line derivation of code/API semantics"
+L00023 STRUCTURE TEXT="        }" FIRST_USE=[] NUMBERS=[] GAP="punctuation only; prior declarations still need proof"
+L00024 REJECTED TEXT="        (void)address;" FIRST_USE=["void"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00025 REJECTED TEXT="        if (op == 'I') { ++instruction; continue; }" FIRST_USE=["continue"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00026 REJECTED TEXT="        if (op != 'L' && op != 'S' && op != 'M') { fputs(\"unknown operation\\n\", stderr); free(line); fclose(f); return 2; }" FIRST_USE=["L", "S", "unknown", "operation"] NUMBERS=["2"] GAP="no verified preceding-line derivation of code/API semantics"
+L00027 REJECTED TEXT="        ++data_records;" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00028 REJECTED TEXT="        logical_accesses += (op == 'M' ? 2U : 1U);" FIRST_USE=[] NUMBERS=["2", "1"] GAP="no verified preceding-line derivation of code/API semantics"
+L00029 REJECTED TEXT="        bytes += length * (op == 'M' ? 2U : 1U);" FIRST_USE=[] NUMBERS=["2", "1"] GAP="no verified preceding-line derivation of code/API semantics"
+L00030 STRUCTURE TEXT="    }" FIRST_USE=[] NUMBERS=[] GAP="punctuation only; prior declarations still need proof"
+L00031 REJECTED TEXT="    free(line); fclose(f);" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00032 REJECTED TEXT="    printf(\"instruction=%\" PRIu64 \" data_records=%\" PRIu64 \" accesses=%\" PRIu64 \" access_bytes=%\" PRIu64 \"\\n\",instruction,data_records,logical_accesses,bytes);" FIRST_USE=["printf", "PRIu64", "accesses", "access_bytes"] NUMBERS=["4"] GAP="no verified preceding-line derivation of code/API semantics"
+L00033 REJECTED TEXT="    puts(\"No cache hits, misses or evictions calculated: LRU policy remains for the student.\");" FIRST_USE=["puts", "No", "cache", "hits", "misses", "or", "evictions", "calculated", "policy", "remains"] NUMBERS=[] GAP="no verified preceding-line derivation of code/API semantics"
+L00034 REJECTED TEXT="    return 0;" FIRST_USE=[] NUMBERS=["0"] GAP="no verified preceding-line derivation of code/API semantics"
+L00035 STRUCTURE TEXT="}" FIRST_USE=[] NUMBERS=[] GAP="punctuation only; prior declarations still need proof"
+RESULT REJECTED: line-level axiomatic proof not established; flagged=32/35
+NEW THINGS INTRODUCED WITHOUT DERIVATION: ["Compiles", "Counts", "FILE", "I", "L", "LRU", "M", "NULL", "No", "PRIu64", "S", "Valgrind", "Wall", "Werror", "Wextra", "Wpedantic", "_POSIX_C_SOURCE", "access_bytes", "accesses", "address", "and", "argc", "argv", "as", "bad", "bytes", "c", "c11", "cache", "calculated", "calculations", "capacity", "char", "continue", "data", "data_records", "define", "eviction", "evictions", "extra", "f", "fclose", "fopen", "for", "fprintf", "fputs", "free", "getline", "h", "hit", "hits", "if", "ignores", "include", "input", "instruction", "int", "inttypes", "lackey", "leaves", "length", "line", "llx", "logical_accesses", "long", "main", "miss", "misses", "n", "op", "operation", "operations", "or", "parser", "perror", "policy", "printf", "puts", "r", "remains", "return", "s", "size_t", "sscanf", "std", "stderr", "stdint", "stdio", "stdlib", "string", "student", "the", "trace", "trace_reader", "tracefile", "two", "u", "uint64_t", "under", "unknown", "unsigned", "usage", "void", "while"]
+NUMBERS WITHOUT VERIFIED DERIVATION: ["0", "1", "2", "200809", "3", "4"]
+LIMIT: first-use names are lexical candidates, not a complete semantic analysis.
+END_FILE
+
+FILE assignments/20-cmu-15213-cache-lab/visuals/01-cause.png
+GIT_BLOB 767e1c3bfdd8e3bf67b6e3161375f67503ee1cc9
+MODE 100644
+BYTES 261572
+RESULT UNVERIFIED_IMAGE
+WHY: PNG is binary, not a sequence of source-code lines.
+WHY: Image pixels, captions, geometry and factual accuracy were not inspected.
+NEW THINGS INTRODUCED WITHOUT DERIVATION: image content unknown
+END_FILE
+
+FILE assignments/20-cmu-15213-cache-lab/visuals/01-cause.svg
+GIT_BLOB b5f1baccdafbd783bc777127107d91f5e1183cf4
+MODE 100644
+BYTES 5675
+SOURCE_LINES 1
+L00001 REJECTED TEXT="<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"1500\" height=\"920\" viewBox=\"0 0 1500 920\"><defs><filter id=\"soft\" x=\"-30%\" y=\"-30%\" width=\"160%\" height=\"160%\"><feDropShadow dx=\"12\" dy=\"15\" stdDeviation=\"8\" flood-color=\"#514952\" flood-opacity=\".25\"/></filter><marker id=\"arr\" markerWidth=\"12\" markerHeight=\"12\" refX=\"8\" refY=\"5\" orient=\"auto\"><path d=\"M1 1 L9 5 L1 9 Z\" fill=\"#c69af2\" stroke=\"#36506a\" stroke-width=\".5\"/></marker><radialGradient id=\"paper\"><stop offset=\"0\" stop-color=\"#fffaf0\"/><stop offset=\"1\" stop-color=\"#ebdac8\"/></radialGradient><pattern id=\"pencil\" width=\"26\" height=\"26\" patternUnits=\"userSpaceOnUse\"><path d=\"M0 24 l24 -24\" stroke=\"#a38b82\" stroke-width=\".65\" stroke-opacity=\".10\"/><path d=\"M4 26 l22 -22\" stroke=\"#9d8b7d\" stroke-width=\".5\" stroke-opacity=\".11\"/></pattern></defs><rect width=\"1500\" height=\"920\" fill=\"url(#paper)\"/><rect width=\"1500\" height=\"920\" fill=\"url(#pencil)\"/><g filter=\"url(#soft)\"><path d=\"M82 260 l24 -24 h270 l-24 24 z\" fill=\"#c69af2\" opacity=\".8\" stroke=\"#404256\" stroke-width=\"3\"/><path d=\"M352 260 l24 -24 v160 l-24 24 z\" fill=\"#64617e\" opacity=\".55\" stroke=\"#404256\" stroke-width=\"3\"/><rect x=\"82\" y=\"260\" width=\"270\" height=\"160\" rx=\"13\" fill=\"#c69af2\" stroke=\"#3c4156\" stroke-width=\"4\"/><path d=\"M90 410 Q217 419 345 409\" fill=\"none\" stroke=\"#fff\" stroke-opacity=\".4\" stroke-width=\"5\"/><text x=\"217\" y=\"347\" text-anchor=\"middle\" fill=\"#222a40\" font-family=\"DejaVu Sans,Arial\" font-size=\"31\" font-weight=\"700\">trace address</text></g><g><path d=\"M362 340 C388.5 340,388.5 340,415 340\" fill=\"none\" stroke=\"#fffdf2\" stroke-width=\"15\" opacity=\".85\"/><path d=\"M362 340 C388.5 340,388.5 340,415 340\" fill=\"none\" stroke=\"#c69af2\" stroke-width=\"9\" stroke-linecap=\"round\" stroke-dasharray=\"none\" marker-end=\"url(#arr)\"/></g><g filter=\"url(#soft)\"><path d=\"M424 260 l24 -24 h270 l-24 24 z\" fill=\"#74dbbb\" opacity=\".8\" stroke=\"#404256\" stroke-width=\"3\"/><path d=\"M694 260 l24 -24 v160 l-24 24 z\" fill=\"#64617e\" opacity=\".55\" stroke=\"#404256\" stroke-width=\"3\"/><rect x=\"424\" y=\"260\" width=\"270\" height=\"160\" rx=\"13\" fill=\"#74dbbb\" stroke=\"#3c4156\" stroke-width=\"4\"/><path d=\"M432 410 Q559 419 687 409\" fill=\"none\" stroke=\"#fff\" stroke-opacity=\".4\" stroke-width=\"5\"/><text x=\"559\" y=\"347\" text-anchor=\"middle\" fill=\"#222a40\" font-family=\"DejaVu Sans,Arial\" font-size=\"31\" font-weight=\"700\">set lookup</text></g><g><path d=\"M704 340 C730.5 340,730.5 340,757 340\" fill=\"none\" stroke=\"#fffdf2\" stroke-width=\"15\" opacity=\".85\"/><path d=\"M704 340 C730.5 340,730.5 340,757 340\" fill=\"none\" stroke=\"#74dbbb\" stroke-width=\"9\" stroke-linecap=\"round\" stroke-dasharray=\"none\" marker-end=\"url(#arr)\"/></g><g filter=\"url(#soft)\"><path d=\"M766 260 l24 -24 h270 l-24 24 z\" fill=\"#f1ba68\" opacity=\".8\" stroke=\"#404256\" stroke-width=\"3\"/><path d=\"M1036 260 l24 -24 v160 l-24 24 z\" fill=\"#64617e\" opacity=\".55\" stroke=\"#404256\" stroke-width=\"3\"/><rect x=\"766\" y=\"260\" width=\"270\" height=\"160\" rx=\"13\" fill=\"#f1ba68\" stroke=\"#3c4156\" stroke-width=\"4\"/><path d=\"M774 410 Q901 419 1029 409\" fill=\"none\" stroke=\"#fff\" stroke-opacity=\".4\" stroke-width=\"5\"/><text x=\"901\" y=\"347\" text-anchor=\"middle\" fill=\"#222a40\" font-family=\"DejaVu Sans,Arial\" font-size=\"31\" font-weight=\"700\">tag match</text></g><g><path d=\"M1046 340 C1072.5 340,1072.5 340,1099 340\" fill=\"none\" stroke=\"#fffdf2\" stroke-width=\"15\" opacity=\".85\"/><path d=\"M1046 340 C1072.5 340,1072.5 340,1099 340\" fill=\"none\" stroke=\"#f1ba68\" stroke-width=\"9\" stroke-linecap=\"round\" stroke-dasharray=\"none\" marker-end=\"url(#arr)\"/></g><g filter=\"url(#soft)\"><path d=\"M1108 260 l24 -24 h270 l-24 24 z\" fill=\"#75c6f9\" opacity=\".8\" stroke=\"#404256\" stroke-width=\"3\"/><path d=\"M1378 260 l24 -24 v160 l-24 24 z\" fill=\"#64617e\" opacity=\".55\" stroke=\"#404256\" stroke-width=\"3\"/><rect x=\"1108\" y=\"260\" width=\"270\" height=\"160\" rx=\"13\" fill=\"#75c6f9\" stroke=\"#3c4156\" stroke-width=\"4\"/><path d=\"M1116 410 Q1243 419 1371 409\" fill=\"none\" stroke=\"#fff\" stroke-opacity=\".4\" stroke-width=\"5\"/><text x=\"1243\" y=\"347\" text-anchor=\"middle\" fill=\"#222a40\" font-family=\"DejaVu Sans,Arial\" font-size=\"31\" font-weight=\"700\">LRU</text></g><circle cx=\"221\" cy=\"646\" r=\"45\" fill=\"#494756\" opacity=\".25\"/><circle cx=\"212\" cy=\"635\" r=\"42\" fill=\"#c69af2\" stroke=\"#414451\" stroke-width=\"4\"/><ellipse cx=\"198\" cy=\"621\" rx=\"14\" ry=\"7\" fill=\"#fff\" opacity=\".75\"/><circle cx=\"563\" cy=\"646\" r=\"45\" fill=\"#494756\" opacity=\".25\"/><circle cx=\"554\" cy=\"635\" r=\"42\" fill=\"#74dbbb\" stroke=\"#414451\" stroke-width=\"4\"/><ellipse cx=\"540\" cy=\"621\" rx=\"14\" ry=\"7\" fill=\"#fff\" opacity=\".75\"/><circle cx=\"905\" cy=\"646\" r=\"45\" fill=\"#494756\" opacity=\".25\"/><circle cx=\"896\" cy=\"635\" r=\"42\" fill=\"#f1ba68\" stroke=\"#414451\" stroke-width=\"4\"/><ellipse cx=\"882\" cy=\"621\" rx=\"14\" ry=\"7\" fill=\"#fff\" opacity=\".75\"/><circle cx=\"1247\" cy=\"646\" r=\"45\" fill=\"#494756\" opacity=\".25\"/><circle cx=\"1238\" cy=\"635\" r=\"42\" fill=\"#75c6f9\" stroke=\"#414451\" stroke-width=\"4\"/><ellipse cx=\"1224\" cy=\"621\" rx=\"14\" ry=\"7\" fill=\"#fff\" opacity=\".75\"/><g><path d=\"M215 573 C215 573,215 420,215 420\" fill=\"none\" stroke=\"#fffdf2\" stroke-width=\"15\" opacity=\".85\"/><path d=\"M215 573 C215 573,215 420,215 420\" fill=\"none\" stroke=\"#c69af2\" stroke-width=\"9\" stroke-linecap=\"round\" stroke-dasharray=\"none\" marker-end=\"url(#arr)\"/></g><g><path d=\"M1224 440 C1224 440,1224 575,1224 575\" fill=\"none\" stroke=\"#fffdf2\" stroke-width=\"15\" opacity=\".85\"/><path d=\"M1224 440 C1224 440,1224 575,1224 575\" fill=\"none\" stroke=\"#75c6f9\" stroke-width=\"9\" stroke-linecap=\"round\" stroke-dasharray=\"none\" marker-end=\"url(#arr)\"/></g><path d=\"M350 690 C570 780 895 780 1120 690\" fill=\"none\" stroke=\"#9b62a4\" stroke-width=\"10\" stroke-linecap=\"round\" stroke-dasharray=\"16 18\" opacity=\".5\"/></svg>" FIRST_USE=["svg", "xmlns", "http", "www", "w3", "org", "width", "height", "viewBox", "defs", "filter", "id", "soft", "x", "y", "feDropShadow", "dx", "dy", "stdDeviation", "flood", "color", "opacity", "marker", "arr", "markerWidth", "markerHeight", "refX", "refY", "orient", "auto", "path", "d", "M1", "L9", "L1", "Z", "fill", "c69af2", "stroke", "radialGradient", "paper", "stop", "offset", "fffaf0", "ebdac8", "pattern", "pencil", "patternUnits", "userSpaceOnUse", "M0", "l24", "a38b82", "M4", "l22", "rect", "url", "g", "M82", "h270", "l", "z", "M352", "v160", "rx", "M90", "Q217", "none", "fff", "text", "anchor", "middle", "font", "family", "DejaVu", "Sans", "Arial", "size", "weight", "trace", "address", "M362", "C388", "fffdf2", "linecap", "round", "dasharray", "end", "M424", "M694", "M432", "Q559", "set", "lookup", "M704", "C730", "M766", "f1ba68", "M1036", "M774", "Q901", "tag", "match", "M1046", "C1072", "M1108", "M1378", "M1116", "Q1243", "LRU", "circle", "cx", "cy", "r", "ellipse", "ry", "M215", "C215", "M1224", "C1224", "M350", "C570"] NUMBERS=["2000", "1500", "920", "0", "30", "160", "12", "15", "8", "514952", "25", "5", "1", "9", "36506", "26", "24", "4", "2", "65", "10", "22", "11", "260", "70", "404256", "3", "52", "60", "64617", "55", "82", "270", "13", "156", "410", "17", "419", "345", "409", "217", "347", "222", "31", "700", "62", "340", "88.5", "388.5", "415", "85", "74", "94", "424", "32", "59", "687", "559", "04", "30.5", "730.5", "757", "66", "036", "766", "01", "1029", "901", "046", "072.5", "1072.5", "1099", "108", "75", "378", "1108", "116", "243", "1371", "1243", "221", "646", "45", "494756", "212", "635", "42", "414451", "198", "621", "14", "7", "563", "554", "540", "905", "896", "882", "1247", "1238", "1224", "573", "215", "420", "224", "440", "575", "50", "690", "780", "895", "1120", "16", "18"] GAP="first line is not a proved axiom from counting"
+RESULT REJECTED: line-level axiomatic proof not established; flagged=1/1
+NEW THINGS INTRODUCED WITHOUT DERIVATION: ["Arial", "C1072", "C1224", "C215", "C388", "C570", "C730", "DejaVu", "L1", "L9", "LRU", "M0", "M1", "M1036", "M1046", "M1108", "M1116", "M1224", "M1378", "M215", "M350", "M352", "M362", "M4", "M424", "M432", "M694", "M704", "M766", "M774", "M82", "M90", "Q1243", "Q217", "Q559", "Q901", "Sans", "Z", "a38b82", "address", "anchor", "arr", "auto", "c69af2", "circle", "color", "cx", "cy", "d", "dasharray", "defs", "dx", "dy", "ebdac8", "ellipse", "end", "f1ba68", "family", "feDropShadow", "fff", "fffaf0", "fffdf2", "fill", "filter", "flood", "font", "g", "h270", "height", "http", "id", "l", "l22", "l24", "linecap", "lookup", "marker", "markerHeight", "markerWidth", "match", "middle", "none", "offset", "opacity", "org", "orient", "paper", "path", "pattern", "patternUnits", "pencil", "r", "radialGradient", "rect", "refX", "refY", "round", "rx", "ry", "set", "size", "soft", "stdDeviation", "stop", "stroke", "svg", "tag", "text", "trace", "url", "userSpaceOnUse", "v160", "viewBox", "w3", "weight", "width", "www", "x", "xmlns", "y", "z"]
+NUMBERS WITHOUT VERIFIED DERIVATION: ["0", "01", "036", "04", "046", "072.5", "1", "10", "1029", "1072.5", "108", "1099", "11", "1108", "1120", "116", "12", "1224", "1238", "1243", "1247", "13", "1371", "14", "15", "1500", "156", "16", "160", "17", "18", "198", "2", "2000", "212", "215", "217", "22", "221", "222", "224", "24", "243", "25", "26", "260", "270", "3", "30", "30.5", "31", "32", "340", "345", "347", "36506", "378", "388.5", "4", "404256", "409", "410", "414451", "415", "419", "42", "420", "424", "440", "45", "494756", "5", "50", "514952", "52", "540", "55", "554", "559", "563", "573", "575", "59", "60", "62", "621", "635", "646", "64617", "65", "66", "687", "690", "7", "70", "700", "730.5", "74", "75", "757", "766", "780", "8", "82", "85", "88.5", "882", "895", "896", "9", "901", "905", "920", "94"]
+LIMIT: first-use names are lexical candidates, not a complete semantic analysis.
+END_FILE
+
+FILE assignments/20-cmu-15213-cache-lab/visuals/02-data.png
+GIT_BLOB e9c194193c24b6aea341ce0d3d57dc6e02468690
+MODE 100644
+BYTES 257823
+RESULT UNVERIFIED_IMAGE
+WHY: PNG is binary, not a sequence of source-code lines.
+WHY: Image pixels, captions, geometry and factual accuracy were not inspected.
+NEW THINGS INTRODUCED WITHOUT DERIVATION: image content unknown
+END_FILE
+
+FILE assignments/20-cmu-15213-cache-lab/visuals/02-data.svg
+GIT_BLOB 23323bbd96970d78985a68fbe117720ca1668a40
+MODE 100644
+BYTES 6994
+SOURCE_LINES 1
+L00001 REJECTED TEXT="<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"1500\" height=\"920\" viewBox=\"0 0 1500 920\"><defs><filter id=\"soft\" x=\"-30%\" y=\"-30%\" width=\"160%\" height=\"160%\"><feDropShadow dx=\"12\" dy=\"15\" stdDeviation=\"8\" flood-color=\"#514952\" flood-opacity=\".25\"/></filter><marker id=\"arr\" markerWidth=\"12\" markerHeight=\"12\" refX=\"8\" refY=\"5\" orient=\"auto\"><path d=\"M1 1 L9 5 L1 9 Z\" fill=\"#65cbe3\" stroke=\"#36506a\" stroke-width=\".5\"/></marker><radialGradient id=\"paper\"><stop offset=\"0\" stop-color=\"#fffaf0\"/><stop offset=\"1\" stop-color=\"#ebdac8\"/></radialGradient><pattern id=\"pencil\" width=\"26\" height=\"26\" patternUnits=\"userSpaceOnUse\"><path d=\"M0 24 l24 -24\" stroke=\"#a38b82\" stroke-width=\".65\" stroke-opacity=\".10\"/><path d=\"M4 26 l22 -22\" stroke=\"#9d8b7d\" stroke-width=\".5\" stroke-opacity=\".11\"/></pattern></defs><rect width=\"1500\" height=\"920\" fill=\"url(#paper)\"/><rect width=\"1500\" height=\"920\" fill=\"url(#pencil)\"/><g filter=\"url(#soft)\"><path d=\"M170 128 l26 -26 h392 l-26 26 z\" fill=\"#b5a8e8\" stroke=\"#4b4a64\" stroke-width=\"3\"/><path d=\"M562 128 l26 -26 v640 l-26 26 z\" fill=\"#787ca0\" stroke=\"#4b4a64\" stroke-width=\"3\"/></g><g filter=\"url(#soft)\"><path d=\"M170 128 l24 -24 h390 l-24 24 z\" fill=\"#65cbe3\" opacity=\".8\" stroke=\"#404256\" stroke-width=\"3\"/><path d=\"M560 128 l24 -24 v119 l-24 24 z\" fill=\"#64617e\" opacity=\".55\" stroke=\"#404256\" stroke-width=\"3\"/><rect x=\"170\" y=\"128\" width=\"390\" height=\"119\" rx=\"13\" fill=\"#65cbe3\" stroke=\"#3c4156\" stroke-width=\"4\"/><path d=\"M178 237 Q365 246 553 236\" fill=\"none\" stroke=\"#fff\" stroke-opacity=\".4\" stroke-width=\"5\"/><text x=\"365\" y=\"194.5\" text-anchor=\"middle\" fill=\"#222a40\" font-family=\"DejaVu Sans,Arial\" font-size=\"31\" font-weight=\"700\">cache.set</text></g><g filter=\"url(#soft)\"><path d=\"M882 132 l24 -24 h380 l-24 24 z\" fill=\"#ffb45d\" opacity=\".8\" stroke=\"#404256\" stroke-width=\"3\"/><path d=\"M1262 132 l24 -24 v112 l-24 24 z\" fill=\"#64617e\" opacity=\".55\" stroke=\"#404256\" stroke-width=\"3\"/><rect x=\"882\" y=\"132\" width=\"380\" height=\"112\" rx=\"13\" fill=\"#ffb45d\" stroke=\"#3c4156\" stroke-width=\"4\"/><path d=\"M890 234 Q1072 243 1255 233\" fill=\"none\" stroke=\"#fff\" stroke-opacity=\".4\" stroke-width=\"5\"/><text x=\"1072\" y=\"195\" text-anchor=\"middle\" fill=\"#222a40\" font-family=\"DejaVu Sans,Arial\" font-size=\"31\" font-weight=\"700\">owner</text></g><g><path d=\"M574 183 C720 183,720 183,866 183\" fill=\"none\" stroke=\"#fffdf2\" stroke-width=\"15\" opacity=\".85\"/><path d=\"M574 183 C720 183,720 183,866 183\" fill=\"none\" stroke=\"#65cbe3\" stroke-width=\"9\" stroke-linecap=\"round\" stroke-dasharray=\"none\" marker-end=\"url(#arr)\"/></g><g filter=\"url(#soft)\"><path d=\"M170 286 l24 -24 h390 l-24 24 z\" fill=\"#ffb45d\" opacity=\".8\" stroke=\"#404256\" stroke-width=\"3\"/><path d=\"M560 286 l24 -24 v119 l-24 24 z\" fill=\"#64617e\" opacity=\".55\" stroke=\"#404256\" stroke-width=\"3\"/><rect x=\"170\" y=\"286\" width=\"390\" height=\"119\" rx=\"13\" fill=\"#ffb45d\" stroke=\"#3c4156\" stroke-width=\"4\"/><path d=\"M178 395 Q365 404 553 394\" fill=\"none\" stroke=\"#fff\" stroke-opacity=\".4\" stroke-width=\"5\"/><text x=\"365\" y=\"352.5\" text-anchor=\"middle\" fill=\"#222a40\" font-family=\"DejaVu Sans,Arial\" font-size=\"31\" font-weight=\"700\">line.valid</text></g><g filter=\"url(#soft)\"><path d=\"M882 290 l24 -24 h380 l-24 24 z\" fill=\"#ad8fe9\" opacity=\".8\" stroke=\"#404256\" stroke-width=\"3\"/><path d=\"M1262 290 l24 -24 v112 l-24 24 z\" fill=\"#64617e\" opacity=\".55\" stroke=\"#404256\" stroke-width=\"3\"/><rect x=\"882\" y=\"290\" width=\"380\" height=\"112\" rx=\"13\" fill=\"#ad8fe9\" stroke=\"#3c4156\" stroke-width=\"4\"/><path d=\"M890 392 Q1072 401 1255 391\" fill=\"none\" stroke=\"#fff\" stroke-opacity=\".4\" stroke-width=\"5\"/><text x=\"1072\" y=\"353\" text-anchor=\"middle\" fill=\"#222a40\" font-family=\"DejaVu Sans,Arial\" font-size=\"31\" font-weight=\"700\">selection</text></g><g><path d=\"M574 341 C720 341,720 341,866 341\" fill=\"none\" stroke=\"#fffdf2\" stroke-width=\"15\" opacity=\".85\"/><path d=\"M574 341 C720 341,720 341,866 341\" fill=\"none\" stroke=\"#ffb45d\" stroke-width=\"9\" stroke-linecap=\"round\" stroke-dasharray=\"none\" marker-end=\"url(#arr)\"/></g><g filter=\"url(#soft)\"><path d=\"M170 444 l24 -24 h390 l-24 24 z\" fill=\"#ad8fe9\" opacity=\".8\" stroke=\"#404256\" stroke-width=\"3\"/><path d=\"M560 444 l24 -24 v119 l-24 24 z\" fill=\"#64617e\" opacity=\".55\" stroke=\"#404256\" stroke-width=\"3\"/><rect x=\"170\" y=\"444\" width=\"390\" height=\"119\" rx=\"13\" fill=\"#ad8fe9\" stroke=\"#3c4156\" stroke-width=\"4\"/><path d=\"M178 553 Q365 562 553 552\" fill=\"none\" stroke=\"#fff\" stroke-opacity=\".4\" stroke-width=\"5\"/><text x=\"365\" y=\"510.5\" text-anchor=\"middle\" fill=\"#222a40\" font-family=\"DejaVu Sans,Arial\" font-size=\"31\" font-weight=\"700\">line.tag</text></g><g filter=\"url(#soft)\"><path d=\"M882 448 l24 -24 h380 l-24 24 z\" fill=\"#66d59f\" opacity=\".8\" stroke=\"#404256\" stroke-width=\"3\"/><path d=\"M1262 448 l24 -24 v112 l-24 24 z\" fill=\"#64617e\" opacity=\".55\" stroke=\"#404256\" stroke-width=\"3\"/><rect x=\"882\" y=\"448\" width=\"380\" height=\"112\" rx=\"13\" fill=\"#66d59f\" stroke=\"#3c4156\" stroke-width=\"4\"/><path d=\"M890 550 Q1072 559 1255 549\" fill=\"none\" stroke=\"#fff\" stroke-opacity=\".4\" stroke-width=\"5\"/><text x=\"1072\" y=\"511\" text-anchor=\"middle\" fill=\"#222a40\" font-family=\"DejaVu Sans,Arial\" font-size=\"31\" font-weight=\"700\">state change</text></g><g><path d=\"M574 499 C720 499,720 499,866 499\" fill=\"none\" stroke=\"#fffdf2\" stroke-width=\"15\" opacity=\".85\"/><path d=\"M574 499 C720 499,720 499,866 499\" fill=\"none\" stroke=\"#ad8fe9\" stroke-width=\"9\" stroke-linecap=\"round\" stroke-dasharray=\"none\" marker-end=\"url(#arr)\"/></g><g filter=\"url(#soft)\"><path d=\"M170 602 l24 -24 h390 l-24 24 z\" fill=\"#66d59f\" opacity=\".8\" stroke=\"#404256\" stroke-width=\"3\"/><path d=\"M560 602 l24 -24 v119 l-24 24 z\" fill=\"#64617e\" opacity=\".55\" stroke=\"#404256\" stroke-width=\"3\"/><rect x=\"170\" y=\"602\" width=\"390\" height=\"119\" rx=\"13\" fill=\"#66d59f\" stroke=\"#3c4156\" stroke-width=\"4\"/><path d=\"M178 711 Q365 720 553 710\" fill=\"none\" stroke=\"#fff\" stroke-opacity=\".4\" stroke-width=\"5\"/><text x=\"365\" y=\"668.5\" text-anchor=\"middle\" fill=\"#222a40\" font-family=\"DejaVu Sans,Arial\" font-size=\"31\" font-weight=\"700\">line.age</text></g><g filter=\"url(#soft)\"><path d=\"M882 606 l24 -24 h380 l-24 24 z\" fill=\"#65cbe3\" opacity=\".8\" stroke=\"#404256\" stroke-width=\"3\"/><path d=\"M1262 606 l24 -24 v112 l-24 24 z\" fill=\"#64617e\" opacity=\".55\" stroke=\"#404256\" stroke-width=\"3\"/><rect x=\"882\" y=\"606\" width=\"380\" height=\"112\" rx=\"13\" fill=\"#65cbe3\" stroke=\"#3c4156\" stroke-width=\"4\"/><path d=\"M890 708 Q1072 717 1255 707\" fill=\"none\" stroke=\"#fff\" stroke-opacity=\".4\" stroke-width=\"5\"/><text x=\"1072\" y=\"669\" text-anchor=\"middle\" fill=\"#222a40\" font-family=\"DejaVu Sans,Arial\" font-size=\"31\" font-weight=\"700\">evidence</text></g><g><path d=\"M574 657 C720 657,720 657,866 657\" fill=\"none\" stroke=\"#fffdf2\" stroke-width=\"15\" opacity=\".85\"/><path d=\"M574 657 C720 657,720 657,866 657\" fill=\"none\" stroke=\"#66d59f\" stroke-width=\"9\" stroke-linecap=\"round\" stroke-dasharray=\"none\" marker-end=\"url(#arr)\"/></g><path d=\"M130 120 v655 M125 775 h20\" stroke=\"#2b5d80\" stroke-width=\"6\" stroke-linecap=\"round\"/></svg>" FIRST_USE=["svg", "xmlns", "http", "www", "w3", "org", "width", "height", "viewBox", "defs", "filter", "id", "soft", "x", "y", "feDropShadow", "dx", "dy", "stdDeviation", "flood", "color", "opacity", "marker", "arr", "markerWidth", "markerHeight", "refX", "refY", "orient", "auto", "path", "d", "M1", "L9", "L1", "Z", "fill", "stroke", "radialGradient", "paper", "stop", "offset", "fffaf0", "ebdac8", "pattern", "pencil", "patternUnits", "userSpaceOnUse", "M0", "l24", "a38b82", "M4", "l22", "rect", "url", "g", "M170", "l26", "h392", "l", "z", "b5a8e8", "M562", "v640", "h390", "M560", "v119", "rx", "M178", "Q365", "none", "fff", "text", "anchor", "middle", "font", "family", "DejaVu", "Sans", "Arial", "size", "weight", "cache", "set", "M882", "h380", "ffb45d", "M1262", "v112", "M890", "Q1072", "owner", "M574", "C720", "fffdf2", "linecap", "round", "dasharray", "end", "line", "valid", "ad8fe9", "selection", "tag", "state", "change", "age", "evidence", "M130", "v655", "M125", "h20"] NUMBERS=["2000", "1500", "920", "0", "30", "160", "12", "15", "8", "514952", "25", "5", "1", "9", "65", "36506", "26", "24", "4", "2", "10", "22", "11", "70", "128", "6", "92", "3", "62", "40", "787", "90", "404256", "60", "19", "64617", "55", "170", "390", "119", "13", "156", "78", "237", "246", "553", "236", "365", "194.5", "222", "31", "700", "82", "132", "80", "262", "882", "380", "112", "234", "072", "243", "1255", "233", "1072", "195", "74", "183", "20", "720", "866", "85", "286", "395", "404", "394", "352.5", "290", "392", "401", "391", "353", "341", "444", "562", "552", "510.5", "448", "66", "550", "559", "549", "511", "499", "602", "711", "710", "668.5", "606", "708", "717", "707", "669", "657", "120", "775"] GAP="first line is not a proved axiom from counting"
+RESULT REJECTED: line-level axiomatic proof not established; flagged=1/1
+NEW THINGS INTRODUCED WITHOUT DERIVATION: ["Arial", "C720", "DejaVu", "L1", "L9", "M0", "M1", "M125", "M1262", "M130", "M170", "M178", "M4", "M560", "M562", "M574", "M882", "M890", "Q1072", "Q365", "Sans", "Z", "a38b82", "ad8fe9", "age", "anchor", "arr", "auto", "b5a8e8", "cache", "change", "color", "d", "dasharray", "defs", "dx", "dy", "ebdac8", "end", "evidence", "family", "feDropShadow", "ffb45d", "fff", "fffaf0", "fffdf2", "fill", "filter", "flood", "font", "g", "h20", "h380", "h390", "h392", "height", "http", "id", "l", "l22", "l24", "l26", "line", "linecap", "marker", "markerHeight", "markerWidth", "middle", "none", "offset", "opacity", "org", "orient", "owner", "paper", "path", "pattern", "patternUnits", "pencil", "radialGradient", "rect", "refX", "refY", "round", "rx", "selection", "set", "size", "soft", "state", "stdDeviation", "stop", "stroke", "svg", "tag", "text", "url", "userSpaceOnUse", "v112", "v119", "v640", "v655", "valid", "viewBox", "w3", "weight", "width", "www", "x", "xmlns", "y", "z"]
+NUMBERS WITHOUT VERIFIED DERIVATION: ["0", "072", "1", "10", "1072", "11", "112", "119", "12", "120", "1255", "128", "13", "132", "15", "1500", "156", "160", "170", "183", "19", "194.5", "195", "2", "20", "2000", "22", "222", "233", "234", "236", "237", "24", "243", "246", "25", "26", "262", "286", "290", "3", "30", "31", "341", "352.5", "353", "365", "36506", "380", "390", "391", "392", "394", "395", "4", "40", "401", "404", "404256", "444", "448", "499", "5", "510.5", "511", "514952", "549", "55", "550", "552", "553", "559", "562", "6", "60", "602", "606", "62", "64617", "65", "657", "66", "668.5", "669", "70", "700", "707", "708", "710", "711", "717", "720", "74", "775", "78", "787", "8", "80", "82", "85", "866", "882", "9", "90", "92", "920"]
+LIMIT: first-use names are lexical candidates, not a complete semantic analysis.
+END_FILE
+
+FILE assignments/20-cmu-15213-cache-lab/visuals/03-correction.png
+GIT_BLOB 6749a83579bd22a15c28afbaf84639fd2c334a24
+MODE 100644
+BYTES 248480
+RESULT UNVERIFIED_IMAGE
+WHY: PNG is binary, not a sequence of source-code lines.
+WHY: Image pixels, captions, geometry and factual accuracy were not inspected.
+NEW THINGS INTRODUCED WITHOUT DERIVATION: image content unknown
+END_FILE
+
+FILE assignments/20-cmu-15213-cache-lab/visuals/03-correction.svg
+GIT_BLOB 23473dcb56df5ce436fd45e928112d131d2e39b1
+MODE 100644
+BYTES 4350
+SOURCE_LINES 1
+L00001 REJECTED TEXT="<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"1500\" height=\"920\" viewBox=\"0 0 1500 920\"><defs><filter id=\"soft\" x=\"-30%\" y=\"-30%\" width=\"160%\" height=\"160%\"><feDropShadow dx=\"12\" dy=\"15\" stdDeviation=\"8\" flood-color=\"#514952\" flood-opacity=\".25\"/></filter><marker id=\"arr\" markerWidth=\"12\" markerHeight=\"12\" refX=\"8\" refY=\"5\" orient=\"auto\"><path d=\"M1 1 L9 5 L1 9 Z\" fill=\"#ff8e92\" stroke=\"#36506a\" stroke-width=\".5\"/></marker><radialGradient id=\"paper\"><stop offset=\"0\" stop-color=\"#fffaf0\"/><stop offset=\"1\" stop-color=\"#ebdac8\"/></radialGradient><pattern id=\"pencil\" width=\"26\" height=\"26\" patternUnits=\"userSpaceOnUse\"><path d=\"M0 24 l24 -24\" stroke=\"#a38b82\" stroke-width=\".65\" stroke-opacity=\".10\"/><path d=\"M4 26 l22 -22\" stroke=\"#9d8b7d\" stroke-width=\".5\" stroke-opacity=\".11\"/></pattern></defs><rect width=\"1500\" height=\"920\" fill=\"url(#paper)\"/><rect width=\"1500\" height=\"920\" fill=\"url(#pencil)\"/><g filter=\"url(#soft)\"><path d=\"M130 185 l24 -24 h330 l-24 24 z\" fill=\"#f3a2a2\" opacity=\".8\" stroke=\"#404256\" stroke-width=\"3\"/><path d=\"M460 185 l24 -24 v150 l-24 24 z\" fill=\"#64617e\" opacity=\".55\" stroke=\"#404256\" stroke-width=\"3\"/><rect x=\"130\" y=\"185\" width=\"330\" height=\"150\" rx=\"13\" fill=\"#f3a2a2\" stroke=\"#3c4156\" stroke-width=\"4\"/><path d=\"M138 325 Q295 334 453 324\" fill=\"none\" stroke=\"#fff\" stroke-opacity=\".4\" stroke-width=\"5\"/><text x=\"295\" y=\"267\" text-anchor=\"middle\" fill=\"#222a40\" font-family=\"DejaVu Sans,Arial\" font-size=\"31\" font-weight=\"700\">access sample</text></g><g filter=\"url(#soft)\"><path d=\"M570 185 l24 -24 h330 l-24 24 z\" fill=\"#efc28b\" opacity=\".8\" stroke=\"#404256\" stroke-width=\"3\"/><path d=\"M900 185 l24 -24 v150 l-24 24 z\" fill=\"#64617e\" opacity=\".55\" stroke=\"#404256\" stroke-width=\"3\"/><rect x=\"570\" y=\"185\" width=\"330\" height=\"150\" rx=\"13\" fill=\"#efc28b\" stroke=\"#3c4156\" stroke-width=\"4\"/><path d=\"M578 325 Q735 334 893 324\" fill=\"none\" stroke=\"#fff\" stroke-opacity=\".4\" stroke-width=\"5\"/><text x=\"735\" y=\"267\" text-anchor=\"middle\" fill=\"#222a40\" font-family=\"DejaVu Sans,Arial\" font-size=\"31\" font-weight=\"700\">reuse broken</text></g><g><path d=\"M474 258 C512 258,512 258,550 258\" fill=\"none\" stroke=\"#fffdf2\" stroke-width=\"15\" opacity=\".85\"/><path d=\"M474 258 C512 258,512 258,550 258\" fill=\"none\" stroke=\"#cf5a50\" stroke-width=\"9\" stroke-linecap=\"round\" stroke-dasharray=\"17 12\" marker-end=\"url(#arr)\"/></g><g transform=\"translate(985,208)\" stroke=\"#c84a4a\" stroke-width=\"18\" stroke-linecap=\"round\"><path d=\"M0 0 L78 78 M78 0 L0 78\"/></g><g filter=\"url(#soft)\"><path d=\"M130 560 l24 -24 h330 l-24 24 z\" fill=\"#87d8b7\" opacity=\".8\" stroke=\"#404256\" stroke-width=\"3\"/><path d=\"M460 560 l24 -24 v150 l-24 24 z\" fill=\"#64617e\" opacity=\".55\" stroke=\"#404256\" stroke-width=\"3\"/><rect x=\"130\" y=\"560\" width=\"330\" height=\"150\" rx=\"13\" fill=\"#87d8b7\" stroke=\"#3c4156\" stroke-width=\"4\"/><path d=\"M138 700 Q295 709 453 699\" fill=\"none\" stroke=\"#fff\" stroke-opacity=\".4\" stroke-width=\"5\"/><text x=\"295\" y=\"642\" text-anchor=\"middle\" fill=\"#222a40\" font-family=\"DejaVu Sans,Arial\" font-size=\"31\" font-weight=\"700\">block sampling</text></g><g filter=\"url(#soft)\"><path d=\"M570 560 l24 -24 h330 l-24 24 z\" fill=\"#78bde6\" opacity=\".8\" stroke=\"#404256\" stroke-width=\"3\"/><path d=\"M900 560 l24 -24 v150 l-24 24 z\" fill=\"#64617e\" opacity=\".55\" stroke=\"#404256\" stroke-width=\"3\"/><rect x=\"570\" y=\"560\" width=\"330\" height=\"150\" rx=\"13\" fill=\"#78bde6\" stroke=\"#3c4156\" stroke-width=\"4\"/><path d=\"M578 700 Q735 709 893 699\" fill=\"none\" stroke=\"#fff\" stroke-opacity=\".4\" stroke-width=\"5\"/><text x=\"735\" y=\"642\" text-anchor=\"middle\" fill=\"#222a40\" font-family=\"DejaVu Sans,Arial\" font-size=\"31\" font-weight=\"700\">reuse preserved</text></g><g><path d=\"M475 633 C513.5 633,513.5 633,552 633\" fill=\"none\" stroke=\"#fffdf2\" stroke-width=\"15\" opacity=\".85\"/><path d=\"M475 633 C513.5 633,513.5 633,552 633\" fill=\"none\" stroke=\"#32a778\" stroke-width=\"9\" stroke-linecap=\"round\" stroke-dasharray=\"none\" marker-end=\"url(#arr)\"/></g><g transform=\"translate(985,590)\" stroke=\"#339c65\" stroke-width=\"16\" stroke-linecap=\"round\"><path d=\"M0 40 L32 70 L102 4\"/></g><g><path d=\"M300 364 C300 364,300 524,300 524\" fill=\"none\" stroke=\"#fffdf2\" stroke-width=\"15\" opacity=\".85\"/><path d=\"M300 364 C300 364,300 524,300 524\" fill=\"none\" stroke=\"#eed07c\" stroke-width=\"9\" stroke-linecap=\"round\" stroke-dasharray=\"none\" marker-end=\"url(#arr)\"/></g></svg>" FIRST_USE=["svg", "xmlns", "http", "www", "w3", "org", "width", "height", "viewBox", "defs", "filter", "id", "soft", "x", "y", "feDropShadow", "dx", "dy", "stdDeviation", "flood", "color", "opacity", "marker", "arr", "markerWidth", "markerHeight", "refX", "refY", "orient", "auto", "path", "d", "M1", "L9", "L1", "Z", "fill", "ff8e92", "stroke", "radialGradient", "paper", "stop", "offset", "fffaf0", "ebdac8", "pattern", "pencil", "patternUnits", "userSpaceOnUse", "M0", "l24", "a38b82", "M4", "l22", "rect", "url", "g", "M130", "h330", "l", "z", "f3a2a2", "M460", "v150", "rx", "M138", "Q295", "none", "fff", "text", "anchor", "middle", "font", "family", "DejaVu", "Sans", "Arial", "size", "weight", "access", "sample", "M570", "efc28b", "M900", "M578", "Q735", "reuse", "broken", "M474", "C512", "fffdf2", "cf5a50", "linecap", "round", "dasharray", "end", "transform", "translate", "c84a4a", "L78", "M78", "L0", "block", "sampling", "preserved", "M475", "C513", "L32", "L102", "M300", "C300", "eed07c"] NUMBERS=["2000", "1500", "920", "0", "30", "160", "12", "15", "8", "514952", "25", "5", "1", "9", "2", "36506", "26", "24", "4", "65", "10", "22", "11", "185", "404256", "3", "60", "50", "64617", "55", "130", "330", "150", "13", "156", "38", "325", "95", "334", "453", "324", "295", "267", "222", "31", "700", "70", "00", "570", "78", "35", "893", "735", "74", "258", "512", "550", "85", "17", "985", "208", "18", "560", "87", "709", "699", "642", "75", "633", "13.5", "513.5", "552", "32", "590", "339", "16", "40", "02", "364", "300", "524", "7"] GAP="first line is not a proved axiom from counting"
+RESULT REJECTED: line-level axiomatic proof not established; flagged=1/1
+NEW THINGS INTRODUCED WITHOUT DERIVATION: ["Arial", "C300", "C512", "C513", "DejaVu", "L0", "L1", "L102", "L32", "L78", "L9", "M0", "M1", "M130", "M138", "M300", "M4", "M460", "M474", "M475", "M570", "M578", "M78", "M900", "Q295", "Q735", "Sans", "Z", "a38b82", "access", "anchor", "arr", "auto", "block", "broken", "c84a4a", "cf5a50", "color", "d", "dasharray", "defs", "dx", "dy", "ebdac8", "eed07c", "efc28b", "end", "f3a2a2", "family", "feDropShadow", "ff8e92", "fff", "fffaf0", "fffdf2", "fill", "filter", "flood", "font", "g", "h330", "height", "http", "id", "l", "l22", "l24", "linecap", "marker", "markerHeight", "markerWidth", "middle", "none", "offset", "opacity", "org", "orient", "paper", "path", "pattern", "patternUnits", "pencil", "preserved", "radialGradient", "rect", "refX", "refY", "reuse", "round", "rx", "sample", "sampling", "size", "soft", "stdDeviation", "stop", "stroke", "svg", "text", "transform", "translate", "url", "userSpaceOnUse", "v150", "viewBox", "w3", "weight", "width", "www", "x", "xmlns", "y", "z"]
+NUMBERS WITHOUT VERIFIED DERIVATION: ["0", "00", "02", "1", "10", "11", "12", "13", "13.5", "130", "15", "150", "1500", "156", "16", "160", "17", "18", "185", "2", "2000", "208", "22", "222", "24", "25", "258", "26", "267", "295", "3", "30", "300", "31", "32", "324", "325", "330", "334", "339", "35", "364", "36506", "38", "4", "40", "404256", "453", "5", "50", "512", "513.5", "514952", "524", "55", "550", "552", "560", "570", "590", "60", "633", "642", "64617", "65", "699", "7", "70", "700", "709", "735", "74", "75", "78", "8", "85", "87", "893", "9", "920", "95", "985"]
+LIMIT: first-use names are lexical candidates, not a complete semantic analysis.
+END_FILE
+
+FILE assignments/20-cmu-15213-cache-lab/visuals/04-trap.png
+GIT_BLOB 59c9e88342ea7ab4854afe71d29ae7dd9b603c1b
+MODE 100644
+BYTES 283847
+RESULT UNVERIFIED_IMAGE
+WHY: PNG is binary, not a sequence of source-code lines.
+WHY: Image pixels, captions, geometry and factual accuracy were not inspected.
+NEW THINGS INTRODUCED WITHOUT DERIVATION: image content unknown
+END_FILE
+
+FILE assignments/20-cmu-15213-cache-lab/visuals/04-trap.svg
+GIT_BLOB f5ac0eecbdd755fc9d8cff58a36eda502f9e18b3
+MODE 100644
+BYTES 4525
+SOURCE_LINES 1
+L00001 REJECTED TEXT="<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"1500\" height=\"920\" viewBox=\"0 0 1500 920\"><defs><filter id=\"soft\" x=\"-30%\" y=\"-30%\" width=\"160%\" height=\"160%\"><feDropShadow dx=\"12\" dy=\"15\" stdDeviation=\"8\" flood-color=\"#514952\" flood-opacity=\".25\"/></filter><marker id=\"arr\" markerWidth=\"12\" markerHeight=\"12\" refX=\"8\" refY=\"5\" orient=\"auto\"><path d=\"M1 1 L9 5 L1 9 Z\" fill=\"#8fc9aa\" stroke=\"#36506a\" stroke-width=\".5\"/></marker><radialGradient id=\"paper\"><stop offset=\"0\" stop-color=\"#fffaf0\"/><stop offset=\"1\" stop-color=\"#ebdac8\"/></radialGradient><pattern id=\"pencil\" width=\"26\" height=\"26\" patternUnits=\"userSpaceOnUse\"><path d=\"M0 24 l24 -24\" stroke=\"#a38b82\" stroke-width=\".65\" stroke-opacity=\".10\"/><path d=\"M4 26 l22 -22\" stroke=\"#9d8b7d\" stroke-width=\".5\" stroke-opacity=\".11\"/></pattern></defs><rect width=\"1500\" height=\"920\" fill=\"url(#paper)\"/><rect width=\"1500\" height=\"920\" fill=\"url(#pencil)\"/><g filter=\"url(#soft)\"><path d=\"M110 330 l24 -24 h275 l-24 24 z\" fill=\"#8fc9aa\" opacity=\".8\" stroke=\"#404256\" stroke-width=\"3\"/><path d=\"M385 330 l24 -24 v155 l-24 24 z\" fill=\"#64617e\" opacity=\".55\" stroke=\"#404256\" stroke-width=\"3\"/><rect x=\"110\" y=\"330\" width=\"275\" height=\"155\" rx=\"13\" fill=\"#8fc9aa\" stroke=\"#3c4156\" stroke-width=\"4\"/><path d=\"M118 475 Q247.5 484 378 474\" fill=\"none\" stroke=\"#fff\" stroke-opacity=\".4\" stroke-width=\"5\"/><text x=\"247.5\" y=\"414.5\" text-anchor=\"middle\" fill=\"#222a40\" font-family=\"DejaVu Sans,Arial\" font-size=\"31\" font-weight=\"700\">one hot block</text></g><g filter=\"url(#soft)\"><path d=\"M576 115 l24 -24 h320 l-24 24 z\" fill=\"#fa9886\" opacity=\".8\" stroke=\"#404256\" stroke-width=\"3\"/><path d=\"M896 115 l24 -24 v155 l-24 24 z\" fill=\"#64617e\" opacity=\".55\" stroke=\"#404256\" stroke-width=\"3\"/><rect x=\"576\" y=\"115\" width=\"320\" height=\"155\" rx=\"13\" fill=\"#fa9886\" stroke=\"#3c4156\" stroke-width=\"4\"/><path d=\"M584 260 Q736 269 889 259\" fill=\"none\" stroke=\"#fff\" stroke-opacity=\".4\" stroke-width=\"5\"/><text x=\"736\" y=\"199.5\" text-anchor=\"middle\" fill=\"#222a40\" font-family=\"DejaVu Sans,Arial\" font-size=\"31\" font-weight=\"700\">sample misses</text></g><g filter=\"url(#soft)\"><path d=\"M576 568 l24 -24 h320 l-24 24 z\" fill=\"#a6b4f6\" opacity=\".8\" stroke=\"#404256\" stroke-width=\"3\"/><path d=\"M896 568 l24 -24 v155 l-24 24 z\" fill=\"#64617e\" opacity=\".55\" stroke=\"#404256\" stroke-width=\"3\"/><rect x=\"576\" y=\"568\" width=\"320\" height=\"155\" rx=\"13\" fill=\"#a6b4f6\" stroke=\"#3c4156\" stroke-width=\"4\"/><path d=\"M584 713 Q736 722 889 712\" fill=\"none\" stroke=\"#fff\" stroke-opacity=\".4\" stroke-width=\"5\"/><text x=\"736\" y=\"652.5\" text-anchor=\"middle\" fill=\"#222a40\" font-family=\"DejaVu Sans,Arial\" font-size=\"31\" font-weight=\"700\">curve bias</text></g><g filter=\"url(#soft)\"><path d=\"M1100 330 l24 -24 h265 l-24 24 z\" fill=\"#ffe08b\" opacity=\".8\" stroke=\"#404256\" stroke-width=\"3\"/><path d=\"M1365 330 l24 -24 v155 l-24 24 z\" fill=\"#64617e\" opacity=\".55\" stroke=\"#404256\" stroke-width=\"3\"/><rect x=\"1100\" y=\"330\" width=\"265\" height=\"155\" rx=\"13\" fill=\"#ffe08b\" stroke=\"#3c4156\" stroke-width=\"4\"/><path d=\"M1108 475 Q1232.5 484 1358 474\" fill=\"none\" stroke=\"#fff\" stroke-opacity=\".4\" stroke-width=\"5\"/><text x=\"1232.5\" y=\"414.5\" text-anchor=\"middle\" fill=\"#222a40\" font-family=\"DejaVu Sans,Arial\" font-size=\"31\" font-weight=\"700\">wrong capacity</text></g><g><path d=\"M390 380 C477 380,477 213,564 213\" fill=\"none\" stroke=\"#fffdf2\" stroke-width=\"15\" opacity=\".85\"/><path d=\"M390 380 C477 380,477 213,564 213\" fill=\"none\" stroke=\"#d45959\" stroke-width=\"9\" stroke-linecap=\"round\" stroke-dasharray=\"17 12\" marker-end=\"url(#arr)\"/></g><g><path d=\"M390 433 C477 433,477 626,564 626\" fill=\"none\" stroke=\"#fffdf2\" stroke-width=\"15\" opacity=\".85\"/><path d=\"M390 433 C477 433,477 626,564 626\" fill=\"none\" stroke=\"#39a973\" stroke-width=\"9\" stroke-linecap=\"round\" stroke-dasharray=\"none\" marker-end=\"url(#arr)\"/></g><g><path d=\"M905 211 C998.5 211,998.5 385,1092 385\" fill=\"none\" stroke=\"#fffdf2\" stroke-width=\"15\" opacity=\".85\"/><path d=\"M905 211 C998.5 211,998.5 385,1092 385\" fill=\"none\" stroke=\"#d45959\" stroke-width=\"9\" stroke-linecap=\"round\" stroke-dasharray=\"17 12\" marker-end=\"url(#arr)\"/></g><g><path d=\"M905 627 C998.5 627,998.5 435,1092 435\" fill=\"none\" stroke=\"#fffdf2\" stroke-width=\"15\" opacity=\".85\"/><path d=\"M905 627 C998.5 627,998.5 435,1092 435\" fill=\"none\" stroke=\"#39a973\" stroke-width=\"9\" stroke-linecap=\"round\" stroke-dasharray=\"none\" marker-end=\"url(#arr)\"/></g><g font-size=\"170\" font-family=\"Georgia,serif\" font-weight=\"700\"><text x=\"935\" y=\"380\" fill=\"#b04c4b\" opacity=\".8\">?</text></g></svg>" FIRST_USE=["svg", "xmlns", "http", "www", "w3", "org", "width", "height", "viewBox", "defs", "filter", "id", "soft", "x", "y", "feDropShadow", "dx", "dy", "stdDeviation", "flood", "color", "opacity", "marker", "arr", "markerWidth", "markerHeight", "refX", "refY", "orient", "auto", "path", "d", "M1", "L9", "L1", "Z", "fill", "stroke", "radialGradient", "paper", "stop", "offset", "fffaf0", "ebdac8", "pattern", "pencil", "patternUnits", "userSpaceOnUse", "M0", "l24", "a38b82", "M4", "l22", "rect", "url", "g", "M110", "h275", "l", "z", "M385", "v155", "rx", "M118", "Q247", "none", "fff", "text", "anchor", "middle", "font", "family", "DejaVu", "Sans", "Arial", "size", "weight", "one", "hot", "block", "M576", "h320", "fa9886", "M896", "M584", "Q736", "sample", "misses", "a6b4f6", "curve", "bias", "M1100", "h265", "ffe08b", "M1365", "M1108", "Q1232", "wrong", "capacity", "M390", "C477", "fffdf2", "d45959", "linecap", "round", "dasharray", "end", "M905", "C998", "Georgia", "serif", "b04c4b"] NUMBERS=["2000", "1500", "920", "0", "30", "160", "12", "15", "8", "514952", "25", "5", "1", "9", "36506", "26", "24", "4", "2", "65", "10", "22", "11", "330", "75", "404256", "3", "85", "55", "64617", "110", "275", "155", "13", "156", "18", "475", "47.5", "484", "378", "474", "247.5", "414.5", "222", "31", "700", "76", "115", "20", "886", "96", "576", "320", "84", "260", "36", "269", "889", "259", "736", "199.5", "568", "713", "722", "712", "652.5", "100", "365", "1100", "265", "108", "232.5", "1358", "1232.5", "90", "380", "77", "477", "213", "564", "5959", "17", "433", "626", "39", "73", "05", "211", "98.5", "998.5", "385", "1092", "627", "435", "170", "935"] GAP="first line is not a proved axiom from counting"
+RESULT REJECTED: line-level axiomatic proof not established; flagged=1/1
+NEW THINGS INTRODUCED WITHOUT DERIVATION: ["Arial", "C477", "C998", "DejaVu", "Georgia", "L1", "L9", "M0", "M1", "M110", "M1100", "M1108", "M118", "M1365", "M385", "M390", "M4", "M576", "M584", "M896", "M905", "Q1232", "Q247", "Q736", "Sans", "Z", "a38b82", "a6b4f6", "anchor", "arr", "auto", "b04c4b", "bias", "block", "capacity", "color", "curve", "d", "d45959", "dasharray", "defs", "dx", "dy", "ebdac8", "end", "fa9886", "family", "feDropShadow", "ffe08b", "fff", "fffaf0", "fffdf2", "fill", "filter", "flood", "font", "g", "h265", "h275", "h320", "height", "hot", "http", "id", "l", "l22", "l24", "linecap", "marker", "markerHeight", "markerWidth", "middle", "misses", "none", "offset", "one", "opacity", "org", "orient", "paper", "path", "pattern", "patternUnits", "pencil", "radialGradient", "rect", "refX", "refY", "round", "rx", "sample", "serif", "size", "soft", "stdDeviation", "stop", "stroke", "svg", "text", "url", "userSpaceOnUse", "v155", "viewBox", "w3", "weight", "width", "wrong", "www", "x", "xmlns", "y", "z"]
+NUMBERS WITHOUT VERIFIED DERIVATION: ["0", "05", "1", "10", "100", "108", "1092", "11", "110", "1100", "115", "12", "1232.5", "13", "1358", "15", "1500", "155", "156", "160", "17", "170", "18", "199.5", "2", "20", "2000", "211", "213", "22", "222", "232.5", "24", "247.5", "25", "259", "26", "260", "265", "269", "275", "3", "30", "31", "320", "330", "36", "365", "36506", "378", "380", "385", "39", "4", "404256", "414.5", "433", "435", "47.5", "474", "475", "477", "484", "5", "514952", "55", "564", "568", "576", "5959", "626", "627", "64617", "65", "652.5", "700", "712", "713", "722", "73", "736", "75", "76", "77", "8", "84", "85", "886", "889", "9", "90", "920", "935", "96", "98.5", "998.5"]
+LIMIT: first-use names are lexical candidates, not a complete semantic analysis.
+END_FILE
+
+FILE assignments/20-cmu-15213-cache-lab/visuals/contact.png
+GIT_BLOB ef51df135be1c6fd7d61d0f114c9251e3a30c7c4
+MODE 100644
+BYTES 568609
+RESULT UNVERIFIED_IMAGE
+WHY: PNG is binary, not a sequence of source-code lines.
+WHY: Image pixels, captions, geometry and factual accuracy were not inspected.
+NEW THINGS INTRODUCED WITHOUT DERIVATION: image content unknown
+END_FILE
+

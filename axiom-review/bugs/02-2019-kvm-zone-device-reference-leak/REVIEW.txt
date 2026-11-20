@@ -1,0 +1,54 @@
+SOURCE_COMMIT 32198a0ade443b1b6c037a3a52fbc472abab801e
+FOLDER bugs/02-2019-kvm-zone-device-reference-leak
+AXIOM 1: 0 denotes no counted objects.
+AXIOM 2: 1 denotes one object added to 0.
+RULE: each new symbol needs an earlier definition.
+RULE: each numerical result needs an earlier calculation.
+RULE: a compiler result is not a proof of the subject matter.
+METHOD: each original source line is copied with its original line number.
+METHOD: FIRST_USE and NUMBERS identify candidates requiring proof.
+LIMIT: this is a conservative rejection, not a complete human semantic review.
+FOLDER_RESULT REJECTED
+
+FILE bugs/02-2019-kvm-zone-device-reference-leak/CASE.txt
+GIT_BLOB 1ef850e9e7bd4281b2ff6dd75833135d34b86e90
+MODE 100644
+BYTES 2677
+SOURCE_LINES 31
+L00001 REJECTED TEXT="B02 | KVM /dev/dax guest backend pins device pages across teardown" FIRST_USE=["B02", "KVM", "guest", "device"] NUMBERS=["2"] GAP="first line is not a proved axiom from counting"
+L00002 REJECTED TEXT="PUBLIC ORIGIN YEAR: 2019" FIRST_USE=["PUBLIC", "ORIGIN", "YEAR"] NUMBERS=["2019"] GAP="no verified preceding-line derivation of this assertion"
+L00003 REJECTED TEXT="EVIDENCE STATUS: CONFIRMED_UPSTREAM_CAUSAL_PATCH" FIRST_USE=["EVIDENCE", "STATUS", "CONFIRMED_UPSTREAM_CAUSAL_PATCH"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00004 REJECTED TEXT="CAN TRY ON SECOND LAPTOP: REQUIRES_DEVDAX" FIRST_USE=["CAN", "TRY", "ON", "SECOND", "LAPTOP", "REQUIRES_DEVDAX"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00005 REJECTED TEXT="LOCAL REPRODUCED: NO_REPRO_RUN" FIRST_USE=["LOCAL", "REPRODUCED", "NO_REPRO_RUN"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00006 REJECTED TEXT="CORE FAILURE, NOT AN ERROR-RETURN EXERCISE:" FIRST_USE=["CORE", "FAILURE", "NOT", "AN", "ERROR", "RETURN", "EXERCISE"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00007 REJECTED TEXT="KVM classified ZONE_DEVICE PFNs as reserved and failed to release page references returned by GUP. KVM must retain true GUP references until vcpu_unmap even though its secondary MMU follows mmu_notifier." FIRST_USE=["ZONE_DEVICE", "page", "GUP", "vcpu_unmap", "MMU", "mmu_notifier"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00008 REJECTED TEXT="OBSERVED OPERATION THAT MATTERS:" FIRST_USE=["OBSERVED", "OPERATION", "THAT", "MATTERS"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00009 REJECTED TEXT="Run KVM guest whose RAM backend is a /dev/dax mapping; tear down mapping and device; dev_pagemap_cleanup hangs from unreleased page references acquired by get_user_pages." FIRST_USE=["RAM", "mapping", "dev_pagemap_cleanup", "get_user_pages"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00010 REJECTED TEXT="FUNCTION-TO-FUNCTION REASONING PATH:" FIRST_USE=["FUNCTION", "TO", "REASONING", "PATH"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00011 REJECTED TEXT="get_user_pages -> KVM holds guest backing page -> kvm_is_reserved_pfn -> missing put_page -> device dev_pagemap_cleanup waits" FIRST_USE=["kvm_is_reserved_pfn", "put_page"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00012 REJECTED TEXT="ORIGINAL REPORT / PATCH (READ BODY NOT TITLE): https://lkml.iu.edu/1911.1/04249.html" FIRST_USE=["ORIGINAL", "REPORT", "PATCH", "READ", "BODY", "TITLE"] NUMBERS=["1911.1", "04249"] GAP="no verified preceding-line derivation of this assertion"
+L00013 REJECTED TEXT="FIX OR UNCERTAINTY: 2019 KVM MMU patch exempts ZONE_DEVICE from the reserved-PFN assumption and manages page refs per use case" FIRST_USE=["FIX", "OR", "UNCERTAINTY", "PFN"] NUMBERS=["2019"] GAP="no verified preceding-line derivation of this assertion"
+L00014 REJECTED TEXT="REPRODUCTION PROCEDURE AND REQUIRED RESOURCES:" FIRST_USE=["REPRODUCTION", "PROCEDURE", "AND", "REQUIRED", "RESOURCES"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00015 REJECTED TEXT="Requires real or emulated /dev/dax DAX-backed guest RAM. Ordinary NVMe files and anonymous RAM are not equivalent; no reproduction promised on standard Ryzen laptop." FIRST_USE=["DAX"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00016 REJECTED TEXT="MEANINGFUL SUCCESS/FAILURE SIGNAL:" FIRST_USE=["MEANINGFUL", "SUCCESS", "SIGNAL"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00017 REJECTED TEXT="device-removal hang until references are released" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00018 REJECTED TEXT="EXACT UNIVERSITY ASSIGNMENTS INVOLVED: 08-iitb-cs695-kvm-pa1; 15-mit-61810-mmap; 17-pintos-cs318-vm; 18-umich-eecs482-pager" FIRST_USE=["EXACT", "UNIVERSITY", "ASSIGNMENTS", "INVOLVED", "kvm", "vm"] NUMBERS=["08", "95", "15", "61810", "17", "18", "82"] GAP="no verified preceding-line derivation of this assertion"
+L00019 REJECTED TEXT="STUDENT-OWNED CORE LOGICAL PUZZLE:" FIRST_USE=["STUDENT", "OWNED", "LOGICAL", "PUZZLE"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00020 REJECTED TEXT="MAP the GUP increment to the exact kvm_vcpu_unmap or MMU release. FILL the missing lifetime end." FIRST_USE=["MAP", "kvm_vcpu_unmap", "FILL"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00021 REJECTED TEXT="FIRST THINGS TO DO BY HAND:" FIRST_USE=["FIRST", "THINGS", "DO", "BY", "HAND"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00022 REJECTED TEXT="01. DRAW every transition from the initial user operation until the first invalid ownership/wait." FIRST_USE=["DRAW"] NUMBERS=["01"] GAP="no verified preceding-line derivation of this assertion"
+L00023 REJECTED TEXT="02. NAME the owner of every address, mapping, lock, frame, queue, and clock as it first appears." FIRST_USE=["NAME", "address", "lock"] NUMBERS=["02"] GAP="no verified preceding-line derivation of this assertion"
+L00024 REJECTED TEXT="03. TRACE the two interleaving actors; do not infer that a race exists if only one actor appears in source." FIRST_USE=["TRACE", "race", "source"] NUMBERS=["03"] GAP="no verified preceding-line derivation of this assertion"
+L00025 REJECTED TEXT="04. MATCH an observed stack / register / event / missing counter to a source function." FIRST_USE=["MATCH", "event", "function"] NUMBERS=["04"] GAP="no verified preceding-line derivation of this assertion"
+L00026 REJECTED TEXT="05. DEFINE a falsifier: switch off just the implicated mechanism or use the source's documented pre/post patch control." FIRST_USE=["DEFINE"] NUMBERS=["05"] GAP="no verified preceding-line derivation of this assertion"
+L00027 REJECTED TEXT="06. IF reproducer is missing, DO NOT invent one and declare this bug reproduced." FIRST_USE=["IF"] NUMBERS=["06"] GAP="no verified preceding-line derivation of this assertion"
+L00028 REJECTED TEXT="07. RUN compile with debug symbols for any self-authored C, but never treat compilation as proof of the bug." FIRST_USE=["RUN", "proof"] NUMBERS=["07"] GAP="no verified preceding-line derivation of this assertion"
+L00029 REJECTED TEXT="08. DO NOT use made-up kernel virtual addresses such as 0xFFFF888010000000 as if they were obtained from the current laptop." FIRST_USE=["kernel", "virtual"] NUMBERS=["08", "0xFFFF888010000000"] GAP="no verified preceding-line derivation of this assertion"
+L00030 REJECTED TEXT="09. NEVER alter live host CPU clocksource, KSM, VFIO ownership, page tables, or available memory for these experiments. Use throwaway nested VM." FIRST_USE=["NEVER", "host", "CPU", "KSM", "VFIO", "memory", "VM"] NUMBERS=["09"] GAP="no verified preceding-line derivation of this assertion"
+L00031 REJECTED TEXT="10. RECORD original kernel commit and actual hardware before comparing any failure." FIRST_USE=["RECORD", "hardware"] NUMBERS=["10"] GAP="no verified preceding-line derivation of this assertion"
+RESULT REJECTED: line-level axiomatic proof not established; flagged=31/31
+NEW THINGS INTRODUCED WITHOUT DERIVATION: ["AN", "AND", "ASSIGNMENTS", "B02", "BODY", "BY", "CAN", "CONFIRMED_UPSTREAM_CAUSAL_PATCH", "CORE", "CPU", "DAX", "DEFINE", "DO", "DRAW", "ERROR", "EVIDENCE", "EXACT", "EXERCISE", "FAILURE", "FILL", "FIRST", "FIX", "FUNCTION", "GUP", "HAND", "IF", "INVOLVED", "KSM", "KVM", "LAPTOP", "LOCAL", "LOGICAL", "MAP", "MATCH", "MATTERS", "MEANINGFUL", "MMU", "NAME", "NEVER", "NOT", "NO_REPRO_RUN", "OBSERVED", "ON", "OPERATION", "OR", "ORIGIN", "ORIGINAL", "OWNED", "PATCH", "PATH", "PFN", "PROCEDURE", "PUBLIC", "PUZZLE", "RAM", "READ", "REASONING", "RECORD", "REPORT", "REPRODUCED", "REPRODUCTION", "REQUIRED", "REQUIRES_DEVDAX", "RESOURCES", "RETURN", "RUN", "SECOND", "SIGNAL", "STATUS", "STUDENT", "SUCCESS", "THAT", "THINGS", "TITLE", "TO", "TRACE", "TRY", "UNCERTAINTY", "UNIVERSITY", "VFIO", "VM", "YEAR", "ZONE_DEVICE", "address", "dev_pagemap_cleanup", "device", "event", "function", "get_user_pages", "guest", "hardware", "host", "kernel", "kvm", "kvm_is_reserved_pfn", "kvm_vcpu_unmap", "lock", "mapping", "memory", "mmu_notifier", "page", "proof", "put_page", "race", "source", "vcpu_unmap", "virtual", "vm"]
+NUMBERS WITHOUT VERIFIED DERIVATION: ["01", "02", "03", "04", "04249", "05", "06", "07", "08", "09", "0xFFFF888010000000", "10", "15", "17", "18", "1911.1", "2", "2019", "61810", "82", "95"]
+LIMIT: first-use names are lexical candidates, not a complete semantic analysis.
+END_FILE
+

@@ -1,0 +1,54 @@
+SOURCE_COMMIT 32198a0ade443b1b6c037a3a52fbc472abab801e
+FOLDER bugs/11-2026-vtpm-proxy-release-hang
+AXIOM 1: 0 denotes no counted objects.
+AXIOM 2: 1 denotes one object added to 0.
+RULE: each new symbol needs an earlier definition.
+RULE: each numerical result needs an earlier calculation.
+RULE: a compiler result is not a proof of the subject matter.
+METHOD: each original source line is copied with its original line number.
+METHOD: FIRST_USE and NUMBERS identify candidates requiring proof.
+LIMIT: this is a conservative rejection, not a complete human semantic review.
+FOLDER_RESULT REJECTED
+
+FILE bugs/11-2026-vtpm-proxy-release-hang/CASE.txt
+GIT_BLOB 13e0509cf7843a09d96a3b4e03a88579e738c095
+MODE 100644
+BYTES 2994
+SOURCE_LINES 31
+L00001 REJECTED TEXT="B11 | Process exit hangs while releasing many vTPM proxy fds" FIRST_USE=["B11", "Process"] NUMBERS=["1"] GAP="first line is not a proved axiom from counting"
+L00002 REJECTED TEXT="PUBLIC ORIGIN YEAR: 2026" FIRST_USE=["PUBLIC", "ORIGIN", "YEAR"] NUMBERS=["2026"] GAP="no verified preceding-line derivation of this assertion"
+L00003 REJECTED TEXT="EVIDENCE STATUS: CONFIRMED_AUTHOR_MINIMAL_C_AND_NEGATIVE_CONTROL_CAUSE_UNRESOLVED" FIRST_USE=["EVIDENCE", "STATUS", "CONFIRMED_AUTHOR_MINIMAL_C_AND_NEGATIVE_CONTROL_CAUSE_UNRESOLVED"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00004 REJECTED TEXT="CAN TRY ON SECOND LAPTOP: GOOD_DISPOSABLE_GUEST_7_3" FIRST_USE=["CAN", "TRY", "ON", "SECOND", "LAPTOP", "GOOD_DISPOSABLE_GUEST_7_3"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00005 REJECTED TEXT="LOCAL REPRODUCED: NO_REPRO_RUN" FIRST_USE=["LOCAL", "REPRODUCED", "NO_REPRO_RUN"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00006 REJECTED TEXT="CORE FAILURE, NOT AN ERROR-RETURN EXERCISE:" FIRST_USE=["CORE", "FAILURE", "NOT", "AN", "ERROR", "RETURN", "EXERCISE"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00007 REJECTED TEXT="Observed release waits in vtpm_proxy_fops_release -> vtpm_proxy_work_stop -> flush_work while work queue remains busy. Exact missed cancellation or workqueue condition still unresolved; different fd-lifetime timing is a proven discriminator." FIRST_USE=["vtpm_proxy_fops_release", "vtpm_proxy_work_stop", "flush_work", "timing"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00008 REJECTED TEXT="OBSERVED OPERATION THAT MATTERS:" FIRST_USE=["OBSERVED", "OPERATION", "THAT", "MATTERS"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00009 REJECTED TEXT="Create 32 vTPM proxy devices through /dev/vtpmx, exit without explicit close of server-side fds; compare with closing each fd explicitly." FIRST_USE=[] NUMBERS=["32"] GAP="no verified preceding-line derivation of this assertion"
+L00010 REJECTED TEXT="FUNCTION-TO-FUNCTION REASONING PATH:" FIRST_USE=["FUNCTION", "TO", "REASONING", "PATH"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00011 REJECTED TEXT="VTPM_PROXY_IOC_NEW_DEV x32 -> exit triggers automatic fd release -> stop queued work -> flush_work waits -> outstanding vtpm_proxy_work and TPM timeouts -> blocked task" FIRST_USE=["VTPM_PROXY_IOC_NEW_DEV", "vtpm_proxy_work", "TPM"] NUMBERS=["2"] GAP="no verified preceding-line derivation of this assertion"
+L00012 REJECTED TEXT="ORIGINAL REPORT / PATCH (READ BODY NOT TITLE): https://lkml.iu.edu/2611.1/06205.html" FIRST_USE=["ORIGINAL", "REPORT", "PATCH", "READ", "BODY", "TITLE"] NUMBERS=["2611.1", "06205"] GAP="no verified preceding-line derivation of this assertion"
+L00013 REJECTED TEXT="FIX OR UNCERTAINTY: No definitive root-cause patch confirmed in reviewed thread; one earlier STATE_OPENED_FLAG ordering patch did not fix hang" FIRST_USE=["FIX", "OR", "UNCERTAINTY", "thread", "STATE_OPENED_FLAG"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00014 REJECTED TEXT="REPRODUCTION PROCEDURE AND REQUIRED RESOURCES:" FIRST_USE=["REPRODUCTION", "PROCEDURE", "AND", "REQUIRED", "RESOURCES"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00015 REJECTED TEXT="Use Linux 7.3 or 7.4-rc1 guest with CONFIG_TCG_VTPM_PROXY=y; fetch https://github.com/Zheng-zheng-codes/vtpm-proxy-release-hang-repro and compile minimal-c-repro/vtpm-hang-minimal.c plus vtpm-close-minimal.c. Run only in guest. Need root within the guest." FIRST_USE=["guest", "CONFIG_TCG_VTPM_PROXY"] NUMBERS=["7.3", "7.4"] GAP="no verified preceding-line derivation of this assertion"
+L00016 REJECTED TEXT="MEANINGFUL SUCCESS/FAILURE SIGNAL:" FIRST_USE=["MEANINGFUL", "SUCCESS", "SIGNAL"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00017 REJECTED TEXT="N=32 exit-time release reproduced 3/3 recorded attempts; N=1/2 did not; explicit close N=4/32 did not. One hang >286 seconds." FIRST_USE=[] NUMBERS=["32", "3", "1", "2", "4", "286"] GAP="no verified preceding-line derivation of this assertion"
+L00018 REJECTED TEXT="EXACT UNIVERSITY ASSIGNMENTS INVOLVED: 19-uiuc-cs423-mp3; 07-gatech-6210-vm-coordinator; 21-biswas-oslab-kvm" FIRST_USE=["EXACT", "UNIVERSITY", "ASSIGNMENTS", "INVOLVED", "vm", "kvm"] NUMBERS=["19", "23", "07", "6210", "21"] GAP="no verified preceding-line derivation of this assertion"
+L00019 REJECTED TEXT="STUDENT-OWNED CORE LOGICAL PUZZLE:" FIRST_USE=["STUDENT", "OWNED", "LOGICAL", "PUZZLE"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00020 REJECTED TEXT="TRACE fd ownership from ioctl to process exit. Why might automatic release differ from explicit close? Which wait still holds after STATE_OPENED_FLAG is cleared?" FIRST_USE=["TRACE", "ioctl", "process"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00021 REJECTED TEXT="FIRST THINGS TO DO BY HAND:" FIRST_USE=["FIRST", "THINGS", "DO", "BY", "HAND"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00022 REJECTED TEXT="01. DRAW every transition from the initial user operation until the first invalid ownership/wait." FIRST_USE=["DRAW"] NUMBERS=["01"] GAP="no verified preceding-line derivation of this assertion"
+L00023 REJECTED TEXT="02. NAME the owner of every address, mapping, lock, frame, queue, and clock as it first appears." FIRST_USE=["NAME", "address", "mapping", "lock"] NUMBERS=["02"] GAP="no verified preceding-line derivation of this assertion"
+L00024 REJECTED TEXT="03. TRACE the two interleaving actors; do not infer that a race exists if only one actor appears in source." FIRST_USE=["race", "source"] NUMBERS=["03"] GAP="no verified preceding-line derivation of this assertion"
+L00025 REJECTED TEXT="04. MATCH an observed stack / register / event / missing counter to a source function." FIRST_USE=["MATCH", "event", "function"] NUMBERS=["04"] GAP="no verified preceding-line derivation of this assertion"
+L00026 REJECTED TEXT="05. DEFINE a falsifier: switch off just the implicated mechanism or use the source's documented pre/post patch control." FIRST_USE=["DEFINE"] NUMBERS=["05"] GAP="no verified preceding-line derivation of this assertion"
+L00027 REJECTED TEXT="06. IF reproducer is missing, DO NOT invent one and declare this bug reproduced." FIRST_USE=["IF"] NUMBERS=["06"] GAP="no verified preceding-line derivation of this assertion"
+L00028 REJECTED TEXT="07. RUN compile with debug symbols for any self-authored C, but never treat compilation as proof of the bug." FIRST_USE=["RUN", "proof"] NUMBERS=["07"] GAP="no verified preceding-line derivation of this assertion"
+L00029 REJECTED TEXT="08. DO NOT use made-up kernel virtual addresses such as 0xFFFF888010000000 as if they were obtained from the current laptop." FIRST_USE=["kernel", "virtual"] NUMBERS=["08", "0xFFFF888010000000"] GAP="no verified preceding-line derivation of this assertion"
+L00030 REJECTED TEXT="09. NEVER alter live host CPU clocksource, KSM, VFIO ownership, page tables, or available memory for these experiments. Use throwaway nested VM." FIRST_USE=["NEVER", "host", "CPU", "KSM", "VFIO", "page", "memory", "VM"] NUMBERS=["09"] GAP="no verified preceding-line derivation of this assertion"
+L00031 REJECTED TEXT="10. RECORD original kernel commit and actual hardware before comparing any failure." FIRST_USE=["RECORD", "hardware"] NUMBERS=["10"] GAP="no verified preceding-line derivation of this assertion"
+RESULT REJECTED: line-level axiomatic proof not established; flagged=31/31
+NEW THINGS INTRODUCED WITHOUT DERIVATION: ["AN", "AND", "ASSIGNMENTS", "B11", "BODY", "BY", "CAN", "CONFIG_TCG_VTPM_PROXY", "CONFIRMED_AUTHOR_MINIMAL_C_AND_NEGATIVE_CONTROL_CAUSE_UNRESOLVED", "CORE", "CPU", "DEFINE", "DO", "DRAW", "ERROR", "EVIDENCE", "EXACT", "EXERCISE", "FAILURE", "FIRST", "FIX", "FUNCTION", "GOOD_DISPOSABLE_GUEST_7_3", "HAND", "IF", "INVOLVED", "KSM", "LAPTOP", "LOCAL", "LOGICAL", "MATCH", "MATTERS", "MEANINGFUL", "NAME", "NEVER", "NOT", "NO_REPRO_RUN", "OBSERVED", "ON", "OPERATION", "OR", "ORIGIN", "ORIGINAL", "OWNED", "PATCH", "PATH", "PROCEDURE", "PUBLIC", "PUZZLE", "Process", "READ", "REASONING", "RECORD", "REPORT", "REPRODUCED", "REPRODUCTION", "REQUIRED", "RESOURCES", "RETURN", "RUN", "SECOND", "SIGNAL", "STATE_OPENED_FLAG", "STATUS", "STUDENT", "SUCCESS", "THAT", "THINGS", "TITLE", "TO", "TPM", "TRACE", "TRY", "UNCERTAINTY", "UNIVERSITY", "VFIO", "VM", "VTPM_PROXY_IOC_NEW_DEV", "YEAR", "address", "event", "flush_work", "function", "guest", "hardware", "host", "ioctl", "kernel", "kvm", "lock", "mapping", "memory", "page", "process", "proof", "race", "source", "thread", "timing", "virtual", "vm", "vtpm_proxy_fops_release", "vtpm_proxy_work", "vtpm_proxy_work_stop"]
+NUMBERS WITHOUT VERIFIED DERIVATION: ["01", "02", "03", "04", "05", "06", "06205", "07", "08", "09", "0xFFFF888010000000", "1", "10", "19", "2", "2026", "21", "23", "2611.1", "286", "3", "32", "4", "6210", "7.3", "7.4"]
+LIMIT: first-use names are lexical candidates, not a complete semantic analysis.
+END_FILE
+

@@ -1,0 +1,62 @@
+SOURCE_COMMIT 32198a0ade443b1b6c037a3a52fbc472abab801e
+FOLDER bugs/24-2012-qemu-madvise-host-page-size-corruption
+AXIOM 1: 0 denotes no counted objects.
+AXIOM 2: 1 denotes one object added to 0.
+RULE: each new symbol needs an earlier definition.
+RULE: each numerical result needs an earlier calculation.
+RULE: a compiler result is not a proof of the subject matter.
+METHOD: each original source line is copied with its original line number.
+METHOD: FIRST_USE and NUMBERS identify candidates requiring proof.
+LIMIT: this is a conservative rejection, not a complete human semantic review.
+FOLDER_RESULT REJECTED
+
+FILE bugs/24-2012-qemu-madvise-host-page-size-corruption/CASE.txt
+GIT_BLOB 84aa1c326c39a209c518038d369e1f8ee52756ef
+MODE 100644
+BYTES 3654
+SOURCE_LINES 39
+L00001 REJECTED TEXT="B24 | QEMU zero-page optimization discards neighboring guest bytes if host page is larger" FIRST_USE=["B24", "QEMU", "page", "guest", "bytes", "host"] NUMBERS=["4"] GAP="first line is not a proved axiom from counting"
+L00002 REJECTED TEXT="PUBLIC ORIGIN YEAR: 2012 (pre-2015)" FIRST_USE=["PUBLIC", "ORIGIN", "YEAR"] NUMBERS=["2012", "2015"] GAP="no verified preceding-line derivation of this assertion"
+L00003 REJECTED TEXT="EVIDENCE STATUS: UPSTREAM_COMMIT_F1A2195_VERIFIED_WITH_CAUSAL_DIFF" FIRST_USE=["EVIDENCE", "STATUS", "UPSTREAM_COMMIT_F1A2195_VERIFIED_WITH_CAUSAL_DIFF"] NUMBERS=["195"] GAP="no verified preceding-line derivation of this assertion"
+L00004 REJECTED TEXT="CAN TRY ON SECOND LAPTOP: NO_RYZEN_REPRO_HARDWARE / NEEDS_HOST_PAGE_GREATER_THAN_GUEST_PAGE_EG_PPC64_64K" FIRST_USE=["CAN", "TRY", "ON", "SECOND", "LAPTOP", "NO_RYZEN_REPRO_HARDWARE", "NEEDS_HOST_PAGE_GREATER_THAN_GUEST_PAGE_EG_PPC64_64K"] NUMBERS=["4"] GAP="no verified preceding-line derivation of this assertion"
+L00005 REJECTED TEXT="LOCAL REPRODUCED: NO_REPRO_RUN" FIRST_USE=["LOCAL", "REPRODUCED", "NO_REPRO_RUN"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00006 REJECTED TEXT="ORIGINAL REPORT / PATCH (READ BODY NOT TITLE): https://github.com/qemu/qemu/commit/f1a2195ec327fd2b837a3539623ee431d133f03c" FIRST_USE=["ORIGINAL", "REPORT", "PATCH", "READ", "BODY", "NOT", "TITLE", "qemu"] NUMBERS=["195", "27", "37", "539623", "31", "33", "3"] GAP="no verified preceding-line derivation of this assertion"
+L00007 REJECTED TEXT="PATCH / REVIEW: https://github.com/qemu/qemu/commit/f1a2195ec327fd2b837a3539623ee431d133f03c" FIRST_USE=["REVIEW"] NUMBERS=["195", "27", "37", "539623", "31", "33", "3"] GAP="no verified preceding-line derivation of this assertion"
+L00008 REJECTED TEXT="PINNED VERSION: Pre-December 2012 QEMU on 64 KiB host page size paired with 4 KiB guest target page; impossible as originally observed on ordinary 4 KiB x86 host" FIRST_USE=["PINNED", "VERSION"] NUMBERS=["2012", "64", "4", "6"] GAP="no verified preceding-line derivation of this assertion"
+L00009 REJECTED TEXT="END-USER FAILURE: QEMU zero-page optimization discards neighboring guest bytes if host page is larger" FIRST_USE=["END", "USER", "FAILURE"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00010 REJECTED TEXT="CORE FAILURE, NOT AN ERROR-RETURN EXERCISE:" FIRST_USE=["CORE", "AN", "ERROR", "RETURN", "EXERCISE"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00011 REJECTED TEXT="madvise(MADV_DONTNEED) acts on an entire HOST page, even when QEMU requests a shorter guest-target page; QEMU's one-page zero optimization discards adjacent guest data on migration target." FIRST_USE=["MADV_DONTNEED", "HOST", "data", "migration"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00012 REJECTED TEXT="CALL / DATA / STATE PATH:" FIRST_USE=["CALL", "DATA", "STATE", "PATH"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00013 REJECTED TEXT="incoming migration zero guest 4K chunk -> ram_load sees zero -> qemu_madvise length=TARGET_PAGE_SIZE 4K -> host backing page 64K discarded -> adjacent guest subpages lose data" FIRST_USE=["ram_load", "qemu_madvise", "TARGET_PAGE_SIZE"] NUMBERS=["4", "64"] GAP="no verified preceding-line derivation of this assertion"
+L00014 REJECTED TEXT="REPRODUCTION PROCEDURE AND REQUIRED RESOURCES:" FIRST_USE=["REPRODUCTION", "PROCEDURE", "AND", "REQUIRED", "RESOURCES"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00015 REJECTED TEXT="Requires different host and target page sizes, such as 64K POWER host backing for 4K guest target; use isolated historical POWER guest or emulated environment capable of reproducing host-page semantics. Correct size mismatch must be proven before attempting. Not a laptop Ryzen KVM reproducer." FIRST_USE=["POWER", "KVM"] NUMBERS=["64", "4"] GAP="no verified preceding-line derivation of this assertion"
+L00016 REJECTED TEXT="FAILURE SIGNAL AND CONTROL:" FIRST_USE=["SIGNAL", "CONTROL"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00017 REJECTED TEXT="Adjacent data corruption after incoming migration; patch suppresses madvise if getpagesize()>TARGET_PAGE_SIZE." FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00018 REJECTED TEXT="MANUAL INPUT AND QUESTION:" FIRST_USE=["MANUAL", "INPUT", "QUESTION"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00019 REJECTED TEXT="CONSTRUCTED: host page 65536B, target page 4096B, one discard covers 65536/4096=16 guest pages. How many neighboring pages can be destroyed by one bad hint?" FIRST_USE=["CONSTRUCTED"] NUMBERS=["65536", "4096", "16"] GAP="no verified preceding-line derivation of this assertion"
+L00020 REJECTED TEXT="EXACT UNIVERSITY ASSIGNMENTS INVOLVED: 15-mit-61810-mmap, 16-mit-61810-superpages, 11-unc-comp790-vmm" FIRST_USE=["EXACT", "UNIVERSITY", "ASSIGNMENTS", "INVOLVED"] NUMBERS=["15", "61810", "16", "11", "90"] GAP="no verified preceding-line derivation of this assertion"
+L00021 REJECTED TEXT="FIRST-PRINCIPLES REPRODUCTION CONTRACT" FIRST_USE=["FIRST", "PRINCIPLES", "CONTRACT"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00022 REJECTED TEXT="Read the actual original patch code; identify the reader and writer of shared state. No unsupported cross-version inferences." FIRST_USE=["state"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00023 REJECTED TEXT="CALCULATE page size from sysconf(_SC_PAGESIZE) or in-guest PAGE_SIZE, never use a made-up kernel address as an observed value." FIRST_USE=["CALCULATE", "_SC_PAGESIZE", "PAGE_SIZE", "kernel", "address", "value"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00024 REJECTED TEXT="Use -O0 -g3 for standalone userspace, but retain kernel's required build optimization plus -g for old in-kernel tests." FIRST_USE=["O0"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00025 REJECTED TEXT="Configure disposable VM, snapshot image, serial console, host watchdog and external process timeout." FIRST_USE=["VM", "process"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00026 REJECTED TEXT="Capture: host kernel sha + QEMU git sha + guest kernel version + CPU virtualization flags + exact commands + guest logs + host trace + before-and-after test." FIRST_USE=["CPU", "test"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00027 REJECTED TEXT="Write only mechanism-specific changes. Never alter the expected test result after observing failure." FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00028 NO_CLAIM TEXT="" FIRST_USE=[] NUMBERS=[] GAP="empty line"
+L00029 REJECTED TEXT="STUDENT-OWNED TEN LOGIC TASKS; DO NOT SUBSTITUTE BUILD SUCCESS FOR CORRECTNESS:" FIRST_USE=["STUDENT", "OWNED", "TEN", "LOGIC", "TASKS", "DO", "SUBSTITUTE", "BUILD", "SUCCESS", "FOR", "CORRECTNESS"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00030 REJECTED TEXT="01. FILL exact root function and first call from historical source revision." FIRST_USE=["FILL", "function", "source"] NUMBERS=["01"] GAP="no verified preceding-line derivation of this assertion"
+L00031 REJECTED TEXT="02. DRAW the first state read and its owner before any other actor acts." FIRST_USE=["DRAW"] NUMBERS=["02"] GAP="no verified preceding-line derivation of this assertion"
+L00032 REJECTED TEXT="03. TRACE the competing state writer or failing service; identify when it runs." FIRST_USE=["TRACE"] NUMBERS=["03"] GAP="no verified preceding-line derivation of this assertion"
+L00033 REJECTED TEXT="04. CALCULATE expected and observed state using the supplied concrete input." FIRST_USE=[] NUMBERS=["04"] GAP="no verified preceding-line derivation of this assertion"
+L00034 REJECTED TEXT="05. IDENTIFY earliest state after which both actors' assumptions cannot hold." FIRST_USE=["IDENTIFY"] NUMBERS=["05"] GAP="no verified preceding-line derivation of this assertion"
+L00035 REJECTED TEXT="06. RECREATE one genuine source-level breakpoint or tracepoint from original code." FIRST_USE=["RECREATE"] NUMBERS=["06"] GAP="no verified preceding-line derivation of this assertion"
+L00036 REJECTED TEXT="07. RECORD what user observed and its link to the internal state mismatch." FIRST_USE=["RECORD"] NUMBERS=["07"] GAP="no verified preceding-line derivation of this assertion"
+L00037 REJECTED TEXT="08. DERIVE a negative control by disabling exactly the triggering mechanism." FIRST_USE=["DERIVE"] NUMBERS=["08"] GAP="no verified preceding-line derivation of this assertion"
+L00038 REJECTED TEXT="09. MEASURE before and after the historical patch; preserve all other conditions." FIRST_USE=["MEASURE"] NUMBERS=["09"] GAP="no verified preceding-line derivation of this assertion"
+L00039 REJECTED TEXT="10. EXPLAIN why the patch's correction does not prove other VM configurations are fixed." FIRST_USE=["EXPLAIN"] NUMBERS=["10"] GAP="no verified preceding-line derivation of this assertion"
+RESULT REJECTED: line-level axiomatic proof not established; flagged=38/39
+NEW THINGS INTRODUCED WITHOUT DERIVATION: ["AN", "AND", "ASSIGNMENTS", "B24", "BODY", "BUILD", "CALCULATE", "CALL", "CAN", "CONSTRUCTED", "CONTRACT", "CONTROL", "CORE", "CORRECTNESS", "CPU", "DATA", "DERIVE", "DO", "DRAW", "END", "ERROR", "EVIDENCE", "EXACT", "EXERCISE", "EXPLAIN", "FAILURE", "FILL", "FIRST", "FOR", "HOST", "IDENTIFY", "INPUT", "INVOLVED", "KVM", "LAPTOP", "LOCAL", "LOGIC", "MADV_DONTNEED", "MANUAL", "MEASURE", "NEEDS_HOST_PAGE_GREATER_THAN_GUEST_PAGE_EG_PPC64_64K", "NOT", "NO_REPRO_RUN", "NO_RYZEN_REPRO_HARDWARE", "O0", "ON", "ORIGIN", "ORIGINAL", "OWNED", "PAGE_SIZE", "PATCH", "PATH", "PINNED", "POWER", "PRINCIPLES", "PROCEDURE", "PUBLIC", "QEMU", "QUESTION", "READ", "RECORD", "RECREATE", "REPORT", "REPRODUCED", "REPRODUCTION", "REQUIRED", "RESOURCES", "RETURN", "REVIEW", "SECOND", "SIGNAL", "STATE", "STATUS", "STUDENT", "SUBSTITUTE", "SUCCESS", "TARGET_PAGE_SIZE", "TASKS", "TEN", "TITLE", "TRACE", "TRY", "UNIVERSITY", "UPSTREAM_COMMIT_F1A2195_VERIFIED_WITH_CAUSAL_DIFF", "USER", "VERSION", "VM", "YEAR", "_SC_PAGESIZE", "address", "bytes", "data", "function", "guest", "host", "kernel", "migration", "page", "process", "qemu", "qemu_madvise", "ram_load", "source", "state", "test", "value"]
+NUMBERS WITHOUT VERIFIED DERIVATION: ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "15", "16", "195", "2012", "2015", "27", "3", "31", "33", "37", "4", "4096", "539623", "6", "61810", "64", "65536", "90"]
+LIMIT: first-use names are lexical candidates, not a complete semantic analysis.
+END_FILE
+

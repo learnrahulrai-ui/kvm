@@ -1,0 +1,55 @@
+SOURCE_COMMIT 32198a0ade443b1b6c037a3a52fbc472abab801e
+FOLDER bugs/16-2021-kvm-nsvm-nested-pending-state-lost
+AXIOM 1: 0 denotes no counted objects.
+AXIOM 2: 1 denotes one object added to 0.
+RULE: each new symbol needs an earlier definition.
+RULE: each numerical result needs an earlier calculation.
+RULE: a compiler result is not a proof of the subject matter.
+METHOD: each original source line is copied with its original line number.
+METHOD: FIRST_USE and NUMBERS identify candidates requiring proof.
+LIMIT: this is a conservative rejection, not a complete human semantic review.
+FOLDER_RESULT REJECTED
+
+FILE bugs/16-2021-kvm-nsvm-nested-pending-state-lost/CASE.txt
+GIT_BLOB 7020addf194379020f44e3395a6f67cb21d55926
+MODE 100644
+BYTES 3816
+SOURCE_LINES 32
+L00001 REJECTED TEXT="B16 | Nested AMD SVM migration loses pending-run status, discards already saved interrupt injection" FIRST_USE=["B16", "AMD", "SVM", "migration"] NUMBERS=["6"] GAP="first line is not a proved axiom from counting"
+L00002 REJECTED TEXT="PUBLIC ORIGIN YEAR: 2021" FIRST_USE=["PUBLIC", "ORIGIN", "YEAR"] NUMBERS=["2021"] GAP="no verified preceding-line derivation of this assertion"
+L00003 REJECTED TEXT="EVIDENCE STATUS: CONFIRMED_AUTHOR_REPRO_REVIEW_CORRECTED_HYPOTHESIS" FIRST_USE=["EVIDENCE", "STATUS", "CONFIRMED_AUTHOR_REPRO_REVIEW_CORRECTED_HYPOTHESIS"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00004 REJECTED TEXT="CAN TRY ON SECOND LAPTOP: MODERATE_NESTED_AMD_SVM_WITH_VERSION_PINNED_L0" FIRST_USE=["CAN", "TRY", "ON", "SECOND", "LAPTOP", "MODERATE_NESTED_AMD_SVM_WITH_VERSION_PINNED_L0"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00005 REJECTED TEXT="LOCAL REPRODUCED: NO_REPRO_RUN" FIRST_USE=["LOCAL", "REPRODUCED", "NO_REPRO_RUN"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00006 REJECTED TEXT="CORE FAILURE, NOT AN ERROR-RETURN EXERCISE:" FIRST_USE=["CORE", "FAILURE", "NOT", "AN", "ERROR", "RETURN", "EXERCISE"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00007 REJECTED TEXT="The nested VMCB containing pending L1->L2 interrupt data DID survive migration. The 'nested_run_pending' state flag was saved but not restored. On destination a spurious nested exit erased pending interrupt injection before L2 entry. Because interrupt never arrived, I/O-intensive L2 guest hung. Original author's first proposed remedy to copy injections was mistaken; reviewed v2 restored the missing flag." FIRST_USE=["VMCB", "L1", "L2", "data", "DID", "nested_run_pending", "state", "guest"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00008 REJECTED TEXT="OBSERVED OPERATION THAT MATTERS:" FIRST_USE=["OBSERVED", "OPERATION", "THAT", "MATTERS"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00009 REJECTED TEXT="L1 requests L2 VMRUN with event_inj=0x80000036 -> L1 migration saves VMCB and flag -> target restores VMCB but omits nested_run_pending -> unwanted nested vmexit clears event_inj -> L2 waits for missing interrupt -> L2 hangs" FIRST_USE=["VMRUN", "event_inj", "vmexit"] NUMBERS=["0x80000036"] GAP="no verified preceding-line derivation of this assertion"
+L00010 REJECTED TEXT="FUNCTION-TO-FUNCTION REASONING PATH:" FIRST_USE=["FUNCTION", "TO", "REASONING", "PATH"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00011 REJECTED TEXT="L1 requests L2 VMRUN with event_inj=0x80000036 -> L1 migration saves VMCB and flag -> target restores VMCB but omits nested_run_pending -> unwanted nested vmexit clears event_inj -> L2 waits for missing interrupt -> L2 hangs" FIRST_USE=[] NUMBERS=["0x80000036"] GAP="no verified preceding-line derivation of this assertion"
+L00012 REJECTED TEXT="ORIGINAL REPORT / PATCH (READ BODY NOT TITLE): https://lists.openwall.net/linux-kernel/2021/01/07/367" FIRST_USE=["ORIGINAL", "REPORT", "PATCH", "READ", "BODY", "TITLE", "kernel"] NUMBERS=["2021", "01", "07", "367"] GAP="no verified preceding-line derivation of this assertion"
+L00013 REJECTED TEXT="REVIEW AND FOLLOW-UP: 2021-01-06 initial patch https://lists.openwall.net/linux-kernel/2021/01/06/456 -> reviewer Sean Christopherson challenge https://lists.openwall.net/linux-kernel/2021/01/07/54 -> author's original KVM trace and concession -> 2021-01-07 v2 restores KVM_STATE_NESTED_RUN_PENDING (the actual necessary state)." FIRST_USE=["REVIEW", "AND", "FOLLOW", "UP", "KVM", "KVM_STATE_NESTED_RUN_PENDING"] NUMBERS=["2021", "01", "06", "456", "07", "54"] GAP="no verified preceding-line derivation of this assertion"
+L00014 REJECTED TEXT="FIX OR UNCERTAINTY: Original interrupt field is present, so 'not saved' is false. Check KVM_STATE_NESTED_RUN_PENDING after restore and whether spurious nested_vmexit occurs." FIRST_USE=["FIX", "OR", "UNCERTAINTY", "nested_vmexit"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00015 REJECTED TEXT="REPRODUCTION PROCEDURE AND REQUIRED RESOURCES:" FIRST_USE=["REPRODUCTION", "PROCEDURE", "REQUIRED", "RESOURCES"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00016 REJECTED TEXT="Inside a disposable nested-capable AMD host, compile L0 kernel from a pre-2021 affected revision, launch L1 QEMU/KVM with nested SVM enabled, start an I/O-intensive L2 workload and migrate L1 repeatedly while VMRUN entry is pending. Capture kvm_nested_vmrun, kvm_nested_intr_vmexit, kvm_userspace_exit and VMCB event_inj traces. Author observed bug usually after 20-40 iterations; after v2 changed condition it survived 170 iterations in an early trial, not a proved universal reliability level." FIRST_USE=["host", "L0", "QEMU", "kvm_nested_vmrun", "kvm_nested_intr_vmexit", "kvm_userspace_exit"] NUMBERS=["2021", "20", "40", "170"] GAP="no verified preceding-line derivation of this assertion"
+L00017 REJECTED TEXT="MEANINGFUL SUCCESS/FAILURE SIGNAL:" FIRST_USE=["MEANINGFUL", "SUCCESS", "SIGNAL"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00018 REJECTED TEXT="Original interrupt field is present, so 'not saved' is false. Check KVM_STATE_NESTED_RUN_PENDING after restore and whether spurious nested_vmexit occurs." FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00019 REJECTED TEXT="EXACT UNIVERSITY ASSIGNMENTS INVOLVED: 12-unc-2017-amd-svm; 10-iitb-2023-kvm-a3; 13-ut-cs360v-jos-hypervisor" FIRST_USE=["EXACT", "UNIVERSITY", "ASSIGNMENTS", "INVOLVED", "kvm", "hypervisor"] NUMBERS=["12", "2017", "10", "2023", "13", "60"] GAP="no verified preceding-line derivation of this assertion"
+L00020 REJECTED TEXT="STUDENT-OWNED CORE LOGICAL PUZZLE:" FIRST_USE=["STUDENT", "OWNED", "LOGICAL", "PUZZLE"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00021 REJECTED TEXT="Trace every stored field and restored field. Before touching event_inj, mark whether nested_run_pending was restored and why an interrupt can disappear even with correct event bytes." FIRST_USE=["event", "bytes"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00022 REJECTED TEXT="FIRST THINGS TO DO BY HAND:" FIRST_USE=["FIRST", "THINGS", "DO", "BY", "HAND"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00023 REJECTED TEXT="01. DRAW the actual user operation and every transition until the first lost state." FIRST_USE=["DRAW"] NUMBERS=["01"] GAP="no verified preceding-line derivation of this assertion"
+L00024 REJECTED TEXT="02. FILL the exact function names from the pinned source tree, not current master source." FIRST_USE=["FILL", "function", "source"] NUMBERS=["02"] GAP="no verified preceding-line derivation of this assertion"
+L00025 REJECTED TEXT="03. RECORD which participant owns each address, flag, page and completion." FIRST_USE=["RECORD", "address", "page"] NUMBERS=["03"] GAP="no verified preceding-line derivation of this assertion"
+L00026 REJECTED TEXT="04. TRACE a second concurrent actor when the bug requires a race." FIRST_USE=["TRACE", "race"] NUMBERS=["04"] GAP="no verified preceding-line derivation of this assertion"
+L00027 REJECTED TEXT="05. IDENTIFY the first false inference, including early proposals refuted in review." FIRST_USE=["IDENTIFY"] NUMBERS=["05"] GAP="no verified preceding-line derivation of this assertion"
+L00028 REJECTED TEXT="06. RECORD machine CPU, KVM API and kernel git SHA before running a nested workload." FIRST_USE=["CPU", "API", "SHA"] NUMBERS=["06"] GAP="no verified preceding-line derivation of this assertion"
+L00029 REJECTED TEXT="07. TRACE expected versus observed vCPU progress, migration states or dirty pages." FIRST_USE=[] NUMBERS=["07"] GAP="no verified preceding-line derivation of this assertion"
+L00030 REJECTED TEXT="08. COMPARE original failing revision against the exact reviewed correction." FIRST_USE=["COMPARE"] NUMBERS=["08"] GAP="no verified preceding-line derivation of this assertion"
+L00031 REJECTED TEXT="09. NEVER claim the preflight build proves the failure or that the source project is security-free without checking." FIRST_USE=["NEVER"] NUMBERS=["09"] GAP="no verified preceding-line derivation of this assertion"
+L00032 REJECTED TEXT="10. RUN all liveness experiments in a disposable VM with serial console and throwaway disks." FIRST_USE=["RUN", "VM"] NUMBERS=["10"] GAP="no verified preceding-line derivation of this assertion"
+RESULT REJECTED: line-level axiomatic proof not established; flagged=32/32
+NEW THINGS INTRODUCED WITHOUT DERIVATION: ["AMD", "AN", "AND", "API", "ASSIGNMENTS", "B16", "BODY", "BY", "CAN", "COMPARE", "CONFIRMED_AUTHOR_REPRO_REVIEW_CORRECTED_HYPOTHESIS", "CORE", "CPU", "DID", "DO", "DRAW", "ERROR", "EVIDENCE", "EXACT", "EXERCISE", "FAILURE", "FILL", "FIRST", "FIX", "FOLLOW", "FUNCTION", "HAND", "IDENTIFY", "INVOLVED", "KVM", "KVM_STATE_NESTED_RUN_PENDING", "L0", "L1", "L2", "LAPTOP", "LOCAL", "LOGICAL", "MATTERS", "MEANINGFUL", "MODERATE_NESTED_AMD_SVM_WITH_VERSION_PINNED_L0", "NEVER", "NOT", "NO_REPRO_RUN", "OBSERVED", "ON", "OPERATION", "OR", "ORIGIN", "ORIGINAL", "OWNED", "PATCH", "PATH", "PROCEDURE", "PUBLIC", "PUZZLE", "QEMU", "READ", "REASONING", "RECORD", "REPORT", "REPRODUCED", "REPRODUCTION", "REQUIRED", "RESOURCES", "RETURN", "REVIEW", "RUN", "SECOND", "SHA", "SIGNAL", "STATUS", "STUDENT", "SUCCESS", "SVM", "THAT", "THINGS", "TITLE", "TO", "TRACE", "TRY", "UNCERTAINTY", "UNIVERSITY", "UP", "VM", "VMCB", "VMRUN", "YEAR", "address", "bytes", "data", "event", "event_inj", "function", "guest", "host", "hypervisor", "kernel", "kvm", "kvm_nested_intr_vmexit", "kvm_nested_vmrun", "kvm_userspace_exit", "migration", "nested_run_pending", "nested_vmexit", "page", "race", "source", "state", "vmexit"]
+NUMBERS WITHOUT VERIFIED DERIVATION: ["01", "02", "03", "04", "05", "06", "07", "08", "09", "0x80000036", "10", "12", "13", "170", "20", "2017", "2021", "2023", "367", "40", "456", "54", "6", "60"]
+LIMIT: first-use names are lexical candidates, not a complete semantic analysis.
+END_FILE
+

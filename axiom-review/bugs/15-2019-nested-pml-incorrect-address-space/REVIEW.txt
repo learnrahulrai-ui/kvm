@@ -1,0 +1,55 @@
+SOURCE_COMMIT 32198a0ade443b1b6c037a3a52fbc472abab801e
+FOLDER bugs/15-2019-nested-pml-incorrect-address-space
+AXIOM 1: 0 denotes no counted objects.
+AXIOM 2: 1 denotes one object added to 0.
+RULE: each new symbol needs an earlier definition.
+RULE: each numerical result needs an earlier calculation.
+RULE: a compiler result is not a proof of the subject matter.
+METHOD: each original source line is copied with its original line number.
+METHOD: FIRST_USE and NUMBERS identify candidates requiring proof.
+LIMIT: this is a conservative rejection, not a complete human semantic review.
+FOLDER_RESULT REJECTED
+
+FILE bugs/15-2019-nested-pml-incorrect-address-space/CASE.txt
+GIT_BLOB f25a9691bb15750de21191cf7d6aff6014957e52
+MODE 100644
+BYTES 3525
+SOURCE_LINES 32
+L00001 REJECTED TEXT="B15 | KVM nested dirty logging records L2 addresses where L1 addresses are required" FIRST_USE=["B15", "KVM", "L2", "L1"] NUMBERS=["5"] GAP="first line is not a proved axiom from counting"
+L00002 REJECTED TEXT="PUBLIC ORIGIN YEAR: 2019" FIRST_USE=["PUBLIC", "ORIGIN", "YEAR"] NUMBERS=["2019"] GAP="no verified preceding-line derivation of this assertion"
+L00003 REJECTED TEXT="EVIDENCE STATUS: CONFIRMED_KVM_PATCH_WITH_REGRESSION_TEST" FIRST_USE=["EVIDENCE", "STATUS", "CONFIRMED_KVM_PATCH_WITH_REGRESSION_TEST"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00004 REJECTED TEXT="CAN TRY ON SECOND LAPTOP: REQUIRES_INTEL_VMX_PML_NOT_AMD_RYZEN" FIRST_USE=["CAN", "TRY", "ON", "SECOND", "LAPTOP", "REQUIRES_INTEL_VMX_PML_NOT_AMD_RYZEN"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00005 REJECTED TEXT="LOCAL REPRODUCED: NO_REPRO_RUN" FIRST_USE=["LOCAL", "REPRODUCED", "NO_REPRO_RUN"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00006 REJECTED TEXT="CORE FAILURE, NOT AN ERROR-RETURN EXERCISE:" FIRST_USE=["CORE", "FAILURE", "NOT", "AN", "ERROR", "RETURN", "EXERCISE"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00007 REJECTED TEXT="Hardware EPT page-modification logging reports L2 guest-physical page numbers. When KVM uses shadow paging to run L2 under L1 and must record dirty memory for migration of L1, these numbers are NOT in L1 guest-physical address space; copying them into L1's dirty map loses the actual modified L1 pages. Correct mode has to force shadow-SPTE write protection to trap writes and derive the L1 address." FIRST_USE=["Hardware", "EPT", "page", "guest", "physical", "memory", "migration", "address", "SPTE"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00008 REJECTED TEXT="OBSERVED OPERATION THAT MATTERS:" FIRST_USE=["OBSERVED", "OPERATION", "THAT", "MATTERS"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00009 REJECTED TEXT="L2 writes -> hardware PML records L2 GPA -> KVM dirty bitmap belongs to L1 GPA -> wrong bit -> migration omits modified L1 page -> restored guest has old content" FIRST_USE=["hardware", "PML", "GPA", "bitmap"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00010 REJECTED TEXT="FUNCTION-TO-FUNCTION REASONING PATH:" FIRST_USE=["FUNCTION", "TO", "REASONING", "PATH"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00011 REJECTED TEXT="L2 writes -> hardware PML records L2 GPA -> KVM dirty bitmap belongs to L1 GPA -> wrong bit -> migration omits modified L1 page -> restored guest has old content" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00012 REJECTED TEXT="ORIGINAL REPORT / PATCH (READ BODY NOT TITLE): https://lists.openwall.net/linux-kernel/2019/09/26/690" FIRST_USE=["ORIGINAL", "REPORT", "PATCH", "READ", "BODY", "TITLE", "kernel"] NUMBERS=["2019", "09", "26", "690"] GAP="no verified preceding-line derivation of this assertion"
+L00013 REJECTED TEXT="REVIEW AND FOLLOW-UP: 2019-09-26 Paolo Bonzini patch + 2019-09-27 v2 (https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg2114004.html) -> SPTE write-protect correction -> tools/testing/selftests/kvm/x86_64/vmx_dirty_log_test.c reproduces wrong dirty logging" FIRST_USE=["REVIEW", "AND", "FOLLOW", "UP", "kvm", "x86_64", "vmx_dirty_log_test"] NUMBERS=["2019", "09", "26", "27", "114004", "6", "4"] GAP="no verified preceding-line derivation of this assertion"
+L00014 REJECTED TEXT="FIX OR UNCERTAINTY: Original shadow paging corrupts/omits L1 dirty tracking; protected SPTE forcing EPT violations yields L1 GPA dirties. Verify read->write sequence in the regression test." FIRST_USE=["FIX", "OR", "UNCERTAINTY", "test"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00015 REJECTED TEXT="REPRODUCTION PROCEDURE AND REQUIRED RESOURCES:" FIRST_USE=["REPRODUCTION", "PROCEDURE", "REQUIRED", "RESOURCES"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00016 REJECTED TEXT="Requires Intel VMX with PML available to the disposable host, an affected KVM tree before 2019 patch, and nested L1/L2 with dirty tracking. Use original tools/testing/selftests/kvm/x86_64/vmx_dirty_log_test.c after checkout of the fix series and compare against the old tree. The test verifies the real dirty-logging mechanism; do not label a failing test as the bug itself. A Ryzen SVM machine does not provide Intel PML." FIRST_USE=["VMX", "host", "SVM"] NUMBERS=["2019", "6", "4"] GAP="no verified preceding-line derivation of this assertion"
+L00017 REJECTED TEXT="MEANINGFUL SUCCESS/FAILURE SIGNAL:" FIRST_USE=["MEANINGFUL", "SUCCESS", "SIGNAL"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00018 REJECTED TEXT="Original shadow paging corrupts/omits L1 dirty tracking; protected SPTE forcing EPT violations yields L1 GPA dirties. Verify read->write sequence in the regression test." FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00019 REJECTED TEXT="EXACT UNIVERSITY ASSIGNMENTS INVOLVED: 11-unc-comp790-vmm; 13-ut-cs360v-jos-hypervisor; 10-iitb-2023-kvm-a3" FIRST_USE=["EXACT", "UNIVERSITY", "ASSIGNMENTS", "INVOLVED", "hypervisor"] NUMBERS=["11", "90", "13", "60", "10", "2023"] GAP="no verified preceding-line derivation of this assertion"
+L00020 REJECTED TEXT="STUDENT-OWNED CORE LOGICAL PUZZLE:" FIRST_USE=["STUDENT", "OWNED", "LOGICAL", "PUZZLE"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00021 REJECTED TEXT="Draw L2 GPA -> L1 GPA -> host physical mapping. Find the layer that owns the dirty bitmap and derive why PML hardware page index is wrong without copying KVM's fix." FIRST_USE=["mapping"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00022 REJECTED TEXT="FIRST THINGS TO DO BY HAND:" FIRST_USE=["FIRST", "THINGS", "DO", "BY", "HAND"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00023 REJECTED TEXT="01. DRAW the actual user operation and every transition until the first lost state." FIRST_USE=["DRAW", "state"] NUMBERS=["01"] GAP="no verified preceding-line derivation of this assertion"
+L00024 REJECTED TEXT="02. FILL the exact function names from the pinned source tree, not current master source." FIRST_USE=["FILL", "function", "source"] NUMBERS=["02"] GAP="no verified preceding-line derivation of this assertion"
+L00025 REJECTED TEXT="03. RECORD which participant owns each address, flag, page and completion." FIRST_USE=["RECORD"] NUMBERS=["03"] GAP="no verified preceding-line derivation of this assertion"
+L00026 REJECTED TEXT="04. TRACE a second concurrent actor when the bug requires a race." FIRST_USE=["TRACE", "race"] NUMBERS=["04"] GAP="no verified preceding-line derivation of this assertion"
+L00027 REJECTED TEXT="05. IDENTIFY the first false inference, including early proposals refuted in review." FIRST_USE=["IDENTIFY"] NUMBERS=["05"] GAP="no verified preceding-line derivation of this assertion"
+L00028 REJECTED TEXT="06. RECORD machine CPU, KVM API and kernel git SHA before running a nested workload." FIRST_USE=["CPU", "API", "SHA"] NUMBERS=["06"] GAP="no verified preceding-line derivation of this assertion"
+L00029 REJECTED TEXT="07. TRACE expected versus observed vCPU progress, migration states or dirty pages." FIRST_USE=[] NUMBERS=["07"] GAP="no verified preceding-line derivation of this assertion"
+L00030 REJECTED TEXT="08. COMPARE original failing revision against the exact reviewed correction." FIRST_USE=["COMPARE"] NUMBERS=["08"] GAP="no verified preceding-line derivation of this assertion"
+L00031 REJECTED TEXT="09. NEVER claim the preflight build proves the failure or that the source project is security-free without checking." FIRST_USE=["NEVER"] NUMBERS=["09"] GAP="no verified preceding-line derivation of this assertion"
+L00032 REJECTED TEXT="10. RUN all liveness experiments in a disposable VM with serial console and throwaway disks." FIRST_USE=["RUN", "VM"] NUMBERS=["10"] GAP="no verified preceding-line derivation of this assertion"
+RESULT REJECTED: line-level axiomatic proof not established; flagged=32/32
+NEW THINGS INTRODUCED WITHOUT DERIVATION: ["AN", "AND", "API", "ASSIGNMENTS", "B15", "BODY", "BY", "CAN", "COMPARE", "CONFIRMED_KVM_PATCH_WITH_REGRESSION_TEST", "CORE", "CPU", "DO", "DRAW", "EPT", "ERROR", "EVIDENCE", "EXACT", "EXERCISE", "FAILURE", "FILL", "FIRST", "FIX", "FOLLOW", "FUNCTION", "GPA", "HAND", "Hardware", "IDENTIFY", "INVOLVED", "KVM", "L1", "L2", "LAPTOP", "LOCAL", "LOGICAL", "MATTERS", "MEANINGFUL", "NEVER", "NOT", "NO_REPRO_RUN", "OBSERVED", "ON", "OPERATION", "OR", "ORIGIN", "ORIGINAL", "OWNED", "PATCH", "PATH", "PML", "PROCEDURE", "PUBLIC", "PUZZLE", "READ", "REASONING", "RECORD", "REPORT", "REPRODUCED", "REPRODUCTION", "REQUIRED", "REQUIRES_INTEL_VMX_PML_NOT_AMD_RYZEN", "RESOURCES", "RETURN", "REVIEW", "RUN", "SECOND", "SHA", "SIGNAL", "SPTE", "STATUS", "STUDENT", "SUCCESS", "SVM", "THAT", "THINGS", "TITLE", "TO", "TRACE", "TRY", "UNCERTAINTY", "UNIVERSITY", "UP", "VM", "VMX", "YEAR", "address", "bitmap", "function", "guest", "hardware", "host", "hypervisor", "kernel", "kvm", "mapping", "memory", "migration", "page", "physical", "race", "source", "state", "test", "vmx_dirty_log_test", "x86_64"]
+NUMBERS WITHOUT VERIFIED DERIVATION: ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "114004", "13", "2019", "2023", "26", "27", "4", "5", "6", "60", "690", "90"]
+LIMIT: first-use names are lexical candidates, not a complete semantic analysis.
+END_FILE
+
