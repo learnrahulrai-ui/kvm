@@ -296,7 +296,7 @@ FALSIFY: What measurement, source line, or alternate execution path would dispro
 PRIMARY EVIDENCE: KN (Linux mmu_notifier header and contracts); QV (QEMU VFIO migration documentation, P2P and states)
 
 Q35 Pre-copy cannot converge at the write rate
-NUMBERS: Constructed 1 GiB dirty each second, 800 MiB/s migration link. First pass creates at least 1 GiB of newly dirtied traffic during the next second under constant dirtying.
+NUMBERS: Constructed 1 GiB dirty each second, 800 MiB/s migration link. First pass creates up to 1 GiB of distinct newly dirty pages per second under the stated workload; repeated writes to the same pages do not each require a separate copy.
 WHY / WHERE / HOW / WHICH: Derive divergence or stop-and-copy selection; anchor in the 2005 paper's 3.5-second pathological experiment.
 FIRST WRONG INFERENCE: More pre-copy rounds always shorten downtime.
 ANNOYING CONCEPT TO REMOVE: A local observation does not prove an invariant across the boundary; name the actor, time and data that changed.
@@ -546,3 +546,11 @@ CAVEATS AND NEGATIVE EVIDENCE
 - SLM's experimental method and capacity results apply to its implementation; it does not prove ordinary QEMU never supports any sharing-aware optimization in later releases.
 - The user's request to start in the middle is honored: topics 11-20 appear first, followed by 1-10, then the new deeper questions.
 - Do not interpret the 40 added hypotheticals as a forecast of a specific interviewer's question list.
+
+PRIMARY SPECIFICATION DETAILS CROSS-CHECKED AFTER DRAFT
+- ESX idle sampler: source §5.3 describes two exponentially weighted historical estimates and an incremental intra-period version of the fast estimate. The maximum of THREE numbers reacts quickly to new activity.
+- Virtio 1.3 free-page reporting: after the device ACKs the reporting_vq descriptor, the guest can reuse reported free pages WITHOUT a deflation queue. Before ACK, driver MUST NOT use them; without PAGE_POISON, it MUST treat them as uninitialized. See VIR §5.5.6.7.
+- KVM mmu_notifier: invalidate_range_start/end cover an interval in which the VM removes PTEs and possibly frees pages. A secondary MMU must prevent new mappings during the interval; if final page ref is dropped later it must flush its secondary TLB first. See KN callback comments.
+- SHARDS fixed-size histogram counts: when the threshold changes, per-histogram-bucket counts are rescaled lazily using the ratio of old and new sampling thresholds. Merely rescaling reuse distance is not the complete constant-space algorithm. See SH §§2.3.2 and 3.1.
+- KVM_EXIT_IO and KVM_EXIT_MMIO completion: the Linux API says the operations are completed only after userspace re-enters KVM_RUN; migration code must complete the pending exit before saving. See KB section documenting struct kvm_run.
+- The 2002 paper does NOT give a universal fixed-cycle overhead for the guest-side balloon driver. It reports a historical dbench test with 40 clients and measured 4.4% overhead at 128 MB ballooned size versus native configuration, with older Pentium III hardware.
