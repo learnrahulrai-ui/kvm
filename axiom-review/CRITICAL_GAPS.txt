@@ -1,0 +1,20 @@
+SOURCE_COMMIT 32198a0ade443b1b6c037a3a52fbc472abab801e
+These are specific source observations. The line ledger contains every line, including lines not listed here.
+assignments/01-wisc-2018-lottery/src/logic_drill.c:2 says INT64_MIN means unimplemented before defining the signed 64-bit minimum or its use as a sentinel.
+assignments/01-wisc-2018-lottery/src/logic_drill.c:12 declares value[6] without first deriving the six independent input meanings.
+assignments/01-wisc-2018-lottery/src/logic_drill.c:18 returns INT64_MIN. This is a deliberate blank, not a solution.
+The 22 assignment directories contain 10 such unfinished student functions each. A passing C build does not prove a course kernel implementation.
+assignments/01-wisc-2018-lottery/FILL_BLANKS.txt:12 introduces ticket validation and input numbers before deriving the ticket rule.
+assignments/19-uiuc-cs423-mp3/kernel_module/mp3_profiler.c:19 prints NOT_IMPLEMENTED. The module is not a functioning fault profiler.
+waldspurger-lab/src/idle_tax.c:36 calculates k=1/(1-x[6]) without first proving why this formula models the policy or defining x[6] in terms of a physical mechanism.
+waldspurger-lab/src/mrc.c:66 scales a sample distance by 1000/rate. This is an estimate with assumptions, not an exact result for arbitrary workloads.
+waldspurger-lab/src/scheduler.c:8 and :11-14 introduce constants for a pseudo-random generator without a preceding proof of its period or statistical properties.
+waldspurger-lab/src/ksm_demo.c requests KSM eligibility. Eligibility does not prove the host actually merged any pages.
+bugs/src/host_preflight.c reads kernel features. It does not reproduce any of the historical failures.
+bugs/01-2016-thp-amd-guest-corruption/CASE.txt reports a historical failure; the precise upstream causal commit remains unestablished.
+bugs/12-2026-f2fs-writeback-hang/CASE.txt does not establish a confirmed root cause or a laptop reproduction.
+research/2026-11-futex-pi2/futex_pi2_real.c:1-4 records a public reproducer and an unexecuted or blocked outcome. This is not evidence of local bug reproduction.
+assignments/ERROR-AUDIT.md:18 says the requested image asset set has not been committed. The frozen source tree contains 110 PNG images. The old statement is now out of date; image correctness remains unverified.
+The 110 PNG files have not been decoded or visually proofread. The 88 SVG files are copied line by line, but rendered geometry has not been checked.
+The research text files contain historical and factual claims whose linked primary sources were not re-opened during this line audit. Do not convert those claims to DIRECTLY VERIFIED.
+NEW THINGS INTRODUCED WITHOUT DERIVATION: NONEMPTY. OVERALL STATUS REJECTED.

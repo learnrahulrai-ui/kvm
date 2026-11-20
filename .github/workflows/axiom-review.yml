@@ -1,0 +1,37 @@
+name: Axiom source-line inventory
+on:
+  push:
+    branches:
+      - 'review/axiom-line-audit-*'
+    paths:
+      - 'axiom-review/generate.py'
+      - '.github/workflows/axiom-review.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  inventory:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Generate exact source-line ledger for frozen commit
+        run: python3 axiom-review/generate.py
+      - name: Check ledger can be regenerated
+        run: python3 axiom-review/generate.py --check
+      - name: Preserve complete review as downloadable artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: axiom-source-line-review
+          path: axiom-review/
+          retention-days: 30
+      - name: Commit review reports to this review branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add axiom-review/INDEX.txt axiom-review/assignments axiom-review/bugs axiom-review/research axiom-review/waldspurger-lab axiom-review/_ROOT axiom-review/.github
+          if ! git diff --cached --quiet; then
+            git commit -m "audit: generated source-line proof-gap reports for frozen 525-file snapshot"
+            git push
+          fi
