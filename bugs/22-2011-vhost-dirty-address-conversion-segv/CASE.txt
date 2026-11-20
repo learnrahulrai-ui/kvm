@@ -1,0 +1,39 @@
+B22 | Wrong address conversion in vhost migration dirty tracking segfaults QEMU
+PUBLIC ORIGIN YEAR: 2011 (pre-2015)
+EVIDENCE STATUS: RHEL_BUG_REPRODUCED_PATCHED_VERIFIED_WITH_GDB
+CAN TRY ON SECOND LAPTOP: ORIGINAL_GDB_RECIPE_OLD_DISTRO / HISTORICAL_RHEL_6_1_QEMU_BINARY
+LOCAL REPRODUCED: NO_REPRO_RUN
+ORIGINAL SOURCE: https://bugzilla.redhat.com/show_bug.cgi?id=684076
+PATCH / REVIEW: https://bugzilla.redhat.com/show_bug.cgi?id=684076#c25
+PINNED VERSION: qemu-kvm-0.12.1.2 around pre-2.151.el6; fixed package 0.12.1.2-2.151.el6
+END-USER FAILURE: Wrong address conversion in vhost migration dirty tracking segfaults QEMU
+EARLIEST WRONG ASSUMPTION:
+vhost_client_sync_dirty_bitmap converts a dirty range from a vhost-registered memory region into QEMU guest address space incorrectly. Mapping the wrong range can index beyond valid dirty bitmap memory.
+CALL / DATA / STATE PATH:
+migration snapshot -> vhost_client_sync_dirty_bitmap -> cpu_physical_memory_set_dirty with wrong range -> cpu_physical_memory_get_dirty -> QEMU SIGSEGV
+ACTUAL REPRODUCTION OR SOURCE-BOUND PLAN:
+Use two disposable old QEMU VMs, live migrate with vhost=on. Original report shows a GDB call stack in cpu_physical_memory_set_dirty (cpu-all.h:909) and vhost_client_sync_dirty_bitmap (hw/vhost.c:71); verify region bounds/offsets at those frames. QEMU builds from 2011 require older toolchains; modern QEMU does not prove this legacy failure.
+FAILURE SIGNAL AND CONTROL:
+Source QEMU SIGSEGV or migration lasting >600s in reporter's initial cases; updated package tests passed.
+MANUAL INPUT AND QUESTION:
+CONSTRUCTED: vhost registered base=0x4000, offset=0x2000, guest backing base=0xA000. Derive which base must be added when emitting guest dirty bits; do not conflate QEMU VA and GPA.
+ASSIGNMENT MAPPING: 08-iitb-cs695-kvm-pa1, 09-iitb-cs695-libvirt-pa2, 20-cmu-15213-cache-lab
+FIRST-PRINCIPLES REPRODUCTION CONTRACT
+Read the actual original patch code; identify the reader and writer of shared state. No unsupported cross-version inferences.
+CALCULATE page size from sysconf(_SC_PAGESIZE) or in-guest PAGE_SIZE, never use a made-up kernel address as an observed value.
+Use -O0 -g3 for standalone userspace, but retain kernel's required build optimization plus -g for old in-kernel tests.
+Configure disposable VM, snapshot image, serial console, host watchdog and external process timeout.
+Capture: host kernel sha + QEMU git sha + guest kernel version + CPU virtualization flags + exact commands + guest logs + host trace + before-and-after test.
+Write only mechanism-specific changes. Never alter the expected test result after observing failure.
+
+STUDENT-OWNED TEN LOGIC TASKS; DO NOT SUBSTITUTE BUILD SUCCESS FOR CORRECTNESS:
+01. FILL exact root function and first call from historical source revision.
+02. DRAW the first state read and its owner before any other actor acts.
+03. TRACE the competing state writer or failing service; identify when it runs.
+04. CALCULATE expected and observed state using the supplied concrete input.
+05. IDENTIFY earliest state after which both actors' assumptions cannot hold.
+06. RECREATE one genuine source-level breakpoint or tracepoint from original code.
+07. RECORD what user observed and its link to the internal state mismatch.
+08. DERIVE a negative control by disabling exactly the triggering mechanism.
+09. MEASURE before and after the historical patch; preserve all other conditions.
+10. EXPLAIN why the patch's correction does not prove other VM configurations are fixed.

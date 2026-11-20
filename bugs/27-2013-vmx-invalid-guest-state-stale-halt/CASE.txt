@@ -1,0 +1,39 @@
+B27 | KVM VMX invalid-state emulation fails to clear pending halt and later hangs guest
+PUBLIC ORIGIN YEAR: 2013 (pre-2015)
+EVIDENCE STATUS: UPSTREAM_COMMIT_8D76_AND_REPORTER_TEST_VERIFIED
+CAN TRY ON SECOND LAPTOP: INTEL_ONLY_OLD_KERNEL / INTEL_VMX_REQUIRED_NOT_AMD_SVM
+LOCAL REPRODUCED: NO_REPRO_RUN
+ORIGINAL SOURCE: https://lkml.iu.edu/1306.0/01022.html
+PATCH / REVIEW: https://github.com/torvalds/linux/commit/8d76c49e9ffeee839bc0b7a3278a23f99101263e
+PINNED VERSION: Kernel before upstream commit 8d76c49 from May 2013; Intel VMX and legacy vm86/invalid guest state required
+END-USER FAILURE: KVM VMX invalid-state emulation fails to clear pending halt and later hangs guest
+EARLIEST WRONG ASSUMPTION:
+Invalid guest-state emulation loop never consumed halt_request. An unrelated later vm86 #GP emulated instruction could be misinterpreted as halted, and the original loop could use 100% host CPU.
+CALL / DATA / STATE PATH:
+handle_invalid_guest_state -> halt_request set and unhandled -> emulator keeps looping -> later vm86 #GP instruction -> stale halt_request causes kvm_emulate_halt on wrong operation -> guest hang
+ACTUAL REPRODUCTION OR SOURCE-BOUND PLAN:
+Disposable Intel KVM host with kernel immediately before patch; run Linux guest capable of legacy vm86/invalid guest-state emulation and repeated HLT/exception transitions. Attach perf to KVM VMX handle_invalid_guest_state. Specific guest reproducer is not public in patch; do not claim ordinary AMD Ryzen reproduces.
+FAILURE SIGNAL AND CONTROL:
+100% CPU invalid-state loop and/or stale halted guest; patch processes halt_request in invalid-state emulation path.
+MANUAL INPUT AND QUESTION:
+CONSTRUCTED: halt_request=1 after event A, instruction B has no halt semantics. Compare consumed flag expected before B with actual old implementation flag and trace erroneous branch.
+ASSIGNMENT MAPPING: 11-unc-comp790-vmm, 10-iitb-2023-kvm-a3, 21-biswas-oslab-kvm
+FIRST-PRINCIPLES REPRODUCTION CONTRACT
+Read the actual original patch code; identify the reader and writer of shared state. No unsupported cross-version inferences.
+CALCULATE page size from sysconf(_SC_PAGESIZE) or in-guest PAGE_SIZE, never use a made-up kernel address as an observed value.
+Use -O0 -g3 for standalone userspace, but retain kernel's required build optimization plus -g for old in-kernel tests.
+Configure disposable VM, snapshot image, serial console, host watchdog and external process timeout.
+Capture: host kernel sha + QEMU git sha + guest kernel version + CPU virtualization flags + exact commands + guest logs + host trace + before-and-after test.
+Write only mechanism-specific changes. Never alter the expected test result after observing failure.
+
+STUDENT-OWNED TEN LOGIC TASKS; DO NOT SUBSTITUTE BUILD SUCCESS FOR CORRECTNESS:
+01. FILL exact root function and first call from historical source revision.
+02. DRAW the first state read and its owner before any other actor acts.
+03. TRACE the competing state writer or failing service; identify when it runs.
+04. CALCULATE expected and observed state using the supplied concrete input.
+05. IDENTIFY earliest state after which both actors' assumptions cannot hold.
+06. RECREATE one genuine source-level breakpoint or tracepoint from original code.
+07. RECORD what user observed and its link to the internal state mismatch.
+08. DERIVE a negative control by disabling exactly the triggering mechanism.
+09. MEASURE before and after the historical patch; preserve all other conditions.
+10. EXPLAIN why the patch's correction does not prove other VM configurations are fixed.

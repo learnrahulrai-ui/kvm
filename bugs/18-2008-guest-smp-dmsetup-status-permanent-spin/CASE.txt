@@ -1,0 +1,40 @@
+B18 | Prefetch before write-protection leaves a guest page permanently not-present in shadow
+PUBLIC ORIGIN YEAR: 2008 (pre-2015)
+EVIDENCE STATUS: REPORTED_LOOP_REPRO; patch applied by Avi Kivity
+CAN TRY ON SECOND LAPTOP: GOOD_ORIGINAL_REPRO_OLD_KERNEL / OLD_SHADOW_MMU_SMP; guest dmsetup required
+LOCAL REPRODUCED: NO_REPRO_RUN
+ORIGINAL SOURCE: https://sourceforge.net/p/kvm/mailman/message/19067975/
+PATCH / REVIEW: https://lkml.rescloud.iu.edu/0804.2/0603.html
+REVIEW: https://sourceforge.net/p/kvm/mailman/message/19067979/
+PINNED VERSION: KVM just before April 2008 correction, SMP Linux guest with device-mapper tools; kvm-65 announcement also lists this fix
+END-USER FAILURE: Prefetch before write-protection leaves a guest page permanently not-present in shadow
+EARLIEST WRONG ASSUMPTION:
+kvm_mmu_get_page prepopulated a shadow PTE while the guest page-table page was still writable. Guest marked a PTE present afterward; KVM's prefetched notrap entry remained stale and KVM could not intercept the guest update.
+CALL / DATA / STATE PATH:
+kvm_mmu_get_page -> mmu.prefetch_page -> VCPU1 makes guest PTE present -> rmap_write_protect arrives too late -> guest fault loops without repair
+ACTUAL REPRODUCTION OR SOURCE-BOUND PLAN:
+Original reproducer is a looping `dmsetup status` in an SMP guest. Build old, pre-patch KVM in an isolated L0 virtual machine capable of nested virtualization, run two guest CPUs, create/activate device-mapper targets on disposable guest storage, and repeat status while capturing fault traces. Compare against a build containing only the patch.
+FAILURE SIGNAL AND CONTROL:
+Guest hangs/spins in pre-fix report; change order to protect before prefetch and verify it no longer occurs under same workload.
+MANUAL INPUT AND QUESTION:
+CONSTRUCTED: shadow entry cached nonpresent while current guest PTE becomes present=1. Calculate truth value of entry equality after the guest update. Identify why performing the same operations in opposite order changes visibility.
+ASSIGNMENT MAPPING: 08-iitb-cs695-kvm-pa1, 11-unc-comp790-vmm, 14-mit-61810-cow, 16-mit-61810-superpages
+FIRST-PRINCIPLES REPRODUCTION CONTRACT
+Read the actual original patch code; identify the reader and writer of shared state. No unsupported cross-version inferences.
+CALCULATE page size from sysconf(_SC_PAGESIZE) or in-guest PAGE_SIZE, never use a made-up kernel address as an observed value.
+Use -O0 -g3 for standalone userspace, but retain kernel's required build optimization plus -g for old in-kernel tests.
+Configure disposable VM, snapshot image, serial console, host watchdog and external process timeout.
+Capture: host kernel sha + QEMU git sha + guest kernel version + CPU virtualization flags + exact commands + guest logs + host trace + before-and-after test.
+Write only mechanism-specific changes. Never alter the expected test result after observing failure.
+
+STUDENT-OWNED TEN LOGIC TASKS; DO NOT SUBSTITUTE BUILD SUCCESS FOR CORRECTNESS:
+01. FILL exact root function and first call from historical source revision.
+02. DRAW the first state read and its owner before any other actor acts.
+03. TRACE the competing state writer or failing service; identify when it runs.
+04. CALCULATE expected and observed state using the supplied concrete input.
+05. IDENTIFY earliest state after which both actors' assumptions cannot hold.
+06. RECREATE one genuine source-level breakpoint or tracepoint from original code.
+07. RECORD what user observed and its link to the internal state mismatch.
+08. DERIVE a negative control by disabling exactly the triggering mechanism.
+09. MEASURE before and after the historical patch; preserve all other conditions.
+10. EXPLAIN why the patch's correction does not prove other VM configurations are fixed.

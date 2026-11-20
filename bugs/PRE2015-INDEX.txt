@@ -1,0 +1,60 @@
+B17 (2008) KVM SMP shadow table caches a guest PTE that a sibling has replaced
+ORIGINAL https://lkml.rescloud.iu.edu/hypermail/linux/kernel/0801.0/0114.html
+REPRO FEASIBILITY HISTORICAL_REPRO_HARD
+UNIVERSITY 08-iitb-cs695-kvm-pa1, 11-unc-comp790-vmm, 12-unc-2017-amd-svm, 14-mit-61810-cow
+
+B18 (2008) Prefetch before write-protection leaves a guest page permanently not-present in shadow
+ORIGINAL https://sourceforge.net/p/kvm/mailman/message/19067975/
+REPRO FEASIBILITY GOOD_ORIGINAL_REPRO_OLD_KERNEL
+UNIVERSITY 08-iitb-cs695-kvm-pa1, 11-unc-comp790-vmm, 14-mit-61810-cow, 16-mit-61810-superpages
+
+B19 (2009) virtio_net completed transmit queue can remain stopped with no pending work
+ORIGINAL https://bugzilla.redhat.com/show_bug.cgi?id=524651
+REPRO FEASIBILITY GOOD_GUEST_KERNEL_EXERCISE
+UNIVERSITY 19-uiuc-cs423-mp3, 21-biswas-oslab-kvm, 07-gatech-6210-vm-coordinator
+
+B20 (2010) KVM dirty/write-protect state permits old guest memory after live migration
+ORIGINAL https://bugzilla.redhat.com/show_bug.cgi?id=647367
+REPRO FEASIBILITY ORIGINAL_REPRO_NEEDS_OLD_INTEL_NON_EPT
+UNIVERSITY 08-iitb-cs695-kvm-pa1, 18-umich-eecs482-pager, 11-unc-comp790-vmm
+
+B21 (2010) Live migration loses guest changes made by vhost-net after final dirty-page scan
+ORIGINAL https://bugzilla.redhat.com/show_bug.cgi?id=623552
+REPRO FEASIBILITY GOOD_WITH_OLD_QEMU_AND_GUEST
+UNIVERSITY 08-iitb-cs695-kvm-pa1, 09-iitb-cs695-libvirt-pa2, 07-gatech-6210-vm-coordinator, 20-cmu-15213-cache-lab
+
+B22 (2011) Wrong address conversion in vhost migration dirty tracking segfaults QEMU
+ORIGINAL https://bugzilla.redhat.com/show_bug.cgi?id=684076
+REPRO FEASIBILITY ORIGINAL_GDB_RECIPE_OLD_DISTRO
+UNIVERSITY 08-iitb-cs695-kvm-pa1, 09-iitb-cs695-libvirt-pa2, 20-cmu-15213-cache-lab
+
+B23 (2011) Pausing a KVM guest creates a false soft-lockup diagnosis and breaks naive clock corrections
+ORIGINAL https://lkml.iu.edu/1111.3/02146.html
+REPRO FEASIBILITY GOOD_SAFE_GUEST_EXPERIMENT
+UNIVERSITY 10-iitb-2023-kvm-a3, 06-wisc-2019-mlfq, 19-uiuc-cs423-mp3
+
+B24 (2012) QEMU zero-page optimization discards neighboring guest bytes if host page is larger
+ORIGINAL https://github.com/qemu/qemu/commit/f1a2195ec327fd2b837a3539623ee431d133f03c
+REPRO FEASIBILITY NO_RYZEN_REPRO_HARDWARE
+UNIVERSITY 15-mit-61810-mmap, 16-mit-61810-superpages, 11-unc-comp790-vmm
+
+B25 (2013) QEMU skips a source zero page whose destination still contains firmware bytes
+ORIGINAL https://github.com/qemu/qemu/commit/f1c72795af573b24a7da5eb52375c9aba8a37972
+REPRO FEASIBILITY GOOD_SOFTWARE_ONLY_OLD_QEMU
+UNIVERSITY 09-iitb-cs695-libvirt-pa2, 08-iitb-cs695-kvm-pa1, 18-umich-eecs482-pager
+
+B26 (2013) QEMU aio_poll treats no immediate progress as no pending I/O
+ORIGINAL https://github.com/qemu/qemu/commit/2ea9b58f0bc62445b7ace2381b4c4db7d5597e19
+REPRO FEASIBILITY GOOD_SOFTWARE_ONLY_CONDITIONAL
+UNIVERSITY 09-iitb-cs695-libvirt-pa2, 07-gatech-6210-vm-coordinator, 21-biswas-oslab-kvm
+
+B27 (2013) KVM VMX invalid-state emulation fails to clear pending halt and later hangs guest
+ORIGINAL https://lkml.iu.edu/1306.0/01022.html
+REPRO FEASIBILITY INTEL_ONLY_OLD_KERNEL
+UNIVERSITY 11-unc-comp790-vmm, 10-iitb-2023-kvm-a3, 21-biswas-oslab-kvm
+
+B28 (2014) Linux NUMA scan performs expensive KVM MMU invalidations over holes in huge guest memory
+ORIGINAL https://lkml.iu.edu/hypermail/linux/kernel/1402.2/01745.html
+REPRO FEASIBILITY HUGE_VM_ONLY
+UNIVERSITY 08-iitb-cs695-kvm-pa1, 19-uiuc-cs423-mp3, 15-mit-61810-mmap, 07-gatech-6210-vm-coordinator
+

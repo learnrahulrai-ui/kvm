@@ -29,7 +29,7 @@ jobs:
           from pathlib import Path
           import re
           cases = sorted(Path('bugs').glob('[0-9][0-9]-*/CASE.txt'))
-          assert len(cases) == 16, len(cases)
+          assert len(cases) == 28, len(cases)
           expected = set()
           for i, p in enumerate(cases, 1):
               src = p.read_text()
@@ -47,5 +47,5 @@ jobs:
               if ' | DIRECT=' in line:
                   references = set(re.findall(r'B\d\d', line))
                   assert references <= expected, (line, references - expected)
-          print('CATALOG VERIFIED: 16 source-anchored cases, 22 course mappings, no claims of local reproduction')
+          print('CATALOG VERIFIED: 28 source-anchored cases, 22 course mappings, no claims of local reproduction')
           PY

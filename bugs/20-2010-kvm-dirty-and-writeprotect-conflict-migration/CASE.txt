@@ -1,0 +1,39 @@
+B20 | KVM dirty/write-protect state permits old guest memory after live migration
+PUBLIC ORIGIN YEAR: 2010 (pre-2015)
+EVIDENCE STATUS: REPRODUCED_UPSTREAM_2_6_36_BY_AUTHOR; fix SHA in KVM tree reported
+CAN TRY ON SECOND LAPTOP: ORIGINAL_REPRO_NEEDS_OLD_INTEL_NON_EPT / HISTORICAL_INTEL_SHADOW_MMU; AMD compatibility unproven
+LOCAL REPRODUCED: NO_REPRO_RUN
+ORIGINAL SOURCE: https://bugzilla.redhat.com/show_bug.cgi?id=647367
+PATCH / REVIEW: https://bugzilla.redhat.com/show_bug.cgi?id=647367#c3
+PINNED VERSION: Linux 2.6.36 upstream affected, RHEL 6.0; reporter names KVM commit ae8894c00b560bde4cbbc2115f532df997e15d14, not found in torvalds/linux mirror (verify KVM-specific tree)
+END-USER FAILURE: KVM dirty/write-protect state permits old guest memory after live migration
+EARLIEST WRONG ASSUMPTION:
+Dirty logging and write-protection updates do not maintain the invariant that each page is either marked dirty for transfer or protected so any next write will be noticed. A page's post-copy changes escape the final migration bitmap.
+CALL / DATA / STATE PATH:
+guest network stress -> KVM write-protects guest memory -> competing modifications/bitmap tracking -> migration copies stale page -> destination sees old bytes -> guest/QEMU crashes
+ACTUAL REPRODUCTION OR SOURCE-BOUND PLAN:
+Original reporter: Intel NON-EPT system; RHEL6 guest with virtio and vhost-net; netperf host→guest while repeatedly migrating. Observed about 1/4 runs. Must disable hardware EPT to recreate exact mode; cannot claim AMD NPT reproduction from Intel report.
+FAILURE SIGNAL AND CONTROL:
+Destination emits 'guest moved index' / unexpected guest/QEMU crash, or memory checksum mismatch; valid state must be either dirty or protected.
+MANUAL INPUT AND QUESTION:
+CONSTRUCTED: page copied as 0x11; guest next writes 0x22 without dirty event. Identify destination expected byte and transferred byte, and which invariant could prevent mismatch.
+ASSIGNMENT MAPPING: 08-iitb-cs695-kvm-pa1, 18-umich-eecs482-pager, 11-unc-comp790-vmm
+FIRST-PRINCIPLES REPRODUCTION CONTRACT
+Read the actual original patch code; identify the reader and writer of shared state. No unsupported cross-version inferences.
+CALCULATE page size from sysconf(_SC_PAGESIZE) or in-guest PAGE_SIZE, never use a made-up kernel address as an observed value.
+Use -O0 -g3 for standalone userspace, but retain kernel's required build optimization plus -g for old in-kernel tests.
+Configure disposable VM, snapshot image, serial console, host watchdog and external process timeout.
+Capture: host kernel sha + QEMU git sha + guest kernel version + CPU virtualization flags + exact commands + guest logs + host trace + before-and-after test.
+Write only mechanism-specific changes. Never alter the expected test result after observing failure.
+
+STUDENT-OWNED TEN LOGIC TASKS; DO NOT SUBSTITUTE BUILD SUCCESS FOR CORRECTNESS:
+01. FILL exact root function and first call from historical source revision.
+02. DRAW the first state read and its owner before any other actor acts.
+03. TRACE the competing state writer or failing service; identify when it runs.
+04. CALCULATE expected and observed state using the supplied concrete input.
+05. IDENTIFY earliest state after which both actors' assumptions cannot hold.
+06. RECREATE one genuine source-level breakpoint or tracepoint from original code.
+07. RECORD what user observed and its link to the internal state mismatch.
+08. DERIVE a negative control by disabling exactly the triggering mechanism.
+09. MEASURE before and after the historical patch; preserve all other conditions.
+10. EXPLAIN why the patch's correction does not prove other VM configurations are fixed.
