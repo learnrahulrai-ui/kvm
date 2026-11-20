@@ -39,10 +39,10 @@ static int64_t blank_04_increment_shared_page_refcount(const struct state *s)
     return INT64_MIN;
 }
 
-static int64_t blank_05_bound_refcount_under_release(const struct state *s)
+static int64_t blank_05_decrement_refcount_on_release(const struct state *s)
 {
     (void)s;
-    /* FILL: bound_refcount_under_release. Do not alter the case data. */
+    /* FILL: decrement_refcount_on_release. Do not alter the case data. */
     return INT64_MIN;
 }
 
@@ -67,17 +67,17 @@ static int64_t blank_08_reject_invalid_refcount(const struct state *s)
     return INT64_MIN;
 }
 
-static int64_t blank_09_count_affected_base_pages(const struct state *s)
+static int64_t blank_09_align_fault_to_base_page(const struct state *s)
 {
     (void)s;
-    /* FILL: count_affected_base_pages. Do not alter the case data. */
+    /* FILL: align_fault_to_base_page. Do not alter the case data. */
     return INT64_MIN;
 }
 
-static int64_t blank_10_choose_fault_victim(const struct state *s)
+static int64_t blank_10_is_page_shared_by_multiple_mappings(const struct state *s)
 {
     (void)s;
-    /* FILL: choose_fault_victim. Do not alter the case data. */
+    /* FILL: is_page_shared_by_multiple_mappings. Do not alter the case data. */
     return INT64_MIN;
 }
 
@@ -89,34 +89,34 @@ int main(int argc, char **argv)
     blank_02_clear_write_flag_during_fork,
     blank_03_copy_original_page_identity,
     blank_04_increment_shared_page_refcount,
-    blank_05_bound_refcount_under_release,
+    blank_05_decrement_refcount_on_release,
     blank_06_validate_fault_address,
     blank_07_mark_private_page_writable,
     blank_08_reject_invalid_refcount,
-    blank_09_count_affected_base_pages,
-    blank_10_choose_fault_victim
+    blank_09_align_fault_to_base_page,
+    blank_10_is_page_shared_by_multiple_mappings
     };
     const struct trial samples[20] = {
-    {0, {{19, 16, 0, 0, 0, 0}}, 1},
-    {0, {{3, 16, 0, 0, 0, 0}}, 0},
+    {0, {{19, 4, 0, 0, 0, 0}}, 1},
+    {0, {{23, 4, 0, 0, 0, 0}}, 0},
     {1, {{23, 4, 0, 0, 0, 0}}, 19},
     {1, {{17, 16, 0, 0, 0, 0}}, 1},
     {2, {{47, 0, 0, 0, 0, 0}}, 47},
     {2, {{300, 0, 0, 0, 0, 0}}, 300},
-    {3, {{100, 7, 0, 0, 0, 0}}, 107},
-    {3, {{2, 10, 0, 0, 0, 0}}, 12},
-    {4, {{3, 8, 0, 0, 0, 0}}, 3},
-    {4, {{12, 7, 0, 0, 0, 0}}, 7},
+    {3, {{1, 0, 0, 0, 0, 0}}, 2},
+    {3, {{4, 0, 0, 0, 0, 0}}, 5},
+    {4, {{1, 0, 0, 0, 0, 0}}, 0},
+    {4, {{4, 0, 0, 0, 0, 0}}, 3},
     {5, {{4096, 4096, 12288, 0, 0, 0}}, 1},
     {5, {{16384, 4096, 12288, 0, 0, 0}}, 0},
-    {6, {{3, 4, 0, 0, 0, 0}}, 7},
-    {6, {{1, 16, 0, 0, 0, 0}}, 17},
+    {6, {{19, 4, 0, 0, 0, 0}}, 23},
+    {6, {{1, 4, 0, 0, 0, 0}}, 5},
     {7, {{0, 0, 0, 0, 0, 0}}, -1},
     {7, {{17, 0, 0, 0, 0, 0}}, 0},
-    {8, {{4097, 4096, 0, 0, 0, 0}}, 2},
-    {8, {{8192, 4096, 0, 0, 0, 0}}, 2},
-    {9, {{11, 3, 7, 0, 0, 0}}, 1},
-    {9, {{4, 8, 2, 0, 0, 0}}, 2},
+    {8, {{4660, 4096, 0, 0, 0, 0}}, 4096},
+    {8, {{8192, 4096, 0, 0, 0, 0}}, 8192},
+    {9, {{2, 0, 0, 0, 0, 0}}, 1},
+    {9, {{1, 0, 0, 0, 0, 0}}, 0},
     };
     unsigned pass = 0, blank = 0, fail = 0;
     for (size_t i = 0; i < sizeof(samples)/sizeof(samples[0]); ++i) {

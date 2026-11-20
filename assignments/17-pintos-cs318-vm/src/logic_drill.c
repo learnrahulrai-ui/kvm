@@ -18,10 +18,10 @@ static int64_t blank_01_validate_faulting_address(const struct state *s)
     return INT64_MIN;
 }
 
-static int64_t blank_02_find_clock_victim(const struct state *s)
+static int64_t blank_02_first_unreferenced_from_clock_hand(const struct state *s)
 {
     (void)s;
-    /* FILL: find_clock_victim. Do not alter the case data. */
+    /* FILL: first_unreferenced_from_clock_hand. Do not alter the case data. */
     return INT64_MIN;
 }
 
@@ -86,7 +86,7 @@ int main(int argc, char **argv)
 {
     const operation op[10] = {
     blank_01_validate_faulting_address,
-    blank_02_find_clock_victim,
+    blank_02_first_unreferenced_from_clock_hand,
     blank_03_clear_accessed_flag,
     blank_04_test_dirty_flag,
     blank_05_align_fault_to_page,
@@ -99,8 +99,8 @@ int main(int argc, char **argv)
     const struct trial samples[20] = {
     {0, {{4096, 4096, 12288, 0, 0, 0}}, 1},
     {0, {{16384, 4096, 12288, 0, 0, 0}}, 0},
-    {1, {{11, 3, 7, 0, 0, 0}}, 1},
-    {1, {{4, 8, 2, 0, 0, 0}}, 2},
+    {1, {{1, 0, 1, 1, 0, 0}}, 1},
+    {1, {{1, 1, 0, 1, 3, 0}}, 2},
     {2, {{23, 4, 0, 0, 0, 0}}, 19},
     {2, {{17, 16, 0, 0, 0, 0}}, 1},
     {3, {{19, 16, 0, 0, 0, 0}}, 1},
@@ -111,8 +111,8 @@ int main(int argc, char **argv)
     {5, {{8192, 4096, 0, 0, 0, 0}}, 2},
     {6, {{0, 0, 0, 0, 0, 0}}, -1},
     {6, {{17, 0, 0, 0, 0, 0}}, 0},
-    {7, {{100, 7, 0, 0, 0, 0}}, 107},
-    {7, {{2, 10, 0, 0, 0, 0}}, 12},
+    {7, {{1, 0, 0, 0, 0, 0}}, 2},
+    {7, {{4, 0, 0, 0, 0, 0}}, 5},
     {8, {{3, 8, 0, 0, 0, 0}}, 3},
     {8, {{12, 7, 0, 0, 0, 0}}, 7},
     {9, {{47, 0, 0, 0, 0, 0}}, 47},
