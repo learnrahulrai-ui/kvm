@@ -1,0 +1,31 @@
+B10 | Kernel clocksource watchdog waits on a clock that cannot advance
+PUBLIC ORIGIN YEAR: 2026
+EVIDENCE STATUS: CONFIRMED_AUTHOR_REPRO_AND_PATCH
+CAN TRY ON SECOND LAPTOP: GOOD_ISOLATED_QEMU_GUEST
+LOCAL REPRODUCED: NO_REPRO_RUN
+CORE FAILURE, NOT AN ERROR-RETURN EXERCISE:
+Timeout uses ktime_get_raw_fast_ns backed by jiffies during early boot; boot CPU disables interrupts, which prevent timekeeping clock from advancing, so the timeout itself never expires.
+OBSERVED OPERATION THAT MATTERS:
+Boot a kernel with clocksource=jiffies and run watchdog skew check under CPU stop with interrupts disabled; use linked public C reproducer.
+FUNCTION-TO-FUNCTION REASONING PATH:
+CPU0 stop_machine disables IRQ -> CPU1 waits for CPU0 -> CPU0 watchdog waits for CPU1 -> timeout reads frozen jiffies -> loop never exits
+ORIGINAL REPORT / PATCH (READ BODY NOT TITLE): https://lkml.iu.edu/2611.0/04403.html
+FIX OR UNCERTAINTY: 2026 patch measures wait using clocksource under test, which continues counting with IRQ disabled
+REPRODUCTION PROCEDURE AND REQUIRED RESOURCES:
+Compile public author source https://github.com/manitofigh/files/blob/main/linux-repros/wdboot.c inside a disposable guest on an affected 7.3 family kernel with clocksource=jiffies and 2 vCPUs. Do not boot your physical laptop with an intentionally broken clocksource.
+MEANINGFUL SUCCESS/FAILURE SIGNAL:
+author: 4 hangs/150 boots before patch; 0/400 after; C reproducer in about 80s with clocksource=jiffies
+EXACT UNIVERSITY ASSIGNMENTS INVOLVED: 19-uiuc-cs423-mp3; 06-wisc-2019-mlfq; 10-iitb-2023-kvm-a3
+STUDENT-OWNED CORE LOGICAL PUZZLE:
+DISTINGUISH 'elapsed time' from 'counter that actually moves'. FILL the earliest assumption that CPU0 can use an IRQ-driven clock while keeping its IRQs disabled.
+FIRST THINGS TO DO BY HAND:
+01. DRAW every transition from the initial user operation until the first invalid ownership/wait.
+02. NAME the owner of every address, mapping, lock, frame, queue, and clock as it first appears.
+03. TRACE the two interleaving actors; do not infer that a race exists if only one actor appears in source.
+04. MATCH an observed stack / register / event / missing counter to a source function.
+05. DEFINE a falsifier: switch off just the implicated mechanism or use the source's documented pre/post patch control.
+06. IF reproducer is missing, DO NOT invent one and declare this bug reproduced.
+07. RUN compile with debug symbols for any self-authored C, but never treat compilation as proof of the bug.
+08. DO NOT use made-up kernel virtual addresses such as 0xFFFF888010000000 as if they were obtained from the current laptop.
+09. NEVER alter live host CPU clocksource, KSM, VFIO ownership, page tables, or available memory for these experiments. Use throwaway nested VM.
+10. RECORD original kernel commit and actual hardware before comparing any failure.

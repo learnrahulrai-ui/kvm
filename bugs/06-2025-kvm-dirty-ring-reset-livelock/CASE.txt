@@ -1,0 +1,31 @@
+B06 | KVM dirty-ring reset can loop indefinitely when userspace re-marks ring
+PUBLIC ORIGIN YEAR: 2025
+EVIDENCE STATUS: CONFIRMED_PATCH_CONTAINS_MINIMAL_CONCURRENT_REPRO
+CAN TRY ON SECOND LAPTOP: GOOD_NESTED_KVM_GUEST
+LOCAL REPRODUCED: NO_REPRO_RUN
+CORE FAILURE, NOT AN ERROR-RETURN EXERCISE:
+Kernel harvested entries without a strict processing bound, so producer can keep replenishing the same work while reset loops; ioctl fails to make finite progress.
+OBSERVED OPERATION THAT MATTERS:
+One process repeatedly invokes KVM_RESET_DIRTY_RINGS while another process repeatedly resets KVM_DIRTY_GFN_F_RESET flags in the MAP_SHARED dirty ring.
+FUNCTION-TO-FUNCTION REASONING PATH:
+mmap vCPU dirty ring -> process A KVM_RESET_DIRTY_RINGS -> process B rewrites entry.flags=KVM_DIRTY_GFN_F_RESET -> kernel harvest sees more -> A cannot leave ioctl
+ORIGINAL REPORT / PATCH (READ BODY NOT TITLE): https://lists.openwall.net/linux-kernel/2025/05/16/1409
+FIX OR UNCERTAINTY: 2025 v3 series bounds harvest at INT_MAX, checks signals, conditionally reschedules
+REPRODUCTION PROCEDURE AND REQUIRED RESOURCES:
+Inside a disposable Linux KVM guest with nested virtualization, compile KVM's dirty_log_test and adapt the source's actual fork/WRITE_ONCE loop. Enable dirty ring capability and MAP_SHARED ring. Never point test at running production host KVM.
+MEANINGFUL SUCCESS/FAILURE SIGNAL:
+pre-fix kernel may spend unlimited time in KVM reset ioctl; patched kernel yields and caps work
+EXACT UNIVERSITY ASSIGNMENTS INVOLVED: 08-iitb-cs695-kvm-pa1; 10-iitb-2023-kvm-a3; 21-biswas-oslab-kvm; 18-umich-eecs482-pager
+STUDENT-OWNED CORE LOGICAL PUZZLE:
+FOLLOW dirty_gfn flags from userspace to harvest. FILL where the loop must snapshot or bound work so a concurrent writer cannot stop progress.
+FIRST THINGS TO DO BY HAND:
+01. DRAW every transition from the initial user operation until the first invalid ownership/wait.
+02. NAME the owner of every address, mapping, lock, frame, queue, and clock as it first appears.
+03. TRACE the two interleaving actors; do not infer that a race exists if only one actor appears in source.
+04. MATCH an observed stack / register / event / missing counter to a source function.
+05. DEFINE a falsifier: switch off just the implicated mechanism or use the source's documented pre/post patch control.
+06. IF reproducer is missing, DO NOT invent one and declare this bug reproduced.
+07. RUN compile with debug symbols for any self-authored C, but never treat compilation as proof of the bug.
+08. DO NOT use made-up kernel virtual addresses such as 0xFFFF888010000000 as if they were obtained from the current laptop.
+09. NEVER alter live host CPU clocksource, KSM, VFIO ownership, page tables, or available memory for these experiments. Use throwaway nested VM.
+10. RECORD original kernel commit and actual hardware before comparing any failure.

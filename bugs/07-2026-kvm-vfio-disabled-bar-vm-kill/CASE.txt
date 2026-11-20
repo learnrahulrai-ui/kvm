@@ -1,0 +1,31 @@
+B07 | Guest disables PCI BAR while sibling accesses it; KVM kills VM
+PUBLIC ORIGIN YEAR: 2026
+EVIDENCE STATUS: CONFIRMED_PRODUCTION_REPORT_REDUCED_REPRO
+CAN TRY ON SECOND LAPTOP: REQUIRES_SPARE_VFIO_PCI_DEVICE
+LOCAL REPRODUCED: NO_REPRO_RUN
+CORE FAILURE, NOT AN ERROR-RETURN EXERCISE:
+When VFIO BAR mapping fault handler refuses a PTE because decoding is disabled, KVM treats KVM_PFN_ERR_FAULT as fatal -EFAULT instead of emulating an ordinary unsupported MMIO access.
+OBSERVED OPERATION THAT MATTERS:
+On vCPU A, toggle PCI_COMMAND.MEM; on vCPU B repeatedly MMIO-write assigned BAR0 mapped via VFIO PCI resource0; mapping zapped before memslot removed.
+FUNCTION-TO-FUNCTION REASONING PATH:
+guest clears PCI_COMMAND.MEM -> VFIO zaps VM_PFNMAP host VMA -> KVM slot remains registered -> guest MMIO faults -> hva_to_pfn_remapped fails -> kvm_handle_error_pfn returns -EFAULT -> QEMU terminates VM
+ORIGINAL REPORT / PATCH (READ BODY NOT TITLE): https://lkml.iu.edu/2606.2/07858.html
+FIX OR UNCERTAINTY: 2026 patch proposed emulating disabled-BAR access as MMIO; review raised other possible hva_to_pfn_remapped error causes
+REPRODUCTION PROCEDURE AND REQUIRED RESOURCES:
+Dedicated pass-through PCI device and IOMMU required. GTX1650 used for display is not safe as spare VFIO device. Research author reproduced within ~1 second and tested 200k toggles after fix; not verified on this laptop.
+MEANINGFUL SUCCESS/FAILURE SIGNAL:
+QEMU VM terminated by KVM_RUN -EFAULT while device is disabled
+EXACT UNIVERSITY ASSIGNMENTS INVOLVED: 08-iitb-cs695-kvm-pa1; 11-unc-comp790-vmm; 13-ut-cs360v-jos-hypervisor; 21-biswas-oslab-kvm
+STUDENT-OWNED CORE LOGICAL PUZZLE:
+STATE which condition is permanent versus transient: valid KVM memslot, disabled physical BAR, and completed MMU invalidation. FILL why a retry loop cannot repair a permanently disabled device decoder.
+FIRST THINGS TO DO BY HAND:
+01. DRAW every transition from the initial user operation until the first invalid ownership/wait.
+02. NAME the owner of every address, mapping, lock, frame, queue, and clock as it first appears.
+03. TRACE the two interleaving actors; do not infer that a race exists if only one actor appears in source.
+04. MATCH an observed stack / register / event / missing counter to a source function.
+05. DEFINE a falsifier: switch off just the implicated mechanism or use the source's documented pre/post patch control.
+06. IF reproducer is missing, DO NOT invent one and declare this bug reproduced.
+07. RUN compile with debug symbols for any self-authored C, but never treat compilation as proof of the bug.
+08. DO NOT use made-up kernel virtual addresses such as 0xFFFF888010000000 as if they were obtained from the current laptop.
+09. NEVER alter live host CPU clocksource, KSM, VFIO ownership, page tables, or available memory for these experiments. Use throwaway nested VM.
+10. RECORD original kernel commit and actual hardware before comparing any failure.

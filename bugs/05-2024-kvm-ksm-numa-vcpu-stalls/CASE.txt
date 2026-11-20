@@ -1,0 +1,31 @@
+B05 | KSM and automatic NUMA balancing cause long guest-wide stalls
+PUBLIC ORIGIN YEAR: 2024
+EVIDENCE STATUS: CONFIRMED_REPORT_BISECTED_PATCH_VALIDATED
+CAN TRY ON SECOND LAPTOP: NEEDS_LARGE_DUAL_NUMA_HOST
+LOCAL REPRODUCED: NO_REPRO_RUN
+CORE FAILURE, NOT AN ERROR-RETURN EXERCISE:
+KVM TDP MMU page-fault handling contended on mmu_lock during MMU notifier invalidation. Fault retried while invalidation active without waiting outside lock could amplify latency. Patch prechecks retry before mmu_lock.
+OBSERVED OPERATION THAT MATTERS:
+Reporter used 256 GiB host/2 NUMA nodes, 140 GiB guest, KSM pages_to_scan=1250, 128 GiB identical memory, then 32 processes ×4 GiB, NUMA balancing enabled.
+FUNCTION-TO-FUNCTION REASONING PATH:
+host NUMA balance migrates pages -> MMU notifier invalidates -> vCPU faults -> mmu_lock contention -> guest cannot make progress while task_numa_work stalls; retry earlier -> avoids contention
+ORIGINAL REPORT / PATCH (READ BODY NOT TITLE): https://lists.openwall.net/linux-kernel/2024/01/04/582
+FIX OR UNCERTAINTY: https://lists.openwall.net/linux-kernel/2024/02/14/687
+REPRODUCTION PROCEDURE AND REQUIRED RESOURCES:
+Requires large NUMA lab, original QEMU 8.2 recipe, KSM enabled, and 140 GiB guest. Not reproducible as specified on a 14 GiB single-NUMA laptop. Do not scale down and claim equivalent failure.
+MEANINGFUL SUCCESS/FAILURE SIGNAL:
+reporter saw 1-100s guest stalls; experiment showed disappearance with NUMA balancing off and with v4 patch
+EXACT UNIVERSITY ASSIGNMENTS INVOLVED: 08-iitb-cs695-kvm-pa1; 17-pintos-cs318-vm; 19-uiuc-cs423-mp3; 07-gatech-6210-vm-coordinator
+STUDENT-OWNED CORE LOGICAL PUZZLE:
+TRACE the two actors contending for mmu_lock. FILL why attempting the retry while holding mmu_lock delays the invalidation task that can make the retry succeed.
+FIRST THINGS TO DO BY HAND:
+01. DRAW every transition from the initial user operation until the first invalid ownership/wait.
+02. NAME the owner of every address, mapping, lock, frame, queue, and clock as it first appears.
+03. TRACE the two interleaving actors; do not infer that a race exists if only one actor appears in source.
+04. MATCH an observed stack / register / event / missing counter to a source function.
+05. DEFINE a falsifier: switch off just the implicated mechanism or use the source's documented pre/post patch control.
+06. IF reproducer is missing, DO NOT invent one and declare this bug reproduced.
+07. RUN compile with debug symbols for any self-authored C, but never treat compilation as proof of the bug.
+08. DO NOT use made-up kernel virtual addresses such as 0xFFFF888010000000 as if they were obtained from the current laptop.
+09. NEVER alter live host CPU clocksource, KSM, VFIO ownership, page tables, or available memory for these experiments. Use throwaway nested VM.
+10. RECORD original kernel commit and actual hardware before comparing any failure.

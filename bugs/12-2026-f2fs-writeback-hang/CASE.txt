@@ -1,0 +1,31 @@
+B12 | Guest task hangs during F2FS writeback under allocation and fallocate
+PUBLIC ORIGIN YEAR: 2026
+EVIDENCE STATUS: CURRENT_BUG_REPORT_ORIGINAL_REPRO_LINK_CAUSE_NOT_CONFIRMED
+CAN TRY ON SECOND LAPTOP: POSSIBLE_GUEST_7_4_RC3
+LOCAL REPRODUCED: NO_REPRO_RUN
+CORE FAILURE, NOT AN ERROR-RETURN EXERCISE:
+The reported hung task is blocked in F2FS writeback/lock dependency; the original report explicitly does not establish final root cause or correction. Do not invent a lock-cycle not demonstrated in stacks.
+OBSERVED OPERATION THAT MATTERS:
+Reporter used Linux v7.4-rc3 guest, 6 GiB RAM, 4 vCPUs, KVM and a kernsight repro .prog that traverses F2FS writeback and fallocate.
+FUNCTION-TO-FUNCTION REASONING PATH:
+guest F2FS allocation/workload -> f2fs_fallocate -> f2fs_write_data_pages -> task hung in writeback; exact waiter/provider cycle unresolved
+ORIGINAL REPORT / PATCH (READ BODY NOT TITLE): https://lkml.iu.edu/2611.2/12996.html
+FIX OR UNCERTAINTY: No verified upstream fix or exact inducing commit in accessed material
+REPRODUCTION PROCEDURE AND REQUIRED RESOURCES:
+Disposable VM with Linux v7.4-rc3, CONFIG_F2FS_FS; upstream repro repo https://github.com/Zheng-zheng-codes/f2fs-write-data-pages-hang contains repro.kernsight.prog and executor setup. Must verify source and use throwaway scratch image; report used 6 GiB RAM and 4vCPU.
+MEANINGFUL SUCCESS/FAILURE SIGNAL:
+hung task reported; independent reproduction not run here
+EXACT UNIVERSITY ASSIGNMENTS INVOLVED: 15-mit-61810-mmap; 18-umich-eecs482-pager; 19-uiuc-cs423-mp3
+STUDENT-OWNED CORE LOGICAL PUZZLE:
+TRACE exact waiter and held locks from f2fs_write_data_pages without assuming the stack alone proves AB-BA.
+FIRST THINGS TO DO BY HAND:
+01. DRAW every transition from the initial user operation until the first invalid ownership/wait.
+02. NAME the owner of every address, mapping, lock, frame, queue, and clock as it first appears.
+03. TRACE the two interleaving actors; do not infer that a race exists if only one actor appears in source.
+04. MATCH an observed stack / register / event / missing counter to a source function.
+05. DEFINE a falsifier: switch off just the implicated mechanism or use the source's documented pre/post patch control.
+06. IF reproducer is missing, DO NOT invent one and declare this bug reproduced.
+07. RUN compile with debug symbols for any self-authored C, but never treat compilation as proof of the bug.
+08. DO NOT use made-up kernel virtual addresses such as 0xFFFF888010000000 as if they were obtained from the current laptop.
+09. NEVER alter live host CPU clocksource, KSM, VFIO ownership, page tables, or available memory for these experiments. Use throwaway nested VM.
+10. RECORD original kernel commit and actual hardware before comparing any failure.

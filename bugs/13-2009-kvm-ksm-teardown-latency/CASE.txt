@@ -1,0 +1,31 @@
+B13 | KSM teardown / KVM MMU locking produced guest-removal latency
+PUBLIC ORIGIN YEAR: 2009
+EVIDENCE STATUS: HISTORICAL_DISTRIBUTION_CHANGELOG_NO_MINIMAL_REPRO
+CAN TRY ON SECOND LAPTOP: ARCHIVE_ONLY
+LOCAL REPRODUCED: NO_REPRO_RUN
+CORE FAILURE, NOT AN ERROR-RETURN EXERCISE:
+Changelog names lock fixes and KSM latency changes but lacks a self-contained failure trace sufficient to assign a single root cause; should not be treated as already reproducible.
+OBSERVED OPERATION THAT MATTERS:
+RHEL5-era kvm-83 updates identify KSM latency on guest termination and KVM MMU lock defects causing kksmd soft lockups.
+FUNCTION-TO-FUNCTION REASONING PATH:
+guest removal -> KSM page unmerge/rmap work -> KVM MMU work -> reported slow guest termination or kksmd soft lockup; exact interleaving not established by changelog alone
+ORIGINAL REPORT / PATCH (READ BODY NOT TITLE): https://repowatch.ulni.us-ashburn-1.oci.oraclecloud.com/repowatch/oraclelinux5.x86_64/el5_u5_base/2f5936d4e02b332e8f1672bdb11a23351d7e20fb
+FIX OR UNCERTAINTY: RHEL5 kvm-83-86 / -92 change records include KSM latency and mmu_lock fixes; no causally complete patch trail reviewed
+REPRODUCTION PROCEDURE AND REQUIRED RESOURCES:
+Requires archived RHEL5 guest/host source; stop before claiming reproducibility. Find original BZ#506375 or BZ#510770 report and patch body, build version-pinned VM before any experiment.
+MEANINGFUL SUCCESS/FAILURE SIGNAL:
+archival patch descriptions only, not locally observed
+EXACT UNIVERSITY ASSIGNMENTS INVOLVED: 08-iitb-cs695-kvm-pa1; 06-wisc-2019-mlfq; 17-pintos-cs318-vm
+STUDENT-OWNED CORE LOGICAL PUZZLE:
+FIND original changelog commit and establish two functions' lock ownership before writing a race reproducer.
+FIRST THINGS TO DO BY HAND:
+01. DRAW every transition from the initial user operation until the first invalid ownership/wait.
+02. NAME the owner of every address, mapping, lock, frame, queue, and clock as it first appears.
+03. TRACE the two interleaving actors; do not infer that a race exists if only one actor appears in source.
+04. MATCH an observed stack / register / event / missing counter to a source function.
+05. DEFINE a falsifier: switch off just the implicated mechanism or use the source's documented pre/post patch control.
+06. IF reproducer is missing, DO NOT invent one and declare this bug reproduced.
+07. RUN compile with debug symbols for any self-authored C, but never treat compilation as proof of the bug.
+08. DO NOT use made-up kernel virtual addresses such as 0xFFFF888010000000 as if they were obtained from the current laptop.
+09. NEVER alter live host CPU clocksource, KSM, VFIO ownership, page tables, or available memory for these experiments. Use throwaway nested VM.
+10. RECORD original kernel commit and actual hardware before comparing any failure.

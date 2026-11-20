@@ -1,0 +1,31 @@
+B01 | Guest memory and ext4 corruption with host THP enabled
+PUBLIC ORIGIN YEAR: 2016
+EVIDENCE STATUS: CONFIRMED_REPORT_FIXED_RELEASE_CAUSAL_COMMIT_NOT_ESTABLISHED
+CAN TRY ON SECOND LAPTOP: HISTORICAL_VM_ONLY
+LOCAL REPRODUCED: NO_REPRO_RUN
+CORE FAILURE, NOT AN ERROR-RETURN EXERCISE:
+Reporter observed a host THP-dependent guest data-integrity failure, but report does not identify the exact failing KVM function. A correlation and package fix do not prove a single page-table race.
+OBSERVED OPERATION THAT MATTERS:
+Debian Linux 4.5.1 AMD Phenom II X6 host, KVM guests, disk-intensive aide --update repeated, THP enabled; negative control THP disabled. Debian closed report after 4.5.4-1.
+FUNCTION-TO-FUNCTION REASONING PATH:
+guest aide updates -> guest writes and reads -> host-backed pages -> host THP present -> guest segfault/journal abort/readonly remount; THP=never -> not observed in reporter's tests
+ORIGINAL REPORT / PATCH (READ BODY NOT TITLE): https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=821225
+FIX OR UNCERTAINTY: Debian linux 4.5.4-1 package marked fixed, precise culprit not independently confirmed
+REPRODUCTION PROCEDURE AND REQUIRED RESOURCES:
+Use an old 4.5.1 Linux host kernel in an isolated nested-virtualization lab, not as the laptop's running host kernel. Clone test disk, compare file checksums before and after aide --update and repeat with THP disabled. Must verify corresponding old SVM support.
+MEANINGFUL SUCCESS/FAILURE SIGNAL:
+guest filesystem journal aborts, segfaults, checksum mismatch; no result is implied on newer kernels
+EXACT UNIVERSITY ASSIGNMENTS INVOLVED: 16-mit-61810-superpages; 14-mit-61810-cow; 08-iitb-cs695-kvm-pa1
+STUDENT-OWNED CORE LOGICAL PUZZLE:
+TRACE guest virtual -> guest physical -> host backing under huge mapping; FILL the first page identity that could change. Do not invent the missing upstream cause.
+FIRST THINGS TO DO BY HAND:
+01. DRAW every transition from the initial user operation until the first invalid ownership/wait.
+02. NAME the owner of every address, mapping, lock, frame, queue, and clock as it first appears.
+03. TRACE the two interleaving actors; do not infer that a race exists if only one actor appears in source.
+04. MATCH an observed stack / register / event / missing counter to a source function.
+05. DEFINE a falsifier: switch off just the implicated mechanism or use the source's documented pre/post patch control.
+06. IF reproducer is missing, DO NOT invent one and declare this bug reproduced.
+07. RUN compile with debug symbols for any self-authored C, but never treat compilation as proof of the bug.
+08. DO NOT use made-up kernel virtual addresses such as 0xFFFF888010000000 as if they were obtained from the current laptop.
+09. NEVER alter live host CPU clocksource, KSM, VFIO ownership, page tables, or available memory for these experiments. Use throwaway nested VM.
+10. RECORD original kernel commit and actual hardware before comparing any failure.

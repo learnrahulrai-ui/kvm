@@ -1,0 +1,31 @@
+B04 | QEMU postcopy migration trapped in RECOVER after second channel failure
+PUBLIC ORIGIN YEAR: 2023
+EVIDENCE STATUS: CONFIRMED_UPSTREAM_PATCH_WITH_RECIPE
+CAN TRY ON SECOND LAPTOP: MODERATE_SOFTWARE_ONLY
+LOCAL REPRODUCED: NO_REPRO_RUN
+CORE FAILURE, NOT AN ERROR-RETURN EXERCISE:
+Return-path reader failure in RECOVER did not wake the migration thread sleeping on rp_sem or return the migration state to PAUSED; retry impossible.
+OBSERVED OPERATION THAT MATTERS:
+Start source and destination QEMU with postcopy and two socat proxies; pause postcopy, sever second proxy, request recovery through first surviving socket.
+FUNCTION-TO-FUNCTION REASONING PATH:
+POSTCOPY_ACTIVE -> postcopy-pause -> PAUSED -> migration recover -> RECOVER -> secondary proxy fails -> return path reports failure -> migration thread remains asleep -> RECOVER forever
+ORIGINAL REPORT / PATCH (READ BODY NOT TITLE): https://patchew.org/QEMU/20231017202633.296756-1-peterx@redhat.com/20231017202633.296756-3-peterx@redhat.com/
+FIX OR UNCERTAINTY: Patch makes RECOVER failure return to PAUSED and supports migrate-pause as escape
+REPRODUCTION PROCEDURE AND REQUIRED RESOURCES:
+Compile QEMU revision preceding Oct 2023 fix and a revision after it. Add two socat proxies: unix-listen:/tmp/src.sock -> tcp:localhost:10000 -> unix:/tmp/dst.sock. Run postcopy; QMP postcopy-pause, kill second proxy, then reconnect via first socket. Do not run on production VM.
+MEANINGFUL SUCCESS/FAILURE SIGNAL:
+source stuck in RECOVER before patch; after patch returns to PAUSED so operator can retry
+EXACT UNIVERSITY ASSIGNMENTS INVOLVED: 09-iitb-cs695-libvirt-pa2; 07-gatech-6210-vm-coordinator; 08-iitb-cs695-kvm-pa1
+STUDENT-OWNED CORE LOGICAL PUZZLE:
+DRAW state transitions until RECOVER. FILL the missing transition triggered by broken return path. Why does live source process not exit even though its network reader did?
+FIRST THINGS TO DO BY HAND:
+01. DRAW every transition from the initial user operation until the first invalid ownership/wait.
+02. NAME the owner of every address, mapping, lock, frame, queue, and clock as it first appears.
+03. TRACE the two interleaving actors; do not infer that a race exists if only one actor appears in source.
+04. MATCH an observed stack / register / event / missing counter to a source function.
+05. DEFINE a falsifier: switch off just the implicated mechanism or use the source's documented pre/post patch control.
+06. IF reproducer is missing, DO NOT invent one and declare this bug reproduced.
+07. RUN compile with debug symbols for any self-authored C, but never treat compilation as proof of the bug.
+08. DO NOT use made-up kernel virtual addresses such as 0xFFFF888010000000 as if they were obtained from the current laptop.
+09. NEVER alter live host CPU clocksource, KSM, VFIO ownership, page tables, or available memory for these experiments. Use throwaway nested VM.
+10. RECORD original kernel commit and actual hardware before comparing any failure.

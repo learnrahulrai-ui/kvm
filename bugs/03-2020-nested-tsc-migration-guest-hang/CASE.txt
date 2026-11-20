@@ -1,0 +1,31 @@
+B03 | Nested guest hangs after migration restores L2 TSC as L1 TSC
+PUBLIC ORIGIN YEAR: 2020
+EVIDENCE STATUS: CONFIRMED_PATCH_TESTED_AUTHOR
+CAN TRY ON SECOND LAPTOP: MODERATE_NESTED_AMD
+LOCAL REPRODUCED: NO_REPRO_RUN
+CORE FAILURE, NOT AN ERROR-RETURN EXERCISE:
+MSR_IA32_TSC read for host migration returned host+L1+L2 offsets, while host write restored value as L1 time; jump backward broke APIC deadline progress, especially on AMD SVM.
+OBSERVED OPERATION THAT MATTERS:
+Host Linux revision before 2020 fix; nested KVM L1 and running L2; migrate L1 by savevm stream or file and restore while L2 running.
+FUNCTION-TO-FUNCTION REASONING PATH:
+L2 executing -> QEMU reads MSR_IA32_TSC -> receives L2-relative value -> migration save -> L1 restore interprets value as L1 clock -> backward jump -> APIC deadline never fires -> L2 hangs
+ORIGINAL REPORT / PATCH (READ BODY NOT TITLE): https://lkml.iu.edu/2009.2/06466.html
+FIX OR UNCERTAINTY: 2020 KVM host_initiated MSR handling returns L1-relative TSC for host-initiated read
+REPRODUCTION PROCEDURE AND REQUIRED RESOURCES:
+Use an isolated L0 VM with older kernel and nested SVM exposed; L1 KVM guest executes tight L2 loop while L1 migration stream saved/loaded. Compare clock monotonicity and timer expiry after restore. Requires real nested virtualization support.
+MEANINGFUL SUCCESS/FAILURE SIGNAL:
+L2 timer stalls or hangs pre-fix; fix makes host read reflect L1 rather than L2 time
+EXACT UNIVERSITY ASSIGNMENTS INVOLVED: 12-unc-2017-amd-svm; 13-ut-cs360v-jos-hypervisor; 11-unc-comp790-vmm; 10-iitb-2023-kvm-a3
+STUDENT-OWNED CORE LOGICAL PUZZLE:
+CALCULATE which TSC offset should be stored when L2 runs; identify the read/write context mismatch. Do not assume every MSR has TSC behavior.
+FIRST THINGS TO DO BY HAND:
+01. DRAW every transition from the initial user operation until the first invalid ownership/wait.
+02. NAME the owner of every address, mapping, lock, frame, queue, and clock as it first appears.
+03. TRACE the two interleaving actors; do not infer that a race exists if only one actor appears in source.
+04. MATCH an observed stack / register / event / missing counter to a source function.
+05. DEFINE a falsifier: switch off just the implicated mechanism or use the source's documented pre/post patch control.
+06. IF reproducer is missing, DO NOT invent one and declare this bug reproduced.
+07. RUN compile with debug symbols for any self-authored C, but never treat compilation as proof of the bug.
+08. DO NOT use made-up kernel virtual addresses such as 0xFFFF888010000000 as if they were obtained from the current laptop.
+09. NEVER alter live host CPU clocksource, KSM, VFIO ownership, page tables, or available memory for these experiments. Use throwaway nested VM.
+10. RECORD original kernel commit and actual hardware before comparing any failure.

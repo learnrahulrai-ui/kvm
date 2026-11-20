@@ -1,0 +1,31 @@
+B11 | Process exit hangs while releasing many vTPM proxy fds
+PUBLIC ORIGIN YEAR: 2026
+EVIDENCE STATUS: CONFIRMED_AUTHOR_MINIMAL_C_AND_NEGATIVE_CONTROL_CAUSE_UNRESOLVED
+CAN TRY ON SECOND LAPTOP: GOOD_DISPOSABLE_GUEST_7_3
+LOCAL REPRODUCED: NO_REPRO_RUN
+CORE FAILURE, NOT AN ERROR-RETURN EXERCISE:
+Observed release waits in vtpm_proxy_fops_release -> vtpm_proxy_work_stop -> flush_work while work queue remains busy. Exact missed cancellation or workqueue condition still unresolved; different fd-lifetime timing is a proven discriminator.
+OBSERVED OPERATION THAT MATTERS:
+Create 32 vTPM proxy devices through /dev/vtpmx, exit without explicit close of server-side fds; compare with closing each fd explicitly.
+FUNCTION-TO-FUNCTION REASONING PATH:
+VTPM_PROXY_IOC_NEW_DEV x32 -> exit triggers automatic fd release -> stop queued work -> flush_work waits -> outstanding vtpm_proxy_work and TPM timeouts -> blocked task
+ORIGINAL REPORT / PATCH (READ BODY NOT TITLE): https://lkml.iu.edu/2611.1/06205.html
+FIX OR UNCERTAINTY: No definitive root-cause patch confirmed in reviewed thread; one earlier STATE_OPENED_FLAG ordering patch did not fix hang
+REPRODUCTION PROCEDURE AND REQUIRED RESOURCES:
+Use Linux 7.3 or 7.4-rc1 guest with CONFIG_TCG_VTPM_PROXY=y; fetch https://github.com/Zheng-zheng-codes/vtpm-proxy-release-hang-repro and compile minimal-c-repro/vtpm-hang-minimal.c plus vtpm-close-minimal.c. Run only in guest. Need root within the guest.
+MEANINGFUL SUCCESS/FAILURE SIGNAL:
+N=32 exit-time release reproduced 3/3 recorded attempts; N=1/2 did not; explicit close N=4/32 did not. One hang >286 seconds.
+EXACT UNIVERSITY ASSIGNMENTS INVOLVED: 19-uiuc-cs423-mp3; 07-gatech-6210-vm-coordinator; 21-biswas-oslab-kvm
+STUDENT-OWNED CORE LOGICAL PUZZLE:
+TRACE fd ownership from ioctl to process exit. Why might automatic release differ from explicit close? Which wait still holds after STATE_OPENED_FLAG is cleared?
+FIRST THINGS TO DO BY HAND:
+01. DRAW every transition from the initial user operation until the first invalid ownership/wait.
+02. NAME the owner of every address, mapping, lock, frame, queue, and clock as it first appears.
+03. TRACE the two interleaving actors; do not infer that a race exists if only one actor appears in source.
+04. MATCH an observed stack / register / event / missing counter to a source function.
+05. DEFINE a falsifier: switch off just the implicated mechanism or use the source's documented pre/post patch control.
+06. IF reproducer is missing, DO NOT invent one and declare this bug reproduced.
+07. RUN compile with debug symbols for any self-authored C, but never treat compilation as proof of the bug.
+08. DO NOT use made-up kernel virtual addresses such as 0xFFFF888010000000 as if they were obtained from the current laptop.
+09. NEVER alter live host CPU clocksource, KSM, VFIO ownership, page tables, or available memory for these experiments. Use throwaway nested VM.
+10. RECORD original kernel commit and actual hardware before comparing any failure.

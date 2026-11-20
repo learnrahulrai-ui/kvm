@@ -1,0 +1,31 @@
+B09 | QEMU hangs identifying early postcopy preempt channel
+PUBLIC ORIGIN YEAR: 2026
+EVIDENCE STATUS: CONFIRMED_UPSTREAM_PATCH_EXACT_REPRO_COMMAND
+CAN TRY ON SECOND LAPTOP: GOOD_ON_SINGLE_LINUX_LAPTOP
+LOCAL REPRODUCED: NO_REPRO_RUN
+CORE FAILURE, NOT AN ERROR-RETURN EXERCISE:
+Source and destination disagree about which channel arrives first; destination peeks preempt socket before header bytes exist, blocks event loop, and never accepts remaining channels.
+OBSERVED OPERATION THAT MATTERS:
+Use QEMU machine pc-q35-7.2 with multifd, postcopy-ram, postcopy-preempt capabilities; destination observes preempt socket before other multifd channels.
+FUNCTION-TO-FUNCTION REASONING PATH:
+main connect -> preempt connect -> multifd connects -> destination expects main->multifd->preempt -> recvmsg peek on headerless preempt -> blocking -> destination migration hangs
+ORIGINAL REPORT / PATCH (READ BODY NOT TITLE): https://go.mail-archive.com/qemu-devel@nongnu.org/msg1239999.html
+FIX OR UNCERTAINTY: 2026 channel IO watches defer classification until data arrives; code diff handles out-of-order arrival
+REPRODUCTION PROCEDURE AND REQUIRED RESOURCES:
+Build affected QEMU checkout with migration-test installed. Run QTEST_QEMU_MACHINE_TYPE=pc-q35-7.2 QTEST_QEMU_BINARY=./qemu-system-x86_64 ./tests/qtest/migration-test --full -r /x86_64/migration/multifd+postcopy/preempt/plain . This invokes a real QEMU migration path; test harness is not the defect.
+MEANINGFUL SUCCESS/FAILURE SIGNAL:
+original report says reliably hangs in migration_channel_read_peek/recvmsg; patched build proceeds
+EXACT UNIVERSITY ASSIGNMENTS INVOLVED: 09-iitb-cs695-libvirt-pa2; 07-gatech-6210-vm-coordinator; 08-iitb-cs695-kvm-pa1
+STUDENT-OWNED CORE LOGICAL PUZZLE:
+TRACE socket arrival order versus header availability. FILL which read should be deferred so accepting an early connection never prevents the later ones arriving.
+FIRST THINGS TO DO BY HAND:
+01. DRAW every transition from the initial user operation until the first invalid ownership/wait.
+02. NAME the owner of every address, mapping, lock, frame, queue, and clock as it first appears.
+03. TRACE the two interleaving actors; do not infer that a race exists if only one actor appears in source.
+04. MATCH an observed stack / register / event / missing counter to a source function.
+05. DEFINE a falsifier: switch off just the implicated mechanism or use the source's documented pre/post patch control.
+06. IF reproducer is missing, DO NOT invent one and declare this bug reproduced.
+07. RUN compile with debug symbols for any self-authored C, but never treat compilation as proof of the bug.
+08. DO NOT use made-up kernel virtual addresses such as 0xFFFF888010000000 as if they were obtained from the current laptop.
+09. NEVER alter live host CPU clocksource, KSM, VFIO ownership, page tables, or available memory for these experiments. Use throwaway nested VM.
+10. RECORD original kernel commit and actual hardware before comparing any failure.

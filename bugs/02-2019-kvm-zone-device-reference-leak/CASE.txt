@@ -1,0 +1,31 @@
+B02 | KVM /dev/dax guest backend pins device pages across teardown
+PUBLIC ORIGIN YEAR: 2019
+EVIDENCE STATUS: CONFIRMED_UPSTREAM_CAUSAL_PATCH
+CAN TRY ON SECOND LAPTOP: REQUIRES_DEVDAX
+LOCAL REPRODUCED: NO_REPRO_RUN
+CORE FAILURE, NOT AN ERROR-RETURN EXERCISE:
+KVM classified ZONE_DEVICE PFNs as reserved and failed to release page references returned by GUP. KVM must retain true GUP references until vcpu_unmap even though its secondary MMU follows mmu_notifier.
+OBSERVED OPERATION THAT MATTERS:
+Run KVM guest whose RAM backend is a /dev/dax mapping; tear down mapping and device; dev_pagemap_cleanup hangs from unreleased page references acquired by get_user_pages.
+FUNCTION-TO-FUNCTION REASONING PATH:
+get_user_pages -> KVM holds guest backing page -> kvm_is_reserved_pfn -> missing put_page -> device dev_pagemap_cleanup waits
+ORIGINAL REPORT / PATCH (READ BODY NOT TITLE): https://lkml.iu.edu/1911.1/04249.html
+FIX OR UNCERTAINTY: 2019 KVM MMU patch exempts ZONE_DEVICE from the reserved-PFN assumption and manages page refs per use case
+REPRODUCTION PROCEDURE AND REQUIRED RESOURCES:
+Requires real or emulated /dev/dax DAX-backed guest RAM. Ordinary NVMe files and anonymous RAM are not equivalent; no reproduction promised on standard Ryzen laptop.
+MEANINGFUL SUCCESS/FAILURE SIGNAL:
+device-removal hang until references are released
+EXACT UNIVERSITY ASSIGNMENTS INVOLVED: 08-iitb-cs695-kvm-pa1; 15-mit-61810-mmap; 17-pintos-cs318-vm; 18-umich-eecs482-pager
+STUDENT-OWNED CORE LOGICAL PUZZLE:
+MAP the GUP increment to the exact kvm_vcpu_unmap or MMU release. FILL the missing lifetime end.
+FIRST THINGS TO DO BY HAND:
+01. DRAW every transition from the initial user operation until the first invalid ownership/wait.
+02. NAME the owner of every address, mapping, lock, frame, queue, and clock as it first appears.
+03. TRACE the two interleaving actors; do not infer that a race exists if only one actor appears in source.
+04. MATCH an observed stack / register / event / missing counter to a source function.
+05. DEFINE a falsifier: switch off just the implicated mechanism or use the source's documented pre/post patch control.
+06. IF reproducer is missing, DO NOT invent one and declare this bug reproduced.
+07. RUN compile with debug symbols for any self-authored C, but never treat compilation as proof of the bug.
+08. DO NOT use made-up kernel virtual addresses such as 0xFFFF888010000000 as if they were obtained from the current laptop.
+09. NEVER alter live host CPU clocksource, KSM, VFIO ownership, page tables, or available memory for these experiments. Use throwaway nested VM.
+10. RECORD original kernel commit and actual hardware before comparing any failure.
