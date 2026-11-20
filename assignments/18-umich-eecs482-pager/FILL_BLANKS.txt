@@ -1,13 +1,7 @@
 Assignment: 18-umich-eecs482-pager
 Executable student code: src/logic_drill.c
 Target university code: run bash bootstrap.sh, inspect upstream/starter, then port only verified results to the kernel source tree.
-The six fields are not host measurements. They are constructed inputs:
-value[0] = fault_address
-value[1] = valid_start
-value[2] = valid_end
-value[3] = pte_flags
-value[4] = clock_hand
-value[5] = disk_slot
+The six input positions have DIFFERENT meanings for each blank. These are constructed observations, not actual host state. The test name and its named input contract govern the interpretation.
 All tests have exact expected values written as literals in src/logic_drill.c.
 INT64_MIN = unimplemented. Do not replace it with a guessed constant.
 make status → displays 20 BLANK cases before work. make check → fails until all cases pass.
@@ -15,16 +9,16 @@ A successful build proves syntax and linking. It proves no KVM guest ran, no sch
 Source of technical requirements: README.md original university link, CHALLENGES.md local ten tasks, and upstream/starter if available.
 An operation here isolates an input-to-output rule. It is NOT the complete course project. Port into the actual xv6/JOS/Pintos/KVM/libvirt implementation and use original course tests.
 
-01. FILL blank_01_validate_page_address; DERIVE state transition from CHALLENGES.md; INPUT 4096,4096,12288,0,0,0; EXPECT 1; SECOND INPUT 16384,4096,12288,0,0,0; EXPECT 0; RUN make check; INSPECT gdb 'break blank_01_validate_page_address'.
-02. FILL blank_02_check_reference_bit; DERIVE state transition from CHALLENGES.md; INPUT 19,16,0,0,0,0; EXPECT 1; SECOND INPUT 3,16,0,0,0,0; EXPECT 0; RUN make check; INSPECT gdb 'break blank_02_check_reference_bit'.
-03. FILL blank_03_choose_clock_victim; DERIVE state transition from CHALLENGES.md; INPUT 11,3,7,0,0,0; EXPECT 1; SECOND INPUT 4,8,2,0,0,0; EXPECT 2; RUN make check; INSPECT gdb 'break blank_03_choose_clock_victim'.
-04. FILL blank_04_clear_reference_permission; DERIVE state transition from CHALLENGES.md; INPUT 23,4,0,0,0,0; EXPECT 19; SECOND INPUT 17,16,0,0,0,0; EXPECT 1; RUN make check; INSPECT gdb 'break blank_04_clear_reference_permission'.
-05. FILL blank_05_page_align_fault; DERIVE state transition from CHALLENGES.md; INPUT 4660,4096,0,0,0,0; EXPECT 4096; SECOND INPUT 8192,4096,0,0,0,0; EXPECT 8192; RUN make check; INSPECT gdb 'break blank_05_page_align_fault'.
-06. FILL blank_06_calculate_swap_pages; DERIVE state transition from CHALLENGES.md; INPUT 4097,4096,0,0,0,0; EXPECT 2; SECOND INPUT 8192,4096,0,0,0,0; EXPECT 2; RUN make check; INSPECT gdb 'break blank_06_calculate_swap_pages'.
-07. FILL blank_07_reject_zero_page_size; DERIVE state transition from CHALLENGES.md; INPUT 0,0,0,0,0,0; EXPECT -1; SECOND INPUT 17,0,0,0,0,0; EXPECT 0; RUN make check; INSPECT gdb 'break blank_07_reject_zero_page_size'.
-08. FILL blank_08_increment_clock_hand; DERIVE state transition from CHALLENGES.md; INPUT 100,7,0,0,0,0; EXPECT 107; SECOND INPUT 2,10,0,0,0,0; EXPECT 12; RUN make check; INSPECT gdb 'break blank_08_increment_clock_hand'.
-09. FILL blank_09_bound_frame_allocation; DERIVE state transition from CHALLENGES.md; INPUT 3,8,0,0,0,0; EXPECT 3; SECOND INPUT 12,7,0,0,0,0; EXPECT 7; RUN make check; INSPECT gdb 'break blank_09_bound_frame_allocation'.
-10. FILL blank_10_copy_disk_slot_number; DERIVE state transition from CHALLENGES.md; INPUT 47,0,0,0,0,0; EXPECT 47; SECOND INPUT 300,0,0,0,0,0; EXPECT 300; RUN make check; INSPECT gdb 'break blank_10_copy_disk_slot_number'.
+01. FILL blank_01_validate_page_address; DERIVE state transition from CHALLENGES.md; OPERANDS [candidate_address, allowed_start, allowed_end_exclusive, unused]; INPUT 4096,4096,12288,0,0,0; EXPECT 1; SECOND INPUT 16384,4096,12288,0,0,0; EXPECT 0; RUN make check; INSPECT gdb 'break blank_01_validate_page_address'.
+02. FILL blank_02_check_reference_bit; DERIVE state transition from CHALLENGES.md; OPERANDS [flags, queried_bit, unused, unused]; INPUT 19,16,0,0,0,0; EXPECT 1; SECOND INPUT 3,16,0,0,0,0; EXPECT 0; RUN make check; INSPECT gdb 'break blank_02_check_reference_bit'.
+03. FILL blank_03_choose_clock_victim; DERIVE state transition from CHALLENGES.md; OPERANDS [first_candidate, second_candidate, third_candidate, unused]; INPUT 11,3,7,0,0,0; EXPECT 1; SECOND INPUT 4,8,2,0,0,0; EXPECT 2; RUN make check; INSPECT gdb 'break blank_03_choose_clock_victim'.
+04. FILL blank_04_clear_reference_permission; DERIVE state transition from CHALLENGES.md; OPERANDS [flags, bit_to_clear, unused, unused]; INPUT 23,4,0,0,0,0; EXPECT 19; SECOND INPUT 17,16,0,0,0,0; EXPECT 1; RUN make check; INSPECT gdb 'break blank_04_clear_reference_permission'.
+05. FILL blank_05_page_align_fault; DERIVE state transition from CHALLENGES.md; OPERANDS [address, alignment_bytes, unused, unused]; INPUT 4660,4096,0,0,0,0; EXPECT 4096; SECOND INPUT 8192,4096,0,0,0,0; EXPECT 8192; RUN make check; INSPECT gdb 'break blank_05_page_align_fault'.
+06. FILL blank_06_calculate_swap_pages; DERIVE state transition from CHALLENGES.md; OPERANDS [byte_count, page_bytes, unused, unused]; INPUT 4097,4096,0,0,0,0; EXPECT 2; SECOND INPUT 8192,4096,0,0,0,0; EXPECT 2; RUN make check; INSPECT gdb 'break blank_06_calculate_swap_pages'.
+07. FILL blank_07_reject_zero_page_size; DERIVE state transition from CHALLENGES.md; OPERANDS [candidate, unused, unused, unused]; INPUT 0,0,0,0,0,0; EXPECT -1; SECOND INPUT 17,0,0,0,0,0; EXPECT 0; RUN make check; INSPECT gdb 'break blank_07_reject_zero_page_size'.
+08. FILL blank_08_increment_clock_hand; DERIVE state transition from CHALLENGES.md; OPERANDS [prior_tick_count, elapsed_tick_count, unused, unused]; INPUT 100,7,0,0,0,0; EXPECT 107; SECOND INPUT 2,10,0,0,0,0; EXPECT 12; RUN make check; INSPECT gdb 'break blank_08_increment_clock_hand'.
+09. FILL blank_09_bound_frame_allocation; DERIVE state transition from CHALLENGES.md; OPERANDS [first_candidate, second_candidate, unused, unused]; INPUT 3,8,0,0,0,0; EXPECT 3; SECOND INPUT 12,7,0,0,0,0; EXPECT 7; RUN make check; INSPECT gdb 'break blank_09_bound_frame_allocation'.
+10. FILL blank_10_copy_disk_slot_number; DERIVE state transition from CHALLENGES.md; OPERANDS [source_value, unused, unused, unused]; INPUT 47,0,0,0,0,0; EXPECT 47; SECOND INPUT 300,0,0,0,0,0; EXPECT 300; RUN make check; INSPECT gdb 'break blank_10_copy_disk_slot_number'.
 
 INVARIANT: sharing one frame requires invalidating every owner mapping before eviction
 TRACE: CALL -> six input values -> function entry -> expected output -> actual output -> first violated state.
