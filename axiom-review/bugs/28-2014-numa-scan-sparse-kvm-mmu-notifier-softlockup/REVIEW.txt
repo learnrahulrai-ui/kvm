@@ -1,0 +1,63 @@
+SOURCE_COMMIT 32198a0ade443b1b6c037a3a52fbc472abab801e
+FOLDER bugs/28-2014-numa-scan-sparse-kvm-mmu-notifier-softlockup
+AXIOM 1: 0 denotes no counted objects.
+AXIOM 2: 1 denotes one object added to 0.
+RULE: each new symbol needs an earlier definition.
+RULE: each numerical result needs an earlier calculation.
+RULE: a compiler result is not a proof of the subject matter.
+METHOD: each original source line is copied with its original line number.
+METHOD: FIRST_USE and NUMBERS identify candidates requiring proof.
+LIMIT: this is a conservative rejection, not a complete human semantic review.
+FOLDER_RESULT REJECTED
+
+FILE bugs/28-2014-numa-scan-sparse-kvm-mmu-notifier-softlockup/CASE.txt
+GIT_BLOB f4648fb461fe424c0aee5ff7be47fdff005a7f7e
+MODE 100644
+BYTES 4013
+SOURCE_LINES 40
+L00001 REJECTED TEXT="B28 | Linux NUMA scan performs expensive KVM MMU invalidations over holes in huge guest memory" FIRST_USE=["B28", "NUMA", "KVM", "MMU", "guest", "memory"] NUMBERS=["8"] GAP="first line is not a proved axiom from counting"
+L00002 REJECTED TEXT="PUBLIC ORIGIN YEAR: 2014 (pre-2015)" FIRST_USE=["PUBLIC", "ORIGIN", "YEAR"] NUMBERS=["2014", "2015"] GAP="no verified preceding-line derivation of this assertion"
+L00003 REJECTED TEXT="EVIDENCE STATUS: LKML_2014_PATCH_SERIES_ORIGINAL_SOURCE_VERIFIED" FIRST_USE=["EVIDENCE", "STATUS", "LKML_2014_PATCH_SERIES_ORIGINAL_SOURCE_VERIFIED"] NUMBERS=["014"] GAP="no verified preceding-line derivation of this assertion"
+L00004 REJECTED TEXT="CAN TRY ON SECOND LAPTOP: HUGE_VM_ONLY / PUBLISHED_VM_GT_2_TIB_MEMORY; NOT_LAPTOP_EXACT_REPRO" FIRST_USE=["CAN", "TRY", "ON", "SECOND", "LAPTOP", "HUGE_VM_ONLY", "PUBLISHED_VM_GT_2_TIB_MEMORY", "NOT_LAPTOP_EXACT_REPRO"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00005 REJECTED TEXT="LOCAL REPRODUCED: NO_REPRO_RUN" FIRST_USE=["LOCAL", "REPRODUCED", "NO_REPRO_RUN"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00006 REJECTED TEXT="ORIGINAL REPORT / PATCH (READ BODY NOT TITLE): https://lkml.iu.edu/hypermail/linux/kernel/1402.2/01745.html" FIRST_USE=["ORIGINAL", "REPORT", "PATCH", "READ", "BODY", "NOT", "TITLE", "kernel"] NUMBERS=["1402.2", "01745"] GAP="no verified preceding-line derivation of this assertion"
+L00007 REJECTED TEXT="SECONDARY INDEPENDENT DEFINITION: https://www.kernel.org/doc/html/v6.10/mm/page_tables.html" FIRST_USE=["SECONDARY", "INDEPENDENT", "DEFINITION", "page_tables"] NUMBERS=["10"] GAP="no verified preceding-line derivation of this assertion"
+L00008 REJECTED TEXT="PATCH / REVIEW: https://lkml.iu.edu/hypermail/linux/kernel/1402.2/01745.html" FIRST_USE=["REVIEW"] NUMBERS=["1402.2", "01745"] GAP="no verified preceding-line derivation of this assertion"
+L00009 REJECTED TEXT="PINNED VERSION: 2014 Linux automatic NUMA balancing and KVM sparse large VM (~2 TiB), before three-part patch series" FIRST_USE=["PINNED", "VERSION", "VM"] NUMBERS=["2014", "2"] GAP="no verified preceding-line derivation of this assertion"
+L00010 REJECTED TEXT="END-USER FAILURE: Linux NUMA scan performs expensive KVM MMU invalidations over holes in huge guest memory" FIRST_USE=["END", "USER", "FAILURE"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00011 REJECTED TEXT="CORE FAILURE, NOT AN ERROR-RETURN EXERCISE:" FIRST_USE=["CORE", "AN", "ERROR", "RETURN", "EXERCISE"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00012 REJECTED TEXT="NUMA balancing walks huge sparse guest mappings and invokes mmu_notifier even where no page is present. KVM pays invalidation work proportional to virtual address span rather than resident pages, causing watchdog soft-lockup latency." FIRST_USE=["mmu_notifier", "page", "virtual", "address"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00013 REJECTED TEXT="CALL / DATA / STATE PATH:" FIRST_USE=["CALL", "DATA", "STATE", "PATH"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00014 REJECTED TEXT="task_numa_work scans unpopulated VMA -> change_protection / mmu notifier over empty range -> KVM invalidation overhead -> latency/soft lockup; fix narrows invalidation to populated PMD and cond_resched" FIRST_USE=["task_numa_work", "VMA", "change_protection", "PMD", "cond_resched"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00015 REJECTED TEXT="REPRODUCTION PROCEDURE AND REQUIRED RESOURCES:" FIRST_USE=["REPRODUCTION", "PROCEDURE", "AND", "REQUIRED", "RESOURCES"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00016 REJECTED TEXT="Reporter states warning occurs on very large (>2TiB) KVM VMs. Cannot reproduce exact memory scale on 14GiB machine. Study patch body, create a SMALL demonstrator measuring notifier calls over sparse mmap regions, and explicitly label it a mechanism demonstration, not a reproduction." FIRST_USE=["SMALL"] NUMBERS=["2", "14"] GAP="no verified preceding-line derivation of this assertion"
+L00017 REJECTED TEXT="FAILURE SIGNAL AND CONTROL:" FIRST_USE=["SIGNAL", "CONTROL"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00018 REJECTED TEXT="soft lockup on huge sparse VMs, notifier calls on unmapped ranges; patch moves call to 1GiB PMD and only begins where present page encountered." FIRST_USE=[] NUMBERS=["1"] GAP="no verified preceding-line derivation of this assertion"
+L00019 REJECTED TEXT="MANUAL INPUT AND QUESTION:" FIRST_USE=["MANUAL", "INPUT", "QUESTION"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00020 REJECTED TEXT="PUBLISHED: >2 TiB sparse virtual mapping. CONSTRUCTED: 2 TiB / 1 GiB = 2048 PUD-size windows, whereas 2 TiB / 2 MiB = 1048576 individual PMD-size spans. The 2014 source calls a change_pmd_range() traversal a '1GB area'; do not confuse a PMD table's 1GiB overall coverage with one PMD entry's 2MiB coverage. Derive why notifying on unbacked spans costs CPU even when no pages exist." FIRST_USE=["PUBLISHED", "mapping", "CONSTRUCTED", "PUD", "source", "change_pmd_range", "CPU"] NUMBERS=["2", "1", "2048", "1048576", "2014"] GAP="no verified preceding-line derivation of this assertion"
+L00021 REJECTED TEXT="EXACT UNIVERSITY ASSIGNMENTS INVOLVED: 08-iitb-cs695-kvm-pa1, 19-uiuc-cs423-mp3, 15-mit-61810-mmap, 07-gatech-6210-vm-coordinator" FIRST_USE=["EXACT", "UNIVERSITY", "ASSIGNMENTS", "INVOLVED", "kvm", "vm"] NUMBERS=["08", "95", "19", "23", "15", "61810", "07", "6210"] GAP="no verified preceding-line derivation of this assertion"
+L00022 REJECTED TEXT="FIRST-PRINCIPLES REPRODUCTION CONTRACT" FIRST_USE=["FIRST", "PRINCIPLES", "CONTRACT"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00023 REJECTED TEXT="Read the actual original patch code; identify the reader and writer of shared state. No unsupported cross-version inferences." FIRST_USE=["state"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00024 REJECTED TEXT="CALCULATE page size from sysconf(_SC_PAGESIZE) or in-guest PAGE_SIZE, never use a made-up kernel address as an observed value." FIRST_USE=["CALCULATE", "_SC_PAGESIZE", "PAGE_SIZE", "value"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00025 REJECTED TEXT="Use -O0 -g3 for standalone userspace, but retain kernel's required build optimization plus -g for old in-kernel tests." FIRST_USE=["O0"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00026 REJECTED TEXT="Configure disposable VM, snapshot image, serial console, host watchdog and external process timeout." FIRST_USE=["host", "process"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00027 REJECTED TEXT="Capture: host kernel sha + QEMU git sha + guest kernel version + CPU virtualization flags + exact commands + guest logs + host trace + before-and-after test." FIRST_USE=["QEMU", "test"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00028 REJECTED TEXT="Write only mechanism-specific changes. Never alter the expected test result after observing failure." FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00029 NO_CLAIM TEXT="" FIRST_USE=[] NUMBERS=[] GAP="empty line"
+L00030 REJECTED TEXT="STUDENT-OWNED TEN LOGIC TASKS; DO NOT SUBSTITUTE BUILD SUCCESS FOR CORRECTNESS:" FIRST_USE=["STUDENT", "OWNED", "TEN", "LOGIC", "TASKS", "DO", "SUBSTITUTE", "BUILD", "SUCCESS", "FOR", "CORRECTNESS"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00031 REJECTED TEXT="01. FILL exact root function and first call from historical source revision." FIRST_USE=["FILL", "function"] NUMBERS=["01"] GAP="no verified preceding-line derivation of this assertion"
+L00032 REJECTED TEXT="02. DRAW the first state read and its owner before any other actor acts." FIRST_USE=["DRAW"] NUMBERS=["02"] GAP="no verified preceding-line derivation of this assertion"
+L00033 REJECTED TEXT="03. TRACE the competing state writer or failing service; identify when it runs." FIRST_USE=["TRACE"] NUMBERS=["03"] GAP="no verified preceding-line derivation of this assertion"
+L00034 REJECTED TEXT="04. CALCULATE expected and observed state using the supplied concrete input." FIRST_USE=[] NUMBERS=["04"] GAP="no verified preceding-line derivation of this assertion"
+L00035 REJECTED TEXT="05. IDENTIFY earliest state after which both actors' assumptions cannot hold." FIRST_USE=["IDENTIFY"] NUMBERS=["05"] GAP="no verified preceding-line derivation of this assertion"
+L00036 REJECTED TEXT="06. RECREATE one genuine source-level breakpoint or tracepoint from original code." FIRST_USE=["RECREATE"] NUMBERS=["06"] GAP="no verified preceding-line derivation of this assertion"
+L00037 REJECTED TEXT="07. RECORD what user observed and its link to the internal state mismatch." FIRST_USE=["RECORD"] NUMBERS=["07"] GAP="no verified preceding-line derivation of this assertion"
+L00038 REJECTED TEXT="08. DERIVE a negative control by disabling exactly the triggering mechanism." FIRST_USE=["DERIVE"] NUMBERS=["08"] GAP="no verified preceding-line derivation of this assertion"
+L00039 REJECTED TEXT="09. MEASURE before and after the historical patch; preserve all other conditions." FIRST_USE=["MEASURE"] NUMBERS=["09"] GAP="no verified preceding-line derivation of this assertion"
+L00040 REJECTED TEXT="10. EXPLAIN why the patch's correction does not prove other VM configurations are fixed." FIRST_USE=["EXPLAIN"] NUMBERS=["10"] GAP="no verified preceding-line derivation of this assertion"
+RESULT REJECTED: line-level axiomatic proof not established; flagged=39/40
+NEW THINGS INTRODUCED WITHOUT DERIVATION: ["AN", "AND", "ASSIGNMENTS", "B28", "BODY", "BUILD", "CALCULATE", "CALL", "CAN", "CONSTRUCTED", "CONTRACT", "CONTROL", "CORE", "CORRECTNESS", "CPU", "DATA", "DEFINITION", "DERIVE", "DO", "DRAW", "END", "ERROR", "EVIDENCE", "EXACT", "EXERCISE", "EXPLAIN", "FAILURE", "FILL", "FIRST", "FOR", "HUGE_VM_ONLY", "IDENTIFY", "INDEPENDENT", "INPUT", "INVOLVED", "KVM", "LAPTOP", "LKML_2014_PATCH_SERIES_ORIGINAL_SOURCE_VERIFIED", "LOCAL", "LOGIC", "MANUAL", "MEASURE", "MMU", "NOT", "NOT_LAPTOP_EXACT_REPRO", "NO_REPRO_RUN", "NUMA", "O0", "ON", "ORIGIN", "ORIGINAL", "OWNED", "PAGE_SIZE", "PATCH", "PATH", "PINNED", "PMD", "PRINCIPLES", "PROCEDURE", "PUBLIC", "PUBLISHED", "PUBLISHED_VM_GT_2_TIB_MEMORY", "PUD", "QEMU", "QUESTION", "READ", "RECORD", "RECREATE", "REPORT", "REPRODUCED", "REPRODUCTION", "REQUIRED", "RESOURCES", "RETURN", "REVIEW", "SECOND", "SECONDARY", "SIGNAL", "SMALL", "STATE", "STATUS", "STUDENT", "SUBSTITUTE", "SUCCESS", "TASKS", "TEN", "TITLE", "TRACE", "TRY", "UNIVERSITY", "USER", "VERSION", "VM", "VMA", "YEAR", "_SC_PAGESIZE", "address", "change_pmd_range", "change_protection", "cond_resched", "function", "guest", "host", "kernel", "kvm", "mapping", "memory", "mmu_notifier", "page", "page_tables", "process", "source", "state", "task_numa_work", "test", "value", "virtual", "vm"]
+NUMBERS WITHOUT VERIFIED DERIVATION: ["01", "014", "01745", "02", "03", "04", "05", "06", "07", "08", "09", "1", "10", "1048576", "14", "1402.2", "15", "19", "2", "2014", "2015", "2048", "23", "61810", "6210", "8", "95"]
+LIMIT: first-use names are lexical candidates, not a complete semantic analysis.
+END_FILE
+

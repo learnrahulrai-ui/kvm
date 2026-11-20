@@ -1,0 +1,62 @@
+SOURCE_COMMIT 32198a0ade443b1b6c037a3a52fbc472abab801e
+FOLDER bugs/26-2013-qemu-aio-drain-early-return
+AXIOM 1: 0 denotes no counted objects.
+AXIOM 2: 1 denotes one object added to 0.
+RULE: each new symbol needs an earlier definition.
+RULE: each numerical result needs an earlier calculation.
+RULE: a compiler result is not a proof of the subject matter.
+METHOD: each original source line is copied with its original line number.
+METHOD: FIRST_USE and NUMBERS identify candidates requiring proof.
+LIMIT: this is a conservative rejection, not a complete human semantic review.
+FOLDER_RESULT REJECTED
+
+FILE bugs/26-2013-qemu-aio-drain-early-return/CASE.txt
+GIT_BLOB f25ca3fad7e3d6aaa6edb689bbaf38efed1a0e1b
+MODE 100644
+BYTES 3640
+SOURCE_LINES 39
+L00001 REJECTED TEXT="B26 | QEMU aio_poll treats no immediate progress as no pending I/O" FIRST_USE=["B26", "QEMU", "aio_poll"] NUMBERS=["6"] GAP="first line is not a proved axiom from counting"
+L00002 REJECTED TEXT="PUBLIC ORIGIN YEAR: 2013 (pre-2015)" FIRST_USE=["PUBLIC", "ORIGIN", "YEAR"] NUMBERS=["2013", "2015"] GAP="no verified preceding-line derivation of this assertion"
+L00003 REJECTED TEXT="EVIDENCE STATUS: UPSTREAM_PATCH_2EA9_AND_STABLE_CHERRY_PICK_VERIFIED" FIRST_USE=["EVIDENCE", "STATUS", "UPSTREAM_PATCH_2EA9_AND_STABLE_CHERRY_PICK_VERIFIED"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00004 REJECTED TEXT="CAN TRY ON SECOND LAPTOP: GOOD_SOFTWARE_ONLY_CONDITIONAL / SOFTWARE_ONLY_HISTORICAL_QEMU_BLOCK_BACKEND" FIRST_USE=["CAN", "TRY", "ON", "SECOND", "LAPTOP", "GOOD_SOFTWARE_ONLY_CONDITIONAL", "SOFTWARE_ONLY_HISTORICAL_QEMU_BLOCK_BACKEND"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00005 REJECTED TEXT="LOCAL REPRODUCED: NO_REPRO_RUN" FIRST_USE=["LOCAL", "REPRODUCED", "NO_REPRO_RUN"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00006 REJECTED TEXT="ORIGINAL REPORT / PATCH (READ BODY NOT TITLE): https://github.com/qemu/qemu/commit/2ea9b58f0bc62445b7ace2381b4c4db7d5597e19" FIRST_USE=["ORIGINAL", "REPORT", "PATCH", "READ", "BODY", "NOT", "TITLE", "qemu"] NUMBERS=["2", "8", "2445", "381", "597", "9"] GAP="no verified preceding-line derivation of this assertion"
+L00007 REJECTED TEXT="PATCH / REVIEW: https://github.com/qemu/qemu/commit/9d173df5538a73cb8be53684ab19ea201c783663" FIRST_USE=["REVIEW"] NUMBERS=["9", "73", "538", "3", "3684", "01", "83663"] GAP="no verified preceding-line derivation of this assertion"
+L00008 REJECTED TEXT="PINNED VERSION: QEMU 1.3 stable series January 2013; pre-patch and post-fix historical source required" FIRST_USE=["PINNED", "VERSION", "source"] NUMBERS=["1.3", "2013"] GAP="no verified preceding-line derivation of this assertion"
+L00009 REJECTED TEXT="END-USER FAILURE: QEMU aio_poll treats no immediate progress as no pending I/O" FIRST_USE=["END", "USER", "FAILURE"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00010 REJECTED TEXT="CORE FAILURE, NOT AN ERROR-RETURN EXERCISE:" FIRST_USE=["CORE", "AN", "ERROR", "RETURN", "EXERCISE"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00011 REJECTED TEXT="aio_poll() returned a progress flag even though there were outstanding operations. bdrv_drain_all() treated false as nothing remains and could stop before asynchronous requests completed." FIRST_USE=["bdrv_drain_all"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00012 REJECTED TEXT="CALL / DATA / STATE PATH:" FIRST_USE=["CALL", "DATA", "STATE", "PATH"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00013 REJECTED TEXT="backend has outstanding AIO -> aio_poll does not complete one on this iteration -> returns false -> bdrv_drain_all exits -> assert pending work or state transition races unfinished I/O" FIRST_USE=["AIO", "state"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00014 REJECTED TEXT="REPRODUCTION PROCEDURE AND REQUIRED RESOURCES:" FIRST_USE=["REPRODUCTION", "PROCEDURE", "AND", "REQUIRED", "RESOURCES"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00015 REJECTED TEXT="Build historical QEMU before 2ea9b58 then after it. Run guest disk AIO workload and repeatedly trigger block drain (e.g. snapshot, stop or migration flush) while outstanding requests exist. Use gdb on aio_poll / bdrv_drain_all to capture pending/busy versus progress; no deterministic original reproducer established by commit." FIRST_USE=["guest", "disk", "block", "migration"] NUMBERS=["2", "8"] GAP="no verified preceding-line derivation of this assertion"
+L00016 REJECTED TEXT="FAILURE SIGNAL AND CONTROL:" FIRST_USE=["SIGNAL", "CONTROL"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00017 REJECTED TEXT="Original source says bdrv_drain_all could assert with outstanding work; fix ensures return reflects busy as well as immediate progress." FIRST_USE=["return"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00018 REJECTED TEXT="MANUAL INPUT AND QUESTION:" FIRST_USE=["MANUAL", "INPUT", "QUESTION"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00019 REJECTED TEXT="CONSTRUCTED: pending=3, completed_this_poll=0. Calculate progress boolean and pending-work boolean separately. Which boolean should determine whether draining stops?" FIRST_USE=["CONSTRUCTED", "completed_this_poll"] NUMBERS=["3", "0"] GAP="no verified preceding-line derivation of this assertion"
+L00020 REJECTED TEXT="EXACT UNIVERSITY ASSIGNMENTS INVOLVED: 09-iitb-cs695-libvirt-pa2, 07-gatech-6210-vm-coordinator, 21-biswas-oslab-kvm" FIRST_USE=["EXACT", "UNIVERSITY", "ASSIGNMENTS", "INVOLVED", "vm", "kvm"] NUMBERS=["09", "95", "07", "6210", "21"] GAP="no verified preceding-line derivation of this assertion"
+L00021 REJECTED TEXT="FIRST-PRINCIPLES REPRODUCTION CONTRACT" FIRST_USE=["FIRST", "PRINCIPLES", "CONTRACT"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00022 REJECTED TEXT="Read the actual original patch code; identify the reader and writer of shared state. No unsupported cross-version inferences." FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00023 REJECTED TEXT="CALCULATE page size from sysconf(_SC_PAGESIZE) or in-guest PAGE_SIZE, never use a made-up kernel address as an observed value." FIRST_USE=["CALCULATE", "page", "_SC_PAGESIZE", "PAGE_SIZE", "kernel", "address", "value"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00024 REJECTED TEXT="Use -O0 -g3 for standalone userspace, but retain kernel's required build optimization plus -g for old in-kernel tests." FIRST_USE=["O0"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00025 REJECTED TEXT="Configure disposable VM, snapshot image, serial console, host watchdog and external process timeout." FIRST_USE=["VM", "host", "process"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00026 REJECTED TEXT="Capture: host kernel sha + QEMU git sha + guest kernel version + CPU virtualization flags + exact commands + guest logs + host trace + before-and-after test." FIRST_USE=["CPU", "test"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00027 REJECTED TEXT="Write only mechanism-specific changes. Never alter the expected test result after observing failure." FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00028 NO_CLAIM TEXT="" FIRST_USE=[] NUMBERS=[] GAP="empty line"
+L00029 REJECTED TEXT="STUDENT-OWNED TEN LOGIC TASKS; DO NOT SUBSTITUTE BUILD SUCCESS FOR CORRECTNESS:" FIRST_USE=["STUDENT", "OWNED", "TEN", "LOGIC", "TASKS", "DO", "SUBSTITUTE", "BUILD", "SUCCESS", "FOR", "CORRECTNESS"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00030 REJECTED TEXT="01. FILL exact root function and first call from historical source revision." FIRST_USE=["FILL", "function"] NUMBERS=["01"] GAP="no verified preceding-line derivation of this assertion"
+L00031 REJECTED TEXT="02. DRAW the first state read and its owner before any other actor acts." FIRST_USE=["DRAW"] NUMBERS=["02"] GAP="no verified preceding-line derivation of this assertion"
+L00032 REJECTED TEXT="03. TRACE the competing state writer or failing service; identify when it runs." FIRST_USE=["TRACE"] NUMBERS=["03"] GAP="no verified preceding-line derivation of this assertion"
+L00033 REJECTED TEXT="04. CALCULATE expected and observed state using the supplied concrete input." FIRST_USE=[] NUMBERS=["04"] GAP="no verified preceding-line derivation of this assertion"
+L00034 REJECTED TEXT="05. IDENTIFY earliest state after which both actors' assumptions cannot hold." FIRST_USE=["IDENTIFY"] NUMBERS=["05"] GAP="no verified preceding-line derivation of this assertion"
+L00035 REJECTED TEXT="06. RECREATE one genuine source-level breakpoint or tracepoint from original code." FIRST_USE=["RECREATE"] NUMBERS=["06"] GAP="no verified preceding-line derivation of this assertion"
+L00036 REJECTED TEXT="07. RECORD what user observed and its link to the internal state mismatch." FIRST_USE=["RECORD"] NUMBERS=["07"] GAP="no verified preceding-line derivation of this assertion"
+L00037 REJECTED TEXT="08. DERIVE a negative control by disabling exactly the triggering mechanism." FIRST_USE=["DERIVE"] NUMBERS=["08"] GAP="no verified preceding-line derivation of this assertion"
+L00038 REJECTED TEXT="09. MEASURE before and after the historical patch; preserve all other conditions." FIRST_USE=["MEASURE"] NUMBERS=["09"] GAP="no verified preceding-line derivation of this assertion"
+L00039 REJECTED TEXT="10. EXPLAIN why the patch's correction does not prove other VM configurations are fixed." FIRST_USE=["EXPLAIN"] NUMBERS=["10"] GAP="no verified preceding-line derivation of this assertion"
+RESULT REJECTED: line-level axiomatic proof not established; flagged=38/39
+NEW THINGS INTRODUCED WITHOUT DERIVATION: ["AIO", "AN", "AND", "ASSIGNMENTS", "B26", "BODY", "BUILD", "CALCULATE", "CALL", "CAN", "CONSTRUCTED", "CONTRACT", "CONTROL", "CORE", "CORRECTNESS", "CPU", "DATA", "DERIVE", "DO", "DRAW", "END", "ERROR", "EVIDENCE", "EXACT", "EXERCISE", "EXPLAIN", "FAILURE", "FILL", "FIRST", "FOR", "GOOD_SOFTWARE_ONLY_CONDITIONAL", "IDENTIFY", "INPUT", "INVOLVED", "LAPTOP", "LOCAL", "LOGIC", "MANUAL", "MEASURE", "NOT", "NO_REPRO_RUN", "O0", "ON", "ORIGIN", "ORIGINAL", "OWNED", "PAGE_SIZE", "PATCH", "PATH", "PINNED", "PRINCIPLES", "PROCEDURE", "PUBLIC", "QEMU", "QUESTION", "READ", "RECORD", "RECREATE", "REPORT", "REPRODUCED", "REPRODUCTION", "REQUIRED", "RESOURCES", "RETURN", "REVIEW", "SECOND", "SIGNAL", "SOFTWARE_ONLY_HISTORICAL_QEMU_BLOCK_BACKEND", "STATE", "STATUS", "STUDENT", "SUBSTITUTE", "SUCCESS", "TASKS", "TEN", "TITLE", "TRACE", "TRY", "UNIVERSITY", "UPSTREAM_PATCH_2EA9_AND_STABLE_CHERRY_PICK_VERIFIED", "USER", "VERSION", "VM", "YEAR", "_SC_PAGESIZE", "address", "aio_poll", "bdrv_drain_all", "block", "completed_this_poll", "disk", "function", "guest", "host", "kernel", "kvm", "migration", "page", "process", "qemu", "return", "source", "state", "test", "value", "vm"]
+NUMBERS WITHOUT VERIFIED DERIVATION: ["0", "01", "02", "03", "04", "05", "06", "07", "08", "09", "1.3", "10", "2", "2013", "2015", "21", "2445", "3", "3684", "381", "538", "597", "6", "6210", "73", "8", "83663", "9", "95"]
+LIMIT: first-use names are lexical candidates, not a complete semantic analysis.
+END_FILE
+

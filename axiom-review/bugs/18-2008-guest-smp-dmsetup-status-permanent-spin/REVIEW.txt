@@ -1,0 +1,63 @@
+SOURCE_COMMIT 32198a0ade443b1b6c037a3a52fbc472abab801e
+FOLDER bugs/18-2008-guest-smp-dmsetup-status-permanent-spin
+AXIOM 1: 0 denotes no counted objects.
+AXIOM 2: 1 denotes one object added to 0.
+RULE: each new symbol needs an earlier definition.
+RULE: each numerical result needs an earlier calculation.
+RULE: a compiler result is not a proof of the subject matter.
+METHOD: each original source line is copied with its original line number.
+METHOD: FIRST_USE and NUMBERS identify candidates requiring proof.
+LIMIT: this is a conservative rejection, not a complete human semantic review.
+FOLDER_RESULT REJECTED
+
+FILE bugs/18-2008-guest-smp-dmsetup-status-permanent-spin/CASE.txt
+GIT_BLOB 03bad8a50230b0a5c8b57e2abc43e92e40329fb4
+MODE 100644
+BYTES 3816
+SOURCE_LINES 40
+L00001 REJECTED TEXT="B18 | Prefetch before write-protection leaves a guest page permanently not-present in shadow" FIRST_USE=["B18", "guest", "page"] NUMBERS=["8"] GAP="first line is not a proved axiom from counting"
+L00002 REJECTED TEXT="PUBLIC ORIGIN YEAR: 2008 (pre-2015)" FIRST_USE=["PUBLIC", "ORIGIN", "YEAR"] NUMBERS=["2008", "2015"] GAP="no verified preceding-line derivation of this assertion"
+L00003 REJECTED TEXT="EVIDENCE STATUS: REPORTED_LOOP_REPRO; patch applied by Avi Kivity" FIRST_USE=["EVIDENCE", "STATUS", "REPORTED_LOOP_REPRO"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00004 REJECTED TEXT="CAN TRY ON SECOND LAPTOP: GOOD_ORIGINAL_REPRO_OLD_KERNEL / OLD_SHADOW_MMU_SMP; guest dmsetup required" FIRST_USE=["CAN", "TRY", "ON", "SECOND", "LAPTOP", "GOOD_ORIGINAL_REPRO_OLD_KERNEL", "OLD_SHADOW_MMU_SMP"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00005 REJECTED TEXT="LOCAL REPRODUCED: NO_REPRO_RUN" FIRST_USE=["LOCAL", "REPRODUCED", "NO_REPRO_RUN"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00006 REJECTED TEXT="ORIGINAL REPORT / PATCH (READ BODY NOT TITLE): https://sourceforge.net/p/kvm/mailman/message/19067975/" FIRST_USE=["ORIGINAL", "REPORT", "PATCH", "READ", "BODY", "NOT", "TITLE", "kvm"] NUMBERS=["19067975"] GAP="no verified preceding-line derivation of this assertion"
+L00007 REJECTED TEXT="PATCH / REVIEW: https://lkml.rescloud.iu.edu/0804.2/0603.html" FIRST_USE=["REVIEW"] NUMBERS=["0804.2", "0603"] GAP="no verified preceding-line derivation of this assertion"
+L00008 REJECTED TEXT="REVIEW: https://sourceforge.net/p/kvm/mailman/message/19067979/" FIRST_USE=[] NUMBERS=["19067979"] GAP="no verified preceding-line derivation of this assertion"
+L00009 REJECTED TEXT="PINNED VERSION: KVM just before April 2008 correction, SMP Linux guest with device-mapper tools; kvm-65 announcement also lists this fix" FIRST_USE=["PINNED", "VERSION", "KVM", "SMP", "device"] NUMBERS=["2008", "65"] GAP="no verified preceding-line derivation of this assertion"
+L00010 REJECTED TEXT="END-USER FAILURE: Prefetch before write-protection leaves a guest page permanently not-present in shadow" FIRST_USE=["END", "USER", "FAILURE"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00011 REJECTED TEXT="CORE FAILURE, NOT AN ERROR-RETURN EXERCISE:" FIRST_USE=["CORE", "AN", "ERROR", "RETURN", "EXERCISE"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00012 REJECTED TEXT="kvm_mmu_get_page prepopulated a shadow PTE while the guest page-table page was still writable. Guest marked a PTE present afterward; KVM's prefetched notrap entry remained stale and KVM could not intercept the guest update." FIRST_USE=["kvm_mmu_get_page", "PTE", "Guest"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00013 REJECTED TEXT="CALL / DATA / STATE PATH:" FIRST_USE=["CALL", "DATA", "STATE", "PATH"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00014 REJECTED TEXT="kvm_mmu_get_page -> mmu.prefetch_page -> VCPU1 makes guest PTE present -> rmap_write_protect arrives too late -> guest fault loops without repair" FIRST_USE=["prefetch_page", "VCPU1", "rmap_write_protect"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00015 REJECTED TEXT="REPRODUCTION PROCEDURE AND REQUIRED RESOURCES:" FIRST_USE=["REPRODUCTION", "PROCEDURE", "AND", "REQUIRED", "RESOURCES"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00016 REJECTED TEXT="Original reproducer is a looping `dmsetup status` in an SMP guest. Build old, pre-patch KVM in an isolated L0 virtual machine capable of nested virtualization, run two guest CPUs, create/activate device-mapper targets on disposable guest storage, and repeat status while capturing fault traces. Compare against a build containing only the patch." FIRST_USE=["L0", "virtual"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00017 REJECTED TEXT="FAILURE SIGNAL AND CONTROL:" FIRST_USE=["SIGNAL", "CONTROL"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00018 REJECTED TEXT="Guest hangs/spins in pre-fix report; change order to protect before prefetch and verify it no longer occurs under same workload." FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00019 REJECTED TEXT="MANUAL INPUT AND QUESTION:" FIRST_USE=["MANUAL", "INPUT", "QUESTION"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00020 REJECTED TEXT="CONSTRUCTED: shadow entry cached nonpresent while current guest PTE becomes present=1. Calculate truth value of entry equality after the guest update. Identify why performing the same operations in opposite order changes visibility." FIRST_USE=["CONSTRUCTED", "value"] NUMBERS=["1"] GAP="no verified preceding-line derivation of this assertion"
+L00021 REJECTED TEXT="EXACT UNIVERSITY ASSIGNMENTS INVOLVED: 08-iitb-cs695-kvm-pa1, 11-unc-comp790-vmm, 14-mit-61810-cow, 16-mit-61810-superpages" FIRST_USE=["EXACT", "UNIVERSITY", "ASSIGNMENTS", "INVOLVED", "cow"] NUMBERS=["08", "95", "11", "90", "14", "61810", "16"] GAP="no verified preceding-line derivation of this assertion"
+L00022 REJECTED TEXT="FIRST-PRINCIPLES REPRODUCTION CONTRACT" FIRST_USE=["FIRST", "PRINCIPLES", "CONTRACT"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00023 REJECTED TEXT="Read the actual original patch code; identify the reader and writer of shared state. No unsupported cross-version inferences." FIRST_USE=["state"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00024 REJECTED TEXT="CALCULATE page size from sysconf(_SC_PAGESIZE) or in-guest PAGE_SIZE, never use a made-up kernel address as an observed value." FIRST_USE=["CALCULATE", "_SC_PAGESIZE", "PAGE_SIZE", "kernel", "address"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00025 REJECTED TEXT="Use -O0 -g3 for standalone userspace, but retain kernel's required build optimization plus -g for old in-kernel tests." FIRST_USE=["O0"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00026 REJECTED TEXT="Configure disposable VM, snapshot image, serial console, host watchdog and external process timeout." FIRST_USE=["VM", "host", "process"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00027 REJECTED TEXT="Capture: host kernel sha + QEMU git sha + guest kernel version + CPU virtualization flags + exact commands + guest logs + host trace + before-and-after test." FIRST_USE=["QEMU", "CPU", "test"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00028 REJECTED TEXT="Write only mechanism-specific changes. Never alter the expected test result after observing failure." FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00029 NO_CLAIM TEXT="" FIRST_USE=[] NUMBERS=[] GAP="empty line"
+L00030 REJECTED TEXT="STUDENT-OWNED TEN LOGIC TASKS; DO NOT SUBSTITUTE BUILD SUCCESS FOR CORRECTNESS:" FIRST_USE=["STUDENT", "OWNED", "TEN", "LOGIC", "TASKS", "DO", "SUBSTITUTE", "BUILD", "SUCCESS", "FOR", "CORRECTNESS"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00031 REJECTED TEXT="01. FILL exact root function and first call from historical source revision." FIRST_USE=["FILL", "function", "source"] NUMBERS=["01"] GAP="no verified preceding-line derivation of this assertion"
+L00032 REJECTED TEXT="02. DRAW the first state read and its owner before any other actor acts." FIRST_USE=["DRAW"] NUMBERS=["02"] GAP="no verified preceding-line derivation of this assertion"
+L00033 REJECTED TEXT="03. TRACE the competing state writer or failing service; identify when it runs." FIRST_USE=["TRACE"] NUMBERS=["03"] GAP="no verified preceding-line derivation of this assertion"
+L00034 REJECTED TEXT="04. CALCULATE expected and observed state using the supplied concrete input." FIRST_USE=[] NUMBERS=["04"] GAP="no verified preceding-line derivation of this assertion"
+L00035 REJECTED TEXT="05. IDENTIFY earliest state after which both actors' assumptions cannot hold." FIRST_USE=["IDENTIFY"] NUMBERS=["05"] GAP="no verified preceding-line derivation of this assertion"
+L00036 REJECTED TEXT="06. RECREATE one genuine source-level breakpoint or tracepoint from original code." FIRST_USE=["RECREATE"] NUMBERS=["06"] GAP="no verified preceding-line derivation of this assertion"
+L00037 REJECTED TEXT="07. RECORD what user observed and its link to the internal state mismatch." FIRST_USE=["RECORD"] NUMBERS=["07"] GAP="no verified preceding-line derivation of this assertion"
+L00038 REJECTED TEXT="08. DERIVE a negative control by disabling exactly the triggering mechanism." FIRST_USE=["DERIVE"] NUMBERS=["08"] GAP="no verified preceding-line derivation of this assertion"
+L00039 REJECTED TEXT="09. MEASURE before and after the historical patch; preserve all other conditions." FIRST_USE=["MEASURE"] NUMBERS=["09"] GAP="no verified preceding-line derivation of this assertion"
+L00040 REJECTED TEXT="10. EXPLAIN why the patch's correction does not prove other VM configurations are fixed." FIRST_USE=["EXPLAIN"] NUMBERS=["10"] GAP="no verified preceding-line derivation of this assertion"
+RESULT REJECTED: line-level axiomatic proof not established; flagged=39/40
+NEW THINGS INTRODUCED WITHOUT DERIVATION: ["AN", "AND", "ASSIGNMENTS", "B18", "BODY", "BUILD", "CALCULATE", "CALL", "CAN", "CONSTRUCTED", "CONTRACT", "CONTROL", "CORE", "CORRECTNESS", "CPU", "DATA", "DERIVE", "DO", "DRAW", "END", "ERROR", "EVIDENCE", "EXACT", "EXERCISE", "EXPLAIN", "FAILURE", "FILL", "FIRST", "FOR", "GOOD_ORIGINAL_REPRO_OLD_KERNEL", "Guest", "IDENTIFY", "INPUT", "INVOLVED", "KVM", "L0", "LAPTOP", "LOCAL", "LOGIC", "MANUAL", "MEASURE", "NOT", "NO_REPRO_RUN", "O0", "OLD_SHADOW_MMU_SMP", "ON", "ORIGIN", "ORIGINAL", "OWNED", "PAGE_SIZE", "PATCH", "PATH", "PINNED", "PRINCIPLES", "PROCEDURE", "PTE", "PUBLIC", "QEMU", "QUESTION", "READ", "RECORD", "RECREATE", "REPORT", "REPORTED_LOOP_REPRO", "REPRODUCED", "REPRODUCTION", "REQUIRED", "RESOURCES", "RETURN", "REVIEW", "SECOND", "SIGNAL", "SMP", "STATE", "STATUS", "STUDENT", "SUBSTITUTE", "SUCCESS", "TASKS", "TEN", "TITLE", "TRACE", "TRY", "UNIVERSITY", "USER", "VCPU1", "VERSION", "VM", "YEAR", "_SC_PAGESIZE", "address", "cow", "device", "function", "guest", "host", "kernel", "kvm", "kvm_mmu_get_page", "page", "prefetch_page", "process", "rmap_write_protect", "source", "state", "test", "value", "virtual"]
+NUMBERS WITHOUT VERIFIED DERIVATION: ["01", "02", "03", "04", "05", "06", "0603", "07", "08", "0804.2", "09", "1", "10", "11", "14", "16", "19067975", "19067979", "2008", "2015", "61810", "65", "8", "90", "95"]
+LIMIT: first-use names are lexical candidates, not a complete semantic analysis.
+END_FILE
+

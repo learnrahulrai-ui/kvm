@@ -1,0 +1,54 @@
+SOURCE_COMMIT 32198a0ade443b1b6c037a3a52fbc472abab801e
+FOLDER bugs/06-2025-kvm-dirty-ring-reset-livelock
+AXIOM 1: 0 denotes no counted objects.
+AXIOM 2: 1 denotes one object added to 0.
+RULE: each new symbol needs an earlier definition.
+RULE: each numerical result needs an earlier calculation.
+RULE: a compiler result is not a proof of the subject matter.
+METHOD: each original source line is copied with its original line number.
+METHOD: FIRST_USE and NUMBERS identify candidates requiring proof.
+LIMIT: this is a conservative rejection, not a complete human semantic review.
+FOLDER_RESULT REJECTED
+
+FILE bugs/06-2025-kvm-dirty-ring-reset-livelock/CASE.txt
+GIT_BLOB de2df3482af05034be192ed84352c1881d4c3c26
+MODE 100644
+BYTES 2858
+SOURCE_LINES 31
+L00001 REJECTED TEXT="B06 | KVM dirty-ring reset can loop indefinitely when userspace re-marks ring" FIRST_USE=["B06", "KVM", "ring"] NUMBERS=["6"] GAP="first line is not a proved axiom from counting"
+L00002 REJECTED TEXT="PUBLIC ORIGIN YEAR: 2025" FIRST_USE=["PUBLIC", "ORIGIN", "YEAR"] NUMBERS=["2025"] GAP="no verified preceding-line derivation of this assertion"
+L00003 REJECTED TEXT="EVIDENCE STATUS: CONFIRMED_PATCH_CONTAINS_MINIMAL_CONCURRENT_REPRO" FIRST_USE=["EVIDENCE", "STATUS", "CONFIRMED_PATCH_CONTAINS_MINIMAL_CONCURRENT_REPRO"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00004 REJECTED TEXT="CAN TRY ON SECOND LAPTOP: GOOD_NESTED_KVM_GUEST" FIRST_USE=["CAN", "TRY", "ON", "SECOND", "LAPTOP", "GOOD_NESTED_KVM_GUEST"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00005 REJECTED TEXT="LOCAL REPRODUCED: NO_REPRO_RUN" FIRST_USE=["LOCAL", "REPRODUCED", "NO_REPRO_RUN"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00006 REJECTED TEXT="CORE FAILURE, NOT AN ERROR-RETURN EXERCISE:" FIRST_USE=["CORE", "FAILURE", "NOT", "AN", "ERROR", "RETURN", "EXERCISE"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00007 REJECTED TEXT="Kernel harvested entries without a strict processing bound, so producer can keep replenishing the same work while reset loops; ioctl fails to make finite progress." FIRST_USE=["Kernel", "ioctl"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00008 REJECTED TEXT="OBSERVED OPERATION THAT MATTERS:" FIRST_USE=["OBSERVED", "OPERATION", "THAT", "MATTERS"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00009 REJECTED TEXT="One process repeatedly invokes KVM_RESET_DIRTY_RINGS while another process repeatedly resets KVM_DIRTY_GFN_F_RESET flags in the MAP_SHARED dirty ring." FIRST_USE=["process", "KVM_RESET_DIRTY_RINGS", "KVM_DIRTY_GFN_F_RESET", "MAP_SHARED"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00010 REJECTED TEXT="FUNCTION-TO-FUNCTION REASONING PATH:" FIRST_USE=["FUNCTION", "TO", "REASONING", "PATH"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00011 REJECTED TEXT="mmap vCPU dirty ring -> process A KVM_RESET_DIRTY_RINGS -> process B rewrites entry.flags=KVM_DIRTY_GFN_F_RESET -> kernel harvest sees more -> A cannot leave ioctl" FIRST_USE=["kernel"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00012 REJECTED TEXT="ORIGINAL REPORT / PATCH (READ BODY NOT TITLE): https://lists.openwall.net/linux-kernel/2025/05/16/1409" FIRST_USE=["ORIGINAL", "REPORT", "PATCH", "READ", "BODY", "TITLE"] NUMBERS=["2025", "05", "16", "1409"] GAP="no verified preceding-line derivation of this assertion"
+L00013 REJECTED TEXT="FIX OR UNCERTAINTY: 2025 v3 series bounds harvest at INT_MAX, checks signals, conditionally reschedules" FIRST_USE=["FIX", "OR", "UNCERTAINTY", "INT_MAX"] NUMBERS=["2025"] GAP="no verified preceding-line derivation of this assertion"
+L00014 REJECTED TEXT="REPRODUCTION PROCEDURE AND REQUIRED RESOURCES:" FIRST_USE=["REPRODUCTION", "PROCEDURE", "AND", "REQUIRED", "RESOURCES"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00015 REJECTED TEXT="Inside a disposable Linux KVM guest with nested virtualization, compile KVM's dirty_log_test and adapt the source's actual fork/WRITE_ONCE loop. Enable dirty ring capability and MAP_SHARED ring. Never point test at running production host KVM." FIRST_USE=["guest", "dirty_log_test", "source", "fork", "WRITE_ONCE", "test", "host"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00016 REJECTED TEXT="MEANINGFUL SUCCESS/FAILURE SIGNAL:" FIRST_USE=["MEANINGFUL", "SUCCESS", "SIGNAL"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00017 REJECTED TEXT="pre-fix kernel may spend unlimited time in KVM reset ioctl; patched kernel yields and caps work" FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00018 REJECTED TEXT="EXACT UNIVERSITY ASSIGNMENTS INVOLVED: 08-iitb-cs695-kvm-pa1; 10-iitb-2023-kvm-a3; 21-biswas-oslab-kvm; 18-umich-eecs482-pager" FIRST_USE=["EXACT", "UNIVERSITY", "ASSIGNMENTS", "INVOLVED", "kvm"] NUMBERS=["08", "95", "10", "2023", "21", "18", "82"] GAP="no verified preceding-line derivation of this assertion"
+L00019 REJECTED TEXT="STUDENT-OWNED CORE LOGICAL PUZZLE:" FIRST_USE=["STUDENT", "OWNED", "LOGICAL", "PUZZLE"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00020 REJECTED TEXT="FOLLOW dirty_gfn flags from userspace to harvest. FILL where the loop must snapshot or bound work so a concurrent writer cannot stop progress." FIRST_USE=["FOLLOW", "dirty_gfn", "FILL"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00021 REJECTED TEXT="FIRST THINGS TO DO BY HAND:" FIRST_USE=["FIRST", "THINGS", "DO", "BY", "HAND"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00022 REJECTED TEXT="01. DRAW every transition from the initial user operation until the first invalid ownership/wait." FIRST_USE=["DRAW"] NUMBERS=["01"] GAP="no verified preceding-line derivation of this assertion"
+L00023 REJECTED TEXT="02. NAME the owner of every address, mapping, lock, frame, queue, and clock as it first appears." FIRST_USE=["NAME", "address", "mapping", "lock"] NUMBERS=["02"] GAP="no verified preceding-line derivation of this assertion"
+L00024 REJECTED TEXT="03. TRACE the two interleaving actors; do not infer that a race exists if only one actor appears in source." FIRST_USE=["TRACE", "race"] NUMBERS=["03"] GAP="no verified preceding-line derivation of this assertion"
+L00025 REJECTED TEXT="04. MATCH an observed stack / register / event / missing counter to a source function." FIRST_USE=["MATCH", "event", "function"] NUMBERS=["04"] GAP="no verified preceding-line derivation of this assertion"
+L00026 REJECTED TEXT="05. DEFINE a falsifier: switch off just the implicated mechanism or use the source's documented pre/post patch control." FIRST_USE=["DEFINE"] NUMBERS=["05"] GAP="no verified preceding-line derivation of this assertion"
+L00027 REJECTED TEXT="06. IF reproducer is missing, DO NOT invent one and declare this bug reproduced." FIRST_USE=["IF"] NUMBERS=["06"] GAP="no verified preceding-line derivation of this assertion"
+L00028 REJECTED TEXT="07. RUN compile with debug symbols for any self-authored C, but never treat compilation as proof of the bug." FIRST_USE=["RUN", "proof"] NUMBERS=["07"] GAP="no verified preceding-line derivation of this assertion"
+L00029 REJECTED TEXT="08. DO NOT use made-up kernel virtual addresses such as 0xFFFF888010000000 as if they were obtained from the current laptop." FIRST_USE=["virtual"] NUMBERS=["08", "0xFFFF888010000000"] GAP="no verified preceding-line derivation of this assertion"
+L00030 REJECTED TEXT="09. NEVER alter live host CPU clocksource, KSM, VFIO ownership, page tables, or available memory for these experiments. Use throwaway nested VM." FIRST_USE=["NEVER", "CPU", "KSM", "VFIO", "page", "memory", "VM"] NUMBERS=["09"] GAP="no verified preceding-line derivation of this assertion"
+L00031 REJECTED TEXT="10. RECORD original kernel commit and actual hardware before comparing any failure." FIRST_USE=["RECORD", "hardware"] NUMBERS=["10"] GAP="no verified preceding-line derivation of this assertion"
+RESULT REJECTED: line-level axiomatic proof not established; flagged=31/31
+NEW THINGS INTRODUCED WITHOUT DERIVATION: ["AN", "AND", "ASSIGNMENTS", "B06", "BODY", "BY", "CAN", "CONFIRMED_PATCH_CONTAINS_MINIMAL_CONCURRENT_REPRO", "CORE", "CPU", "DEFINE", "DO", "DRAW", "ERROR", "EVIDENCE", "EXACT", "EXERCISE", "FAILURE", "FILL", "FIRST", "FIX", "FOLLOW", "FUNCTION", "GOOD_NESTED_KVM_GUEST", "HAND", "IF", "INT_MAX", "INVOLVED", "KSM", "KVM", "KVM_DIRTY_GFN_F_RESET", "KVM_RESET_DIRTY_RINGS", "Kernel", "LAPTOP", "LOCAL", "LOGICAL", "MAP_SHARED", "MATCH", "MATTERS", "MEANINGFUL", "NAME", "NEVER", "NOT", "NO_REPRO_RUN", "OBSERVED", "ON", "OPERATION", "OR", "ORIGIN", "ORIGINAL", "OWNED", "PATCH", "PATH", "PROCEDURE", "PUBLIC", "PUZZLE", "READ", "REASONING", "RECORD", "REPORT", "REPRODUCED", "REPRODUCTION", "REQUIRED", "RESOURCES", "RETURN", "RUN", "SECOND", "SIGNAL", "STATUS", "STUDENT", "SUCCESS", "THAT", "THINGS", "TITLE", "TO", "TRACE", "TRY", "UNCERTAINTY", "UNIVERSITY", "VFIO", "VM", "WRITE_ONCE", "YEAR", "address", "dirty_gfn", "dirty_log_test", "event", "fork", "function", "guest", "hardware", "host", "ioctl", "kernel", "kvm", "lock", "mapping", "memory", "page", "process", "proof", "race", "ring", "source", "test", "virtual"]
+NUMBERS WITHOUT VERIFIED DERIVATION: ["01", "02", "03", "04", "05", "06", "07", "08", "09", "0xFFFF888010000000", "10", "1409", "16", "18", "2023", "2025", "21", "6", "82", "95"]
+LIMIT: first-use names are lexical candidates, not a complete semantic analysis.
+END_FILE
+

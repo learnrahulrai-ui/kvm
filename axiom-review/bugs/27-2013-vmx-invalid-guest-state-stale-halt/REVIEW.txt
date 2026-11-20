@@ -1,0 +1,62 @@
+SOURCE_COMMIT 32198a0ade443b1b6c037a3a52fbc472abab801e
+FOLDER bugs/27-2013-vmx-invalid-guest-state-stale-halt
+AXIOM 1: 0 denotes no counted objects.
+AXIOM 2: 1 denotes one object added to 0.
+RULE: each new symbol needs an earlier definition.
+RULE: each numerical result needs an earlier calculation.
+RULE: a compiler result is not a proof of the subject matter.
+METHOD: each original source line is copied with its original line number.
+METHOD: FIRST_USE and NUMBERS identify candidates requiring proof.
+LIMIT: this is a conservative rejection, not a complete human semantic review.
+FOLDER_RESULT REJECTED
+
+FILE bugs/27-2013-vmx-invalid-guest-state-stale-halt/CASE.txt
+GIT_BLOB 1cf3afc8bbd399c43a627c3b2eaa95a94eb66de3
+MODE 100644
+BYTES 3633
+SOURCE_LINES 39
+L00001 REJECTED TEXT="B27 | KVM VMX invalid-state emulation fails to clear pending halt and later hangs guest" FIRST_USE=["B27", "KVM", "VMX", "state", "guest"] NUMBERS=["7"] GAP="first line is not a proved axiom from counting"
+L00002 REJECTED TEXT="PUBLIC ORIGIN YEAR: 2013 (pre-2015)" FIRST_USE=["PUBLIC", "ORIGIN", "YEAR"] NUMBERS=["2013", "2015"] GAP="no verified preceding-line derivation of this assertion"
+L00003 REJECTED TEXT="EVIDENCE STATUS: UPSTREAM_COMMIT_8D76_AND_REPORTER_TEST_VERIFIED" FIRST_USE=["EVIDENCE", "STATUS", "UPSTREAM_COMMIT_8D76_AND_REPORTER_TEST_VERIFIED"] NUMBERS=["6"] GAP="no verified preceding-line derivation of this assertion"
+L00004 REJECTED TEXT="CAN TRY ON SECOND LAPTOP: INTEL_ONLY_OLD_KERNEL / INTEL_VMX_REQUIRED_NOT_AMD_SVM" FIRST_USE=["CAN", "TRY", "ON", "SECOND", "LAPTOP", "INTEL_ONLY_OLD_KERNEL", "INTEL_VMX_REQUIRED_NOT_AMD_SVM"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00005 REJECTED TEXT="LOCAL REPRODUCED: NO_REPRO_RUN" FIRST_USE=["LOCAL", "REPRODUCED", "NO_REPRO_RUN"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00006 REJECTED TEXT="ORIGINAL REPORT / PATCH (READ BODY NOT TITLE): https://lkml.iu.edu/1306.0/01022.html" FIRST_USE=["ORIGINAL", "REPORT", "PATCH", "READ", "BODY", "NOT", "TITLE"] NUMBERS=["1306.0", "01022"] GAP="no verified preceding-line derivation of this assertion"
+L00007 REJECTED TEXT="PATCH / REVIEW: https://github.com/torvalds/linux/commit/8d76c49e9ffeee839bc0b7a3278a23f99101263e" FIRST_USE=["REVIEW"] NUMBERS=["8", "6", "9", "39", "278", "3", "9101263"] GAP="no verified preceding-line derivation of this assertion"
+L00008 REJECTED TEXT="PINNED VERSION: Kernel before upstream commit 8d76c49 from May 2013; Intel VMX and legacy vm86/invalid guest state required" FIRST_USE=["PINNED", "VERSION", "Kernel"] NUMBERS=["8", "6", "9", "2013"] GAP="no verified preceding-line derivation of this assertion"
+L00009 REJECTED TEXT="END-USER FAILURE: KVM VMX invalid-state emulation fails to clear pending halt and later hangs guest" FIRST_USE=["END", "USER", "FAILURE"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00010 REJECTED TEXT="CORE FAILURE, NOT AN ERROR-RETURN EXERCISE:" FIRST_USE=["CORE", "AN", "ERROR", "RETURN", "EXERCISE"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00011 REJECTED TEXT="Invalid guest-state emulation loop never consumed halt_request. An unrelated later vm86 #GP emulated instruction could be misinterpreted as halted, and the original loop could use 100% host CPU." FIRST_USE=["halt_request", "GP", "host", "CPU"] NUMBERS=["6", "100"] GAP="no verified preceding-line derivation of this assertion"
+L00012 REJECTED TEXT="CALL / DATA / STATE PATH:" FIRST_USE=["CALL", "DATA", "STATE", "PATH"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00013 REJECTED TEXT="handle_invalid_guest_state -> halt_request set and unhandled -> emulator keeps looping -> later vm86 #GP instruction -> stale halt_request causes kvm_emulate_halt on wrong operation -> guest hang" FIRST_USE=["handle_invalid_guest_state", "kvm_emulate_halt"] NUMBERS=["6"] GAP="no verified preceding-line derivation of this assertion"
+L00014 REJECTED TEXT="REPRODUCTION PROCEDURE AND REQUIRED RESOURCES:" FIRST_USE=["REPRODUCTION", "PROCEDURE", "AND", "REQUIRED", "RESOURCES"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00015 REJECTED TEXT="Disposable Intel KVM host with kernel immediately before patch; run Linux guest capable of legacy vm86/invalid guest-state emulation and repeated HLT/exception transitions. Attach perf to KVM VMX handle_invalid_guest_state. Specific guest reproducer is not public in patch; do not claim ordinary AMD Ryzen reproduces." FIRST_USE=["kernel", "HLT", "AMD"] NUMBERS=["6"] GAP="no verified preceding-line derivation of this assertion"
+L00016 REJECTED TEXT="FAILURE SIGNAL AND CONTROL:" FIRST_USE=["SIGNAL", "CONTROL"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00017 REJECTED TEXT="100% CPU invalid-state loop and/or stale halted guest; patch processes halt_request in invalid-state emulation path." FIRST_USE=[] NUMBERS=["100"] GAP="no verified preceding-line derivation of this assertion"
+L00018 REJECTED TEXT="MANUAL INPUT AND QUESTION:" FIRST_USE=["MANUAL", "INPUT", "QUESTION"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00019 REJECTED TEXT="CONSTRUCTED: halt_request=1 after event A, instruction B has no halt semantics. Compare consumed flag expected before B with actual old implementation flag and trace erroneous branch." FIRST_USE=["CONSTRUCTED", "event"] NUMBERS=["1"] GAP="no verified preceding-line derivation of this assertion"
+L00020 REJECTED TEXT="EXACT UNIVERSITY ASSIGNMENTS INVOLVED: 11-unc-comp790-vmm, 10-iitb-2023-kvm-a3, 21-biswas-oslab-kvm" FIRST_USE=["EXACT", "UNIVERSITY", "ASSIGNMENTS", "INVOLVED", "kvm"] NUMBERS=["11", "90", "10", "2023", "21"] GAP="no verified preceding-line derivation of this assertion"
+L00021 REJECTED TEXT="FIRST-PRINCIPLES REPRODUCTION CONTRACT" FIRST_USE=["FIRST", "PRINCIPLES", "CONTRACT"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00022 REJECTED TEXT="Read the actual original patch code; identify the reader and writer of shared state. No unsupported cross-version inferences." FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00023 REJECTED TEXT="CALCULATE page size from sysconf(_SC_PAGESIZE) or in-guest PAGE_SIZE, never use a made-up kernel address as an observed value." FIRST_USE=["CALCULATE", "page", "_SC_PAGESIZE", "PAGE_SIZE", "address", "value"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00024 REJECTED TEXT="Use -O0 -g3 for standalone userspace, but retain kernel's required build optimization plus -g for old in-kernel tests." FIRST_USE=["O0"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00025 REJECTED TEXT="Configure disposable VM, snapshot image, serial console, host watchdog and external process timeout." FIRST_USE=["VM", "process"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00026 REJECTED TEXT="Capture: host kernel sha + QEMU git sha + guest kernel version + CPU virtualization flags + exact commands + guest logs + host trace + before-and-after test." FIRST_USE=["QEMU", "test"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00027 REJECTED TEXT="Write only mechanism-specific changes. Never alter the expected test result after observing failure." FIRST_USE=[] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00028 NO_CLAIM TEXT="" FIRST_USE=[] NUMBERS=[] GAP="empty line"
+L00029 REJECTED TEXT="STUDENT-OWNED TEN LOGIC TASKS; DO NOT SUBSTITUTE BUILD SUCCESS FOR CORRECTNESS:" FIRST_USE=["STUDENT", "OWNED", "TEN", "LOGIC", "TASKS", "DO", "SUBSTITUTE", "BUILD", "SUCCESS", "FOR", "CORRECTNESS"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00030 REJECTED TEXT="01. FILL exact root function and first call from historical source revision." FIRST_USE=["FILL", "function", "source"] NUMBERS=["01"] GAP="no verified preceding-line derivation of this assertion"
+L00031 REJECTED TEXT="02. DRAW the first state read and its owner before any other actor acts." FIRST_USE=["DRAW"] NUMBERS=["02"] GAP="no verified preceding-line derivation of this assertion"
+L00032 REJECTED TEXT="03. TRACE the competing state writer or failing service; identify when it runs." FIRST_USE=["TRACE"] NUMBERS=["03"] GAP="no verified preceding-line derivation of this assertion"
+L00033 REJECTED TEXT="04. CALCULATE expected and observed state using the supplied concrete input." FIRST_USE=[] NUMBERS=["04"] GAP="no verified preceding-line derivation of this assertion"
+L00034 REJECTED TEXT="05. IDENTIFY earliest state after which both actors' assumptions cannot hold." FIRST_USE=["IDENTIFY"] NUMBERS=["05"] GAP="no verified preceding-line derivation of this assertion"
+L00035 REJECTED TEXT="06. RECREATE one genuine source-level breakpoint or tracepoint from original code." FIRST_USE=["RECREATE"] NUMBERS=["06"] GAP="no verified preceding-line derivation of this assertion"
+L00036 REJECTED TEXT="07. RECORD what user observed and its link to the internal state mismatch." FIRST_USE=["RECORD"] NUMBERS=["07"] GAP="no verified preceding-line derivation of this assertion"
+L00037 REJECTED TEXT="08. DERIVE a negative control by disabling exactly the triggering mechanism." FIRST_USE=["DERIVE"] NUMBERS=["08"] GAP="no verified preceding-line derivation of this assertion"
+L00038 REJECTED TEXT="09. MEASURE before and after the historical patch; preserve all other conditions." FIRST_USE=["MEASURE"] NUMBERS=["09"] GAP="no verified preceding-line derivation of this assertion"
+L00039 REJECTED TEXT="10. EXPLAIN why the patch's correction does not prove other VM configurations are fixed." FIRST_USE=["EXPLAIN"] NUMBERS=["10"] GAP="no verified preceding-line derivation of this assertion"
+RESULT REJECTED: line-level axiomatic proof not established; flagged=38/39
+NEW THINGS INTRODUCED WITHOUT DERIVATION: ["AMD", "AN", "AND", "ASSIGNMENTS", "B27", "BODY", "BUILD", "CALCULATE", "CALL", "CAN", "CONSTRUCTED", "CONTRACT", "CONTROL", "CORE", "CORRECTNESS", "CPU", "DATA", "DERIVE", "DO", "DRAW", "END", "ERROR", "EVIDENCE", "EXACT", "EXERCISE", "EXPLAIN", "FAILURE", "FILL", "FIRST", "FOR", "GP", "HLT", "IDENTIFY", "INPUT", "INTEL_ONLY_OLD_KERNEL", "INTEL_VMX_REQUIRED_NOT_AMD_SVM", "INVOLVED", "KVM", "Kernel", "LAPTOP", "LOCAL", "LOGIC", "MANUAL", "MEASURE", "NOT", "NO_REPRO_RUN", "O0", "ON", "ORIGIN", "ORIGINAL", "OWNED", "PAGE_SIZE", "PATCH", "PATH", "PINNED", "PRINCIPLES", "PROCEDURE", "PUBLIC", "QEMU", "QUESTION", "READ", "RECORD", "RECREATE", "REPORT", "REPRODUCED", "REPRODUCTION", "REQUIRED", "RESOURCES", "RETURN", "REVIEW", "SECOND", "SIGNAL", "STATE", "STATUS", "STUDENT", "SUBSTITUTE", "SUCCESS", "TASKS", "TEN", "TITLE", "TRACE", "TRY", "UNIVERSITY", "UPSTREAM_COMMIT_8D76_AND_REPORTER_TEST_VERIFIED", "USER", "VERSION", "VM", "VMX", "YEAR", "_SC_PAGESIZE", "address", "event", "function", "guest", "halt_request", "handle_invalid_guest_state", "host", "kernel", "kvm", "kvm_emulate_halt", "page", "process", "source", "state", "test", "value"]
+NUMBERS WITHOUT VERIFIED DERIVATION: ["01", "01022", "02", "03", "04", "05", "06", "07", "08", "09", "1", "10", "100", "11", "1306.0", "2013", "2015", "2023", "21", "278", "3", "39", "6", "7", "8", "9", "90", "9101263"]
+LIMIT: first-use names are lexical candidates, not a complete semantic analysis.
+END_FILE
+

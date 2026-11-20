@@ -1,0 +1,20 @@
+The audit covers exactly the 525 files at source commit 32198a0ade443b1b6c037a3a52fbc472abab801e.
+0 denotes an empty count.
+1 denotes one object added to that count.
+A source file is an ordered collection of bytes. This is a definition, not a theorem about a kernel.
+A line ends where a newline byte occurs. The first line is numbered 1.
+A source line is not automatically an axiom. A source comment can be wrong.
+A number in a source line is not proved because a compiler accepts it.
+A C header declares external contracts. It does not derive those contracts from arithmetic.
+A URL identifies possible evidence. Its presence does not prove the claim beside it.
+A machine-generated FIRST_USE name is a possible undefined term, not a certified semantic error.
+Every nonempty substantive source line is REJECTED until a human can establish its terms, inputs, rule, external source and preceding-line derivation.
+Every PNG is UNVERIFIED_IMAGE. The binary file has no source text lines; its picture was not decoded or visually checked.
+All source lines are preserved as JSON-escaped text in folder REVIEW.txt, with original line numbers and source Git blob IDs.
+The source Git blob ID is recomputed from each file's bytes. A mismatch stops the audit.
+The source snapshot is fixed. New audit files are outputs and are excluded. Otherwise reviewing the review would require an endless series of new reviews.
+No C program was changed by this review. No university kernel, VM or historical bug was executed by this review.
+To regenerate: python3 axiom-review/generate.py
+To check without changing files: python3 axiom-review/generate.py --check
+A successful audit check proves only that the reports match the frozen source bytes and the review program's rules. It does not prove that the source is correct.
+NEW THINGS INTRODUCED WITHOUT DERIVATION: all items listed for each source file in the folder REVIEW.txt; no source file is certified as axiom-complete.

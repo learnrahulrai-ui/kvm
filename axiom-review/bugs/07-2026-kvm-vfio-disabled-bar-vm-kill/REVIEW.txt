@@ -1,0 +1,54 @@
+SOURCE_COMMIT 32198a0ade443b1b6c037a3a52fbc472abab801e
+FOLDER bugs/07-2026-kvm-vfio-disabled-bar-vm-kill
+AXIOM 1: 0 denotes no counted objects.
+AXIOM 2: 1 denotes one object added to 0.
+RULE: each new symbol needs an earlier definition.
+RULE: each numerical result needs an earlier calculation.
+RULE: a compiler result is not a proof of the subject matter.
+METHOD: each original source line is copied with its original line number.
+METHOD: FIRST_USE and NUMBERS identify candidates requiring proof.
+LIMIT: this is a conservative rejection, not a complete human semantic review.
+FOLDER_RESULT REJECTED
+
+FILE bugs/07-2026-kvm-vfio-disabled-bar-vm-kill/CASE.txt
+GIT_BLOB 873608e6028d9bb115df07d833f805d7ef9c7004
+MODE 100644
+BYTES 2936
+SOURCE_LINES 31
+L00001 REJECTED TEXT="B07 | Guest disables PCI BAR while sibling accesses it; KVM kills VM" FIRST_USE=["B07", "Guest", "PCI", "BAR", "KVM", "VM"] NUMBERS=["7"] GAP="first line is not a proved axiom from counting"
+L00002 REJECTED TEXT="PUBLIC ORIGIN YEAR: 2026" FIRST_USE=["PUBLIC", "ORIGIN", "YEAR"] NUMBERS=["2026"] GAP="no verified preceding-line derivation of this assertion"
+L00003 REJECTED TEXT="EVIDENCE STATUS: CONFIRMED_PRODUCTION_REPORT_REDUCED_REPRO" FIRST_USE=["EVIDENCE", "STATUS", "CONFIRMED_PRODUCTION_REPORT_REDUCED_REPRO"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00004 REJECTED TEXT="CAN TRY ON SECOND LAPTOP: REQUIRES_SPARE_VFIO_PCI_DEVICE" FIRST_USE=["CAN", "TRY", "ON", "SECOND", "LAPTOP", "REQUIRES_SPARE_VFIO_PCI_DEVICE"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00005 REJECTED TEXT="LOCAL REPRODUCED: NO_REPRO_RUN" FIRST_USE=["LOCAL", "REPRODUCED", "NO_REPRO_RUN"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00006 REJECTED TEXT="CORE FAILURE, NOT AN ERROR-RETURN EXERCISE:" FIRST_USE=["CORE", "FAILURE", "NOT", "AN", "ERROR", "RETURN", "EXERCISE"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00007 REJECTED TEXT="When VFIO BAR mapping fault handler refuses a PTE because decoding is disabled, KVM treats KVM_PFN_ERR_FAULT as fatal -EFAULT instead of emulating an ordinary unsupported MMIO access." FIRST_USE=["VFIO", "mapping", "PTE", "KVM_PFN_ERR_FAULT", "EFAULT", "MMIO"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00008 REJECTED TEXT="OBSERVED OPERATION THAT MATTERS:" FIRST_USE=["OBSERVED", "OPERATION", "THAT", "MATTERS"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00009 REJECTED TEXT="On vCPU A, toggle PCI_COMMAND.MEM; on vCPU B repeatedly MMIO-write assigned BAR0 mapped via VFIO PCI resource0; mapping zapped before memslot removed." FIRST_USE=["PCI_COMMAND", "MEM", "BAR0"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00010 REJECTED TEXT="FUNCTION-TO-FUNCTION REASONING PATH:" FIRST_USE=["FUNCTION", "TO", "REASONING", "PATH"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00011 REJECTED TEXT="guest clears PCI_COMMAND.MEM -> VFIO zaps VM_PFNMAP host VMA -> KVM slot remains registered -> guest MMIO faults -> hva_to_pfn_remapped fails -> kvm_handle_error_pfn returns -EFAULT -> QEMU terminates VM" FIRST_USE=["guest", "VM_PFNMAP", "host", "VMA", "hva_to_pfn_remapped", "kvm_handle_error_pfn", "QEMU"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00012 REJECTED TEXT="ORIGINAL REPORT / PATCH (READ BODY NOT TITLE): https://lkml.iu.edu/2606.2/07858.html" FIRST_USE=["ORIGINAL", "REPORT", "PATCH", "READ", "BODY", "TITLE"] NUMBERS=["2606.2", "07858"] GAP="no verified preceding-line derivation of this assertion"
+L00013 REJECTED TEXT="FIX OR UNCERTAINTY: 2026 patch proposed emulating disabled-BAR access as MMIO; review raised other possible hva_to_pfn_remapped error causes" FIRST_USE=["FIX", "OR", "UNCERTAINTY"] NUMBERS=["2026"] GAP="no verified preceding-line derivation of this assertion"
+L00014 REJECTED TEXT="REPRODUCTION PROCEDURE AND REQUIRED RESOURCES:" FIRST_USE=["REPRODUCTION", "PROCEDURE", "AND", "REQUIRED", "RESOURCES"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00015 REJECTED TEXT="Dedicated pass-through PCI device and IOMMU required. GTX1650 used for display is not safe as spare VFIO device. Research author reproduced within ~1 second and tested 200k toggles after fix; not verified on this laptop." FIRST_USE=["device", "IOMMU", "GTX1650"] NUMBERS=["650", "1", "200"] GAP="no verified preceding-line derivation of this assertion"
+L00016 REJECTED TEXT="MEANINGFUL SUCCESS/FAILURE SIGNAL:" FIRST_USE=["MEANINGFUL", "SUCCESS", "SIGNAL"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00017 REJECTED TEXT="QEMU VM terminated by KVM_RUN -EFAULT while device is disabled" FIRST_USE=["KVM_RUN"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00018 REJECTED TEXT="EXACT UNIVERSITY ASSIGNMENTS INVOLVED: 08-iitb-cs695-kvm-pa1; 11-unc-comp790-vmm; 13-ut-cs360v-jos-hypervisor; 21-biswas-oslab-kvm" FIRST_USE=["EXACT", "UNIVERSITY", "ASSIGNMENTS", "INVOLVED", "kvm", "hypervisor"] NUMBERS=["08", "95", "11", "90", "13", "60", "21"] GAP="no verified preceding-line derivation of this assertion"
+L00019 REJECTED TEXT="STUDENT-OWNED CORE LOGICAL PUZZLE:" FIRST_USE=["STUDENT", "OWNED", "LOGICAL", "PUZZLE"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00020 REJECTED TEXT="STATE which condition is permanent versus transient: valid KVM memslot, disabled physical BAR, and completed MMU invalidation. FILL why a retry loop cannot repair a permanently disabled device decoder." FIRST_USE=["STATE", "physical", "MMU", "FILL"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00021 REJECTED TEXT="FIRST THINGS TO DO BY HAND:" FIRST_USE=["FIRST", "THINGS", "DO", "BY", "HAND"] NUMBERS=[] GAP="no verified preceding-line derivation of this assertion"
+L00022 REJECTED TEXT="01. DRAW every transition from the initial user operation until the first invalid ownership/wait." FIRST_USE=["DRAW"] NUMBERS=["01"] GAP="no verified preceding-line derivation of this assertion"
+L00023 REJECTED TEXT="02. NAME the owner of every address, mapping, lock, frame, queue, and clock as it first appears." FIRST_USE=["NAME", "address", "lock"] NUMBERS=["02"] GAP="no verified preceding-line derivation of this assertion"
+L00024 REJECTED TEXT="03. TRACE the two interleaving actors; do not infer that a race exists if only one actor appears in source." FIRST_USE=["TRACE", "race", "source"] NUMBERS=["03"] GAP="no verified preceding-line derivation of this assertion"
+L00025 REJECTED TEXT="04. MATCH an observed stack / register / event / missing counter to a source function." FIRST_USE=["MATCH", "event", "function"] NUMBERS=["04"] GAP="no verified preceding-line derivation of this assertion"
+L00026 REJECTED TEXT="05. DEFINE a falsifier: switch off just the implicated mechanism or use the source's documented pre/post patch control." FIRST_USE=["DEFINE"] NUMBERS=["05"] GAP="no verified preceding-line derivation of this assertion"
+L00027 REJECTED TEXT="06. IF reproducer is missing, DO NOT invent one and declare this bug reproduced." FIRST_USE=["IF"] NUMBERS=["06"] GAP="no verified preceding-line derivation of this assertion"
+L00028 REJECTED TEXT="07. RUN compile with debug symbols for any self-authored C, but never treat compilation as proof of the bug." FIRST_USE=["RUN", "proof"] NUMBERS=["07"] GAP="no verified preceding-line derivation of this assertion"
+L00029 REJECTED TEXT="08. DO NOT use made-up kernel virtual addresses such as 0xFFFF888010000000 as if they were obtained from the current laptop." FIRST_USE=["kernel", "virtual"] NUMBERS=["08", "0xFFFF888010000000"] GAP="no verified preceding-line derivation of this assertion"
+L00030 REJECTED TEXT="09. NEVER alter live host CPU clocksource, KSM, VFIO ownership, page tables, or available memory for these experiments. Use throwaway nested VM." FIRST_USE=["NEVER", "CPU", "KSM", "page", "memory"] NUMBERS=["09"] GAP="no verified preceding-line derivation of this assertion"
+L00031 REJECTED TEXT="10. RECORD original kernel commit and actual hardware before comparing any failure." FIRST_USE=["RECORD", "hardware"] NUMBERS=["10"] GAP="no verified preceding-line derivation of this assertion"
+RESULT REJECTED: line-level axiomatic proof not established; flagged=31/31
+NEW THINGS INTRODUCED WITHOUT DERIVATION: ["AN", "AND", "ASSIGNMENTS", "B07", "BAR", "BAR0", "BODY", "BY", "CAN", "CONFIRMED_PRODUCTION_REPORT_REDUCED_REPRO", "CORE", "CPU", "DEFINE", "DO", "DRAW", "EFAULT", "ERROR", "EVIDENCE", "EXACT", "EXERCISE", "FAILURE", "FILL", "FIRST", "FIX", "FUNCTION", "GTX1650", "Guest", "HAND", "IF", "INVOLVED", "IOMMU", "KSM", "KVM", "KVM_PFN_ERR_FAULT", "KVM_RUN", "LAPTOP", "LOCAL", "LOGICAL", "MATCH", "MATTERS", "MEANINGFUL", "MEM", "MMIO", "MMU", "NAME", "NEVER", "NOT", "NO_REPRO_RUN", "OBSERVED", "ON", "OPERATION", "OR", "ORIGIN", "ORIGINAL", "OWNED", "PATCH", "PATH", "PCI", "PCI_COMMAND", "PROCEDURE", "PTE", "PUBLIC", "PUZZLE", "QEMU", "READ", "REASONING", "RECORD", "REPORT", "REPRODUCED", "REPRODUCTION", "REQUIRED", "REQUIRES_SPARE_VFIO_PCI_DEVICE", "RESOURCES", "RETURN", "RUN", "SECOND", "SIGNAL", "STATE", "STATUS", "STUDENT", "SUCCESS", "THAT", "THINGS", "TITLE", "TO", "TRACE", "TRY", "UNCERTAINTY", "UNIVERSITY", "VFIO", "VM", "VMA", "VM_PFNMAP", "YEAR", "address", "device", "event", "function", "guest", "hardware", "host", "hva_to_pfn_remapped", "hypervisor", "kernel", "kvm", "kvm_handle_error_pfn", "lock", "mapping", "memory", "page", "physical", "proof", "race", "source", "virtual"]
+NUMBERS WITHOUT VERIFIED DERIVATION: ["01", "02", "03", "04", "05", "06", "07", "07858", "08", "09", "0xFFFF888010000000", "1", "10", "11", "13", "200", "2026", "21", "2606.2", "60", "650", "7", "90", "95"]
+LIMIT: first-use names are lexical candidates, not a complete semantic analysis.
+END_FILE
+
