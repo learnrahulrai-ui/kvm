@@ -1,0 +1,51 @@
+name: Bug research catalog and read-only KVM probe
+on:
+  push:
+    paths:
+      - 'bugs/**'
+      - '.github/workflows/bug-catalog.yml'
+  workflow_dispatch:
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler: [gcc, clang]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install readelf and make
+        run: sudo apt-get install -y binutils make
+      - name: Compile and execute read-only capability probe
+        env:
+          CC: ${{ matrix.compiler }}
+        run: |
+          make -C bugs CC="$CC" CFLAGS='-std=c11 -O0 -g3 -Wall -Wextra -Werror -Wpedantic'
+          readelf -S bugs/build/host_preflight | grep '.debug_info'
+          ./bugs/build/host_preflight
+      - name: Check every bug source and all 22 university links
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          cases = sorted(Path('bugs').glob('[0-9][0-9]-*/CASE.txt'))
+          assert len(cases) == 13, len(cases)
+          expected = set()
+          for i, p in enumerate(cases, 1):
+              src = p.read_text()
+              assert src.startswith('B%02d |' % i), p
+              for field in ['EVIDENCE STATUS:', 'CORE FAILURE, NOT AN ERROR-RETURN EXERCISE:', 'ORIGINAL REPORT / PATCH', 'REPRODUCTION PROCEDURE', 'LOCAL REPRODUCED: NO_REPRO_RUN', 'EXACT UNIVERSITY ASSIGNMENTS INVOLVED:']:
+                  assert field in src, (p, field)
+              assert 'https://' in src
+              expected.add('B%02d' % i)
+          maps = Path('bugs/ASSIGNMENT-MAP.txt').read_text().splitlines()
+          course_folders = sorted(p.name for p in Path('assignments').glob('[0-9][0-9]-*') if p.is_dir())
+          for course in course_folders:
+              assert any(line.startswith(course + ' |') for line in maps), course
+          assert len(course_folders) == 22, len(course_folders)
+          for line in maps:
+              if ' | DIRECT=' in line:
+                  references = set(re.findall(r'B\d\d', line))
+                  assert references <= expected, (line, references - expected)
+          print('CATALOG VERIFIED: 13 source-anchored cases, 22 course mappings, no claims of local reproduction')
+          PY
