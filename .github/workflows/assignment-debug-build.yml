@@ -1,0 +1,35 @@
+name: Assignment scaffold debug build
+on:
+  push:
+    paths:
+      - "assignments/**"
+      - ".github/workflows/assignment-debug-build.yml"
+  workflow_dispatch:
+jobs:
+  compile-all:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler: [gcc, clang]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install compiler dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y libvirt-dev pkg-config binutils time
+      - name: Compile and smoke-test all 22 scaffolds with debug symbols
+        env:
+          CC: ${{ matrix.compiler }}
+        run: |
+          bash assignments/check_all_debug.sh | tee "/tmp/${CC}-build.txt"
+      - name: Upload compile measurements
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: "scaffolds-${{ matrix.compiler }}"
+          path: |
+            /tmp/${{ matrix.compiler }}-build.txt
+            assignments/**/.compile.stderr
+            assignments/**/.smoke.stdout
+            assignments/**/.smoke.stderr
