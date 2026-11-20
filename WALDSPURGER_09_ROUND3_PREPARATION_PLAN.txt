@@ -1,0 +1,100 @@
+ROUND 3 PREPARATION: EVIDENCE-FIRST PRACTICE PLAN
+Created: 2026-11-21
+Purpose: practice, not a prediction of Carl Waldspurger's actual interview questions.
+Time budget: 9 sessions, 120 minutes each. If time is short, do sessions A, B, C, G, I first.
+Current workspace: https://github.com/learnrahulrai-ui/kvm
+IMPORTANT: 22 folders contain 220 unfinished stand-alone C drill functions and 440 constructed sample checks. They are NOT 22 implemented university lab solutions. Passing make smoke proves only scaffold build and fixture reading; make check fails until the student functions are filled. The actual lab source is in upstream/ after bootstrap when available.
+
+GOVERNING RELATIONSHIP
+User-visible action -> owner of state -> actor that has knowledge -> actor that has control -> handoff -> correctness invariant -> failure when the actors disagree.
+No answer is complete until a real competing path can invalidate the first assumption. For observations, separate what the paper measured, what the machine actually measured, and what is a constructed exercise.
+
+SESSION A, 120 MIN: KVM EXECUTION FROM THE FIRST USER OPERATION
+0-20: in assignments/08-iitb-cs695-kvm-pa1, inspect README, CHALLENGES, HOST-PROBE, upstream university spec. Confirm kernel with uname -r, /dev/kvm with test -c /dev/kvm, run make status; never infer a guest executed because C code compiled.
+20-65: using the university KVM Hello World source if fetched, draw start at main -> vm_init -> vcpu_init -> guest memory -> KVM_RUN -> struct kvm_run -> exit handler -> KVM_RUN again. Write each call's fd, guest physical address, host virtual address, and ownership. Get actual addresses from a debugger, not invented constants.
+65-95: trace an I/O-port write and the corresponding KVM exit. Compare to the KVM ioeventfd API, where a registered device notification need not return to QEMU userspace. A VM exit and a userspace-visible exit are not synonyms.
+95-120: oral test: an I/O completion was queued but the VM was paused before the next KVM_RUN; exactly what has completed? Identify required reentry from official API wording.
+PASS WHEN: you can name the exact instruction, ioctl, data structure, address space, and first incorrect assumption.
+PRIMARY: https://www.cse.iitb.ac.in/~cs695/pa/pa1.html ; https://docs.kernel.org/virt/kvm/api.html
+
+SESSION B, 120 MIN: ONE PAGE, TWO OWNERS, ONE SAFE REUSE
+0-30: open assignments/14-mit-61810-cow and the official MIT lab. Trace fork before any COW optimization: parent memory mapping, copied child mapping, reference count.
+30-65: draw a complete 4 KiB page lifetime: allocate -> map into parent -> map child -> protect PTEs -> child writes -> handle fault -> choose own page -> release mapping -> last reference -> free. Populate actual refcount values 1,2,2,1,0 only when a corresponding event justifies the transition; distinguish references from data copies.
+65-90: open the kernel mmu_notifier documentation. Draw CPU PTE vs KVM secondary MMU vs device IOMMU/TLB. Prove why an old mapping must stop reaching a frame before that frame can be reused. For COW, source says notification ordering can matter even when the old page is not immediately freed.
+90-120: attempt MIT cowtest and usertests -q only after the correct xv6-labs-2025 branch is available; record failing first test and exact call site without adding fixes blindly.
+PASS WHEN: you can construct one wrong CPU/device interleaving that touches freed or replaced backing, and show where the barrier belongs.
+PRIMARY: https://pdos.csail.mit.edu/6.1810/2025/labs/cow.html ; https://docs.kernel.org/mm/mmu_notifier.html
+
+SESSION C, 120 MIN: WHY BALLOONING AND HOST PAGING BOTH EXIST
+0-25: from ESX 2002 §§3.1-3.3 write two independent page-replacement decisions, guest and host. Trace when the guest seeks a page that the host already swapped. Determine the extra host I/O before the guest can evict it.
+25-65: from §§5.2-5.3, calculate k = 1/(1-0.75), then rho=S/(P*(f+k*(1-f))). Constructed pencil task: VM-A S=100, P=100, f=0.25; VM-B S=50, P=50, f=0.75. Compute rho independently; do not guess victim identity before deriving the ratios.
+65-85: distinguish sampled page fraction from access-volume count. Original default: 100 sampled pages per 30 seconds of VM execution, THREE activity estimates (slow, fast, and current-sample-adjusted fast). Explain why a sample estimate is not the exact resident working set.
+85-120: original paper's five-VM boot: 256+256+320+320+320 MB guest memory, about 160 MB overhead. Derive 1472+160=1632 MB configured. Paper's reported 325 MB page sharing and 35 MB page-outs come from different moments: do NOT combine as one simultaneous ledger.
+PASS WHEN: guest knowledge explains balloon preference; host inability to wait explains paging fallback; tax balances active fraction and shares.
+PRIMARY: https://www.usenix.org/legacy/publications/library/proceedings/osdi02/tech/waldspurger/waldspurger_html/node5.html ; /node6.html ; /node7.html ; /node14.html ; /node15.html ; /node20.html
+
+SESSION D, 120 MIN: ONE DURABLE WRITE AND ITS SHARED RESOURCE COST
+0-35: start at guest application write(4096) then fsync; draw guest filesystem, guest block request, virtio/vhost-user, backend, storage durable acknowledgement. State which components may buffer, which completion promises persistence, and which requires barrier/flush. Do not assume every architecture uses a guest page cache or one QEMU path.
+35-65: use Nutanix Bible AHV Frodo section: read the exact two multiqueue bullets and process command example; compare the older QEMU iSCSI path and Frodo/vhost-user-SCSI. Do not claim universal busy-polling or a dedicated CPU from this evidence.
+65-95: trace guest ballooning -> clean page-cache discard -> future cache misses -> shared storage service. The extra I/O depends on future reads, not merely on pages evicted.
+95-120: verbal failure: completion returned before durable data is ensured. Identify which actual failure (host crash, drive cache, guest fsync error) would disprove the durability claim. Distinguish real Nutanix replication contract from assumptions.
+PASS WHEN: one failed storage promise is traced to the exact boundary that issued the false completion; shared controller CPU is not attributed to a tenant without specifying a charging policy.
+PRIMARY: https://www.nutanixbible.com/5b-book-of-ahv-how-it-works.html ; https://docs.kernel.org/virt/kvm/api.html
+
+SESSION E, 120 MIN: FAIR CPU SCHEDULING AND ACCOUNTING
+0-35: in assignments/02-wisc-2015-stride open the original course handout and Waldspurger's 1995 dissertation. Start at tickets, derive a per-client stride; derive pass updates; distinguish runnable from sleeping.
+35-65: paper's 101-client case: one client with 100 tickets, 100 other clients with one ticket each; total 200 tickets. In the published schedule, large client can get the first 100 quanta; ideal is 50; discrepancy is +50. Derive why pairwise fairness did not bound aggregate error.
+65-95: reproduce the dissertation's compensation-ticket argument (e.g. 400:400, half- or fifth-quantum service), and compute CPU service time, not just ticket wins. A correctly applied compensation grant is NOT automatically exploitable by yielding.
+95-120: join VM CPU accounting with work done in a separate storage controller task. Can a workload pass its cost to a service thread? Define both execution task and accountable request.
+PASS WHEN: you can defend one limit on a scheduler, one empirical counterexample, and a logical distinction between scheduling CPU and charging I/O.
+PRIMARY: https://publications.csail.mit.edu/lcs/pubs/pdf/MIT-LCS-TR-667.pdf ; https://www.usenix.org/legacy/publications/library/proceedings/osdi99/
+
+SESSION F, 120 MIN: CONTENT SHARING, HUGE PAGES, CACHE SIZING
+0-30: describe why a page hash is a candidate detector rather than proof of identical bytes. Draw full-compare, write-protect, copy-on-write; explain the timing difference and cross-tenant isolation question.
+30-55: calculate 2 MiB/4 KiB=512; distinguish huge guest mapping, huge host mapping and a KSM-mergeable anonymous base page. State which component decides to split; don't assert that one split implies all levels split.
+55-95: in assignments/20-cmu-15213-cache-lab, use a trace with repeated block identities. Compute a reuse distance: count distinct intervening BLOCK identities between two accesses to the SAME block. Distinguish a literal trace of accesses from a miss-ratio curve computed at many cache sizes.
+95-120: SHARDS FAST 2015 §3.1 selects blocks by hash, not independent individual references. All references to a selected block stay together; its paper uses raw sampled distance divided by sampling rate, an APPROXIMATION. Explain why sampling individual accesses breaks reuse pairs.
+PASS WHEN: one 3-block trace produces correct exact reuse order; one sampled trace produces a claimed approximation with its limitation, not an invented guarantee.
+PRIMARY: https://www.usenix.org/legacy/publications/library/proceedings/osdi02/tech/waldspurger/waldspurger_html/node10.html ; https://docs.kernel.org/admin-guide/mm/ksm.html ; https://www.usenix.org/system/files/conference/fast15/fast15-paper-waldspurger.pdf
+
+SESSION G, 120 MIN: MIGRATION, SOURCE FAILURE, AND UPGRADE
+0-25: construct source with four guests sharing identical pages. Separate the content each guest expects from host frame identity. Explain why destination may expand memory unless sharing-aware migration carries/restores sharing relationships.
+25-55: QEMU postcopy documentation: destination executes before receiving every page; missing page -> userfaultfd -> request to source. Draw source crash during postcopy, what can and cannot be recovered.
+55-90: QEMU CPR: contrast cpr-transfer, cpr-exec and cpr-reboot. Old QEMU stops the VM; guest RAM can be preserved in place but host virtual addresses can change; device and fd state must be recovered under the selected mode. DO NOT claim arbitrary in-place reboot works.
+90-120: trace in-flight storage write during guest handoff: what was acknowledged, what is pending, and where durable data resides before resuming.
+PASS WHEN: you can name at least one state that is NOT transferred by merely copying guest RAM, plus one failure condition for each migration mode.
+PRIMARY: https://www.qemu.org/docs/master/devel/migration/postcopy.html ; https://www.qemu.org/docs/master/devel/migration/CPR.html
+
+SESSION H, 120 MIN: DESIGN ROUNDS WITHOUT MEMORIZED SOLUTIONS
+0-45: choose one of Q11/Q13: ballooning increases storage latency OR swap path depends on storage service. Start at a real request and derive the circular wait or load feedback. Draw exact cycle, specify what resource reserve would break it. Patent describes a swap buffer but does not prove any production deadlock.
+45-90: choose one of Q4/Q17: page reclaim or sharing-aware migration. Define two actors with concurrent access, show a state that goes stale, and supply the minimal sufficient order barrier.
+90-120: challenge every answer with the same hostile probe: which observation would REFUTE the proposed cause? Where is the scope leap from old ESX to modern AHV? What concrete value would discriminate hypotheses?
+PASS WHEN: the answer survives an alternate explanation; it does not claim a patented idea was deployed simply because it was patented.
+PRIMARY: previous sessions plus original cited patent https://patents.google.com/patent/US12147844B2/en
+
+SESSION I, 120 MIN: FINAL INTERVIEW MOCK
+0-50: five randomly chosen original 20 prompts, maximum 10 minutes each: 3 min trace, 3 min invariants/competing execution, 2 min tradeoff, 2 min falsifier.
+50-90: one live-code problem, no boilerplate distractions: begin with provided KVM/CS1810 scaffold, solve the missing logic, run the original test, explain a failure in GDB.
+90-120: take the weakest two answers; reproduce each error from its earliest incorrect premise; repair only that premise and replay forward.
+PASS WHEN: each answer can be rebuilt without reading a solution; the code compiles with -g and its ORIGINAL meaningful tests pass; undocumented claims are identified explicitly as conditional.
+
+IF INTERVIEW IS WITHIN THREE DAYS: do A, B, C, G and I. Add D if the job discussion is storage-centric. Do not try to fill 220 superficial TODOs.
+IF INTERVIEW IS TOMORROW: A for 90 minutes -> B for 90 -> C for 60 -> G for 60 -> I for 60; stop consuming new sources after the final mock.
+
+PRIMARY SOURCE LEDGER
+Original 1995 dissertation (middle §§3-4, figures, experiments): https://publications.csail.mit.edu/lcs/pubs/pdf/MIT-LCS-TR-667.pdf
+Original OSDI 2002 ESX paper full body, §3, §4, §5 and §6: https://www.usenix.org/legacy/publications/library/proceedings/osdi02/tech/waldspurger/waldspurger_html/index.html
+Original FAST 2015 SHARDS paper, §§2-4 implementation, metrics and limitations: https://www.usenix.org/system/files/conference/fast15/fast15-paper-waldspurger.pdf
+Original MIT 6.1810 COW lab and real tests: https://pdos.csail.mit.edu/6.1810/2025/labs/cow.html
+Original IIT Bombay KVM assignment and host/guest addressing exercises: https://www.cse.iitb.ac.in/~cs695/pa/pa1.html
+Linux KVM UAPI: https://docs.kernel.org/virt/kvm/api.html
+Linux secondary translation invalidation ordering: https://docs.kernel.org/mm/mmu_notifier.html
+Linux KSM description and scope: https://docs.kernel.org/admin-guide/mm/ksm.html
+QEMU postcopy internals: https://www.qemu.org/docs/master/devel/migration/postcopy.html
+QEMU CPR modes/caveats: https://www.qemu.org/docs/master/devel/migration/CPR.html
+Nutanix Bible original AHV I/O path and Frodo details: https://www.nutanixbible.com/5b-book-of-ahv-how-it-works.html
+Current role specification explicitly names low-level coding, performance, reliability, migration, upgrades: https://careers.nutanix.com/en/jobs/31520/staff-engineer-linux-kernel/
+
+FACT-CHECK BOUNDARY
+The user's interview date, actual interviewer assignment and interview format are not independently verified. These sessions optimize the documented job requirements and original researcher work, not leaked content.
+A paper's measurement applies to its tested workload and year. A numeric teaching exercise is constructed unless labeled as a published measurement. No KVM or Nutanix live-system tests were run to create this plan.
