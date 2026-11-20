@@ -1,0 +1,70 @@
+05-iit-cs450-lottery
+Read the source handout before filling these blanks. These are constructed interviewer checks, not leaked university tests.
+
+QUALITATIVE impossibility: Which transition is forbidden by the governing invariant? INVARIANT: a stopped process cannot consume a newly assigned CPU grant
+A) The invariant holds after every accepted state change.
+B) A boundary passes without checking the invariant.
+C) Success of a caller implies a correct callee.
+D) One observable state proves all concurrent states.
+
+       /--------/|
+      /        / |
+     +--------+  |        →       +--------+
+     |        |  +----------------|        |
+     |        | /                 |        |
+     +--------+/                  +--------+
+
+QUALITATIVE cause: Which dependency must be checked before granting an operation? INVARIANT: a stopped process cannot consume a newly assigned CPU grant
+A) The ownership or validity condition that permits the transition.
+B) A later output that appears well formed.
+C) An unrelated previous task's result.
+D) The mere presence of executable code.
+
+       /--------/|
+      /        / |
+     +--------+  |        →       +--------+
+     |        |  +----------------|        |
+     |        | /                 |        |
+     +--------+/                  +--------+
+
+QUALITATIVE trap: Which reasoning trap wrongly extends local evidence? INVARIANT: a stopped process cannot consume a newly assigned CPU grant
+A) A local result is promoted to a global guarantee.
+B) A stated state is tested against a contract.
+C) A source is checked against a version.
+D) An error return is examined before reuse.
+
+       /--------/|
+      /        / |
+     +--------+  |        →       +--------+
+     |        |  +----------------|        |
+     |        | /                 |        |
+     +--------+/                  +--------+
+
+EXECUTION trace: INPUT 0,0,0,0,0,0 → output ____ ; select the source contract that makes the output necessary, not an implementation guess.
+A) Verified input-to-state transition
+B) Illicit reversal of the observed output
+C) An output with no ownership check
+D) Unrelated cache or CPU statistics
+
+       /--------/|
+      /        / |
+     +--------+  |        →       +--------+
+     |        |  +----------------|        |
+     |        | /                 |        |
+     +--------+/                  +--------+
+
+EXECUTION boundary: INPUT 30,20,10,52,0,0 → output ____ ; select the source contract that makes the output necessary, not an implementation guess.
+A) Verified input-to-state transition
+B) Illicit reversal of the observed output
+C) An output with no ownership check
+D) Unrelated cache or CPU statistics
+
+       /--------/|
+      /        / |
+     +--------+  |        →       +--------+
+     |        |  +----------------|        |
+     |        | /                 |        |
+     +--------+/                  +--------+
+
+Five causal arrows above are ASCII study diagrams, NOT photo-grade 3D doodles; do not treat them as requested rendered image assets.
+No answer key. Full execution truth is in the student-completed functions and the original university tests.

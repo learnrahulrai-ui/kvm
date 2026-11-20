@@ -1,0 +1,36 @@
+Assignment: 06-wisc-2019-mlfq
+Executable student code: src/logic_drill.c
+Target university code: run bash bootstrap.sh, inspect upstream/starter, then port only verified results to the kernel source tree.
+The six fields are not host measurements. They are constructed inputs:
+value[0] = queue_a
+value[1] = queue_b
+value[2] = queue_c
+value[3] = used_ticks
+value[4] = wait_ticks
+value[5] = flags
+All tests have exact expected values written as literals in src/logic_drill.c.
+INT64_MIN = unimplemented. Do not replace it with a guessed constant.
+make status → displays 20 BLANK cases before work. make check → fails until all cases pass.
+A successful build proves syntax and linking. It proves no KVM guest ran, no scheduler got installed, and no memory was reclaimed.
+Source of technical requirements: README.md original university link, CHALLENGES.md local ten tasks, and upstream/starter if available.
+An operation here isolates an input-to-output rule. It is NOT the complete course project. Port into the actual xv6/JOS/Pintos/KVM/libvirt implementation and use original course tests.
+
+01. FILL blank_01_initial_queue_assignment; DERIVE state transition from CHALLENGES.md; INPUT 47,0,0,0,0,0; EXPECT 47; SECOND INPUT 300,0,0,0,0,0; EXPECT 300; RUN make check; INSPECT gdb 'break blank_01_initial_queue_assignment'.
+02. FILL blank_02_choose_highest_priority; DERIVE state transition from CHALLENGES.md; INPUT 11,3,7,0,0,0; EXPECT 1; SECOND INPUT 4,8,2,0,0,0; EXPECT 2; RUN make check; INSPECT gdb 'break blank_02_choose_highest_priority'.
+03. FILL blank_03_charge_elapsed_cpu; DERIVE state transition from CHALLENGES.md; INPUT 100,7,0,0,0,0; EXPECT 107; SECOND INPUT 2,10,0,0,0,0; EXPECT 12; RUN make check; INSPECT gdb 'break blank_03_charge_elapsed_cpu'.
+04. FILL blank_04_test_expired_quantum; DERIVE state transition from CHALLENGES.md; INPUT 5,3,0,0,0,0; EXPECT 1; SECOND INPUT 2,7,0,0,0,0; EXPECT 0; RUN make check; INSPECT gdb 'break blank_04_test_expired_quantum'.
+05. FILL blank_05_test_runnable_state; DERIVE state transition from CHALLENGES.md; INPUT 19,16,0,0,0,0; EXPECT 1; SECOND INPUT 3,16,0,0,0,0; EXPECT 0; RUN make check; INSPECT gdb 'break blank_05_test_runnable_state'.
+06. FILL blank_06_bound_queue_level; DERIVE state transition from CHALLENGES.md; INPUT 3,8,0,0,0,0; EXPECT 3; SECOND INPUT 12,7,0,0,0,0; EXPECT 7; RUN make check; INSPECT gdb 'break blank_06_bound_queue_level'.
+07. FILL blank_07_measure_waiting_ticks; DERIVE state transition from CHALLENGES.md; INPUT 150,100,0,0,0,0; EXPECT 50; SECOND INPUT 180,120,0,0,0,0; EXPECT 60; RUN make check; INSPECT gdb 'break blank_07_measure_waiting_ticks'.
+08. FILL blank_08_reject_outside_queue; DERIVE state transition from CHALLENGES.md; INPUT 4096,4096,12288,0,0,0; EXPECT 1; SECOND INPUT 16384,4096,12288,0,0,0; EXPECT 0; RUN make check; INSPECT gdb 'break blank_08_reject_outside_queue'.
+09. FILL blank_09_sum_ready_work; DERIVE state transition from CHALLENGES.md; INPUT 10,20,30,0,0,0; EXPECT 60; SECOND INPUT 4,9,16,0,0,0; EXPECT 29; RUN make check; INSPECT gdb 'break blank_09_sum_ready_work'.
+10. FILL blank_10_reject_bad_parameter; DERIVE state transition from CHALLENGES.md; INPUT 0,0,0,0,0,0; EXPECT -1; SECOND INPUT 17,0,0,0,0,0; EXPECT 0; RUN make check; INSPECT gdb 'break blank_10_reject_bad_parameter'.
+
+INVARIANT: a non-runnable process cannot be dispatched
+TRACE: CALL -> six input values -> function entry -> expected output -> actual output -> first violated state.
+F1. Compiler passed → user logic inferred correct → WRONG; the skeleton returns INT64_MIN.
+F2. User pointer / guest address mistaken for machine page → WRONG; only validate mapping with the real kernel translation API.
+F3. Constructed input recorded as this laptop's observed data → WRONG; measure separately using its running kernel.
+F4. Simulator PASS treated as a passing university grading test → WRONG; run original course test suite in the original environment.
+UNDEFINED PREMISSES: explain each term using the official assignment and relevant source before altering the function.
+NEW THINGS INTRODUCED WITHOUT DERIVATION: audit each line in the final implementation; any unknown source constant requires a source citation.

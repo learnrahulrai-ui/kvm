@@ -1,0 +1,36 @@
+Assignment: 04-ucr-2019-stride-syscalls
+Executable student code: src/logic_drill.c
+Target university code: run bash bootstrap.sh, inspect upstream/starter, then port only verified results to the kernel source tree.
+The six fields are not host measurements. They are constructed inputs:
+value[0] = first_tickets
+value[1] = second_tickets
+value[2] = third_tickets
+value[3] = draw
+value[4] = current_pass
+value[5] = state_flags
+All tests have exact expected values written as literals in src/logic_drill.c.
+INT64_MIN = unimplemented. Do not replace it with a guessed constant.
+make status → displays 20 BLANK cases before work. make check → fails until all cases pass.
+A successful build proves syntax and linking. It proves no KVM guest ran, no scheduler got installed, and no memory was reclaimed.
+Source of technical requirements: README.md original university link, CHALLENGES.md local ten tasks, and upstream/starter if available.
+An operation here isolates an input-to-output rule. It is NOT the complete course project. Port into the actual xv6/JOS/Pintos/KVM/libvirt implementation and use original course tests.
+
+01. FILL blank_01_validate_ticket_update; DERIVE state transition from CHALLENGES.md; INPUT 0,0,0,0,0,0; EXPECT -1; SECOND INPUT 17,0,0,0,0,0; EXPECT 0; RUN make check; INSPECT gdb 'break blank_01_validate_ticket_update'.
+02. FILL blank_02_sum_runnable_tickets; DERIVE state transition from CHALLENGES.md; INPUT 10,20,30,0,0,0; EXPECT 60; SECOND INPUT 4,9,16,0,0,0; EXPECT 29; RUN make check; INSPECT gdb 'break blank_02_sum_runnable_tickets'.
+03. FILL blank_03_draw_lottery_winner; DERIVE state transition from CHALLENGES.md; INPUT 30,20,10,14,0,0; EXPECT 0; SECOND INPUT 30,20,10,52,0,0; EXPECT 2; RUN make check; INSPECT gdb 'break blank_03_draw_lottery_winner'.
+04. FILL blank_04_derive_stride_increment; DERIVE state transition from CHALLENGES.md; INPUT 10000,100,0,0,0,0; EXPECT 100; SECOND INPUT 10000,200,0,0,0,0; EXPECT 50; RUN make check; INSPECT gdb 'break blank_04_derive_stride_increment'.
+05. FILL blank_05_select_minimum_pass; DERIVE state transition from CHALLENGES.md; INPUT 11,3,7,0,0,0; EXPECT 1; SECOND INPUT 4,8,2,0,0,0; EXPECT 2; RUN make check; INSPECT gdb 'break blank_05_select_minimum_pass'.
+06. FILL blank_06_increment_service_counter; DERIVE state transition from CHALLENGES.md; INPUT 100,7,0,0,0,0; EXPECT 107; SECOND INPUT 2,10,0,0,0,0; EXPECT 12; RUN make check; INSPECT gdb 'break blank_06_increment_service_counter'.
+07. FILL blank_07_inherit_ticket_setting; DERIVE state transition from CHALLENGES.md; INPUT 47,0,0,0,0,0; EXPECT 47; SECOND INPUT 300,0,0,0,0,0; EXPECT 300; RUN make check; INSPECT gdb 'break blank_07_inherit_ticket_setting'.
+08. FILL blank_08_detect_runnable_status; DERIVE state transition from CHALLENGES.md; INPUT 19,16,0,0,0,0; EXPECT 1; SECOND INPUT 3,16,0,0,0,0; EXPECT 0; RUN make check; INSPECT gdb 'break blank_08_detect_runnable_status'.
+09. FILL blank_09_derive_share_percent; DERIVE state transition from CHALLENGES.md; INPUT 5,10,0,0,0,0; EXPECT 50; SECOND INPUT 3,12,0,0,0,0; EXPECT 25; RUN make check; INSPECT gdb 'break blank_09_derive_share_percent'.
+10. FILL blank_10_measure_runtime_delta; DERIVE state transition from CHALLENGES.md; INPUT 150,100,0,0,0,0; EXPECT 50; SECOND INPUT 180,120,0,0,0,0; EXPECT 60; RUN make check; INSPECT gdb 'break blank_10_measure_runtime_delta'.
+
+INVARIANT: the winner must be eligible under the selected scheduling policy
+TRACE: CALL -> six input values -> function entry -> expected output -> actual output -> first violated state.
+F1. Compiler passed → user logic inferred correct → WRONG; the skeleton returns INT64_MIN.
+F2. User pointer / guest address mistaken for machine page → WRONG; only validate mapping with the real kernel translation API.
+F3. Constructed input recorded as this laptop's observed data → WRONG; measure separately using its running kernel.
+F4. Simulator PASS treated as a passing university grading test → WRONG; run original course test suite in the original environment.
+UNDEFINED PREMISSES: explain each term using the official assignment and relevant source before altering the function.
+NEW THINGS INTRODUCED WITHOUT DERIVATION: audit each line in the final implementation; any unknown source constant requires a source citation.

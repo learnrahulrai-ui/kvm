@@ -1,0 +1,7 @@
+22 university exercises, each with 10 C fill-in functions and 20 constructed numeric execution checks. 220 student-owned functions, 440 cases, and five causal multiple-choice probes per assignment.
+The compiled C drills isolate mechanisms. They do not replace upstream xv6, JOS, Pintos, KVM, or libvirt source.
+Use: cd assignments/14-mit-61810-cow; make status; make check (expected to fail until your logic is implemented); bash bootstrap.sh for the full university repo.
+All tests in logic_drill.c are intentionally RED. Do not claim a green build is a green university solution.
+For a real project integration: inspect README.md and CHALLENGES.md, implement the ten tasks in the official source, run original tests.
+For KVM host experiments require /dev/kvm; for xv6 labs require the expected cross compiler and QEMU; for libvirt require hypervisor and guests.
+GitHub Actions builds with gcc and clang -O0 -g3 and checks that the test harness runs, not that these user-owned TODOs are solved.
