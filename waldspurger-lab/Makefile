@@ -18,7 +18,7 @@ $(BIN)/ksm_demo: $(SRC)/ksm_demo.c | $(BIN)
 check: all
 	python3 -m unittest discover -s tests -p 'test_*.py' -v
 	python3 -m py_compile scripts/qmp.py
-	bash -n scripts/preflight.sh scripts/launch_pair.sh scripts/observe_ksm.sh scripts/snapshot.sh
+	bash -n scripts/preflight.sh scripts/launch_pair.sh scripts/observe_ksm.sh scripts/snapshot.sh scripts/observe_vms.sh scripts/stop_pair.sh scripts/run_ksm_pair.sh
 preflight:
 	bash scripts/preflight.sh
 clean:
